@@ -6,9 +6,6 @@ const ServicesCard = ({card}) => {
   const { title, body, img } = card;
     return (
       <div className={styles.card}>
-        {/*         <div className={styles.card__title}>
-          <h1>Наши Услуги</h1>
-        </div> */}
         <div className={styles.card_content}>
           <div className={styles.card_content__img}>
             <img src={img} alt="" />

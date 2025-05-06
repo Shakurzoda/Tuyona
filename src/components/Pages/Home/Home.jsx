@@ -1,9 +1,14 @@
 import image from "/src/assets/homeImg.webp";
 import styles from "./Home.module.css";
 import MyButton from "../../MyButton/MyButton";
-import Section from '../../Section/Section';
-import ServicesCard from '../../ServicesCard/ServicesCard';
-import { cardsData } from './../../ServicesCard/CardPost';
+import Section from "../../Section/Section";
+import ServicesCard from "../../ServicesCard/ServicesCard";
+import servicesReviewsIMG from "/src/assets/ReviewsIMG1.webp";
+import servicesReviewsIMG2 from "/src/assets/ReviewsIMG2.webp";
+import marksImg from "/src/assets/quotation-marks-svgrepo-com.svg";
+import resturantImg from "/src/assets/pexels-photo-1395967.webp";
+import singerImg from "/src/assets/7097523.png";
+import registrationImg from "/src/assets/8715396.png";
 
 const Home = () => {
   return (
@@ -44,16 +49,34 @@ const Home = () => {
           <p>Наши Услуги</p>
         </div>
         <div className={styles.servicesCard}>
-          {cardsData.map((card) => (
-            <ServicesCard key={card.id} card={card} />
-          ))}
+          <ServicesCard
+            card={{
+              img: resturantImg,
+              title: "Рестораны",
+              body: "1000 и 1 ресторан для проведения вашей свадьбы",
+            }}
+          />
+          <ServicesCard
+            card={{
+              img: singerImg,
+              title: "Певцы",
+              body: "Изысанынные певцы для вашего свадебного вечера",
+            }}
+          />
+          <ServicesCard
+            card={{
+              img: registrationImg,
+              title: "Оформление",
+              body: "Сазочные оформления для вашей свадьбы",
+            }}
+          />
         </div>
       </div>
 
       <div className={styles.servicesReviews}>
         <div className={styles.servicesReviews__content}>
           <div className={styles.servicesReviews__img}>
-            <img src="/src/assets/ReviewsIMG1.webp" alt="" />
+            <img src={servicesReviewsIMG} alt="" />
           </div>
           <div className={styles.servicesReviews__text}>
             <div className={styles.servicesReviews__text__title}>
@@ -65,7 +88,7 @@ const Home = () => {
               Категории
             </MyButton>
             <div className={styles.quotationMarks}>
-              <img src="/src/assets/quotation-marks-svgrepo-com.svg" alt="" />
+              <img src={marksImg} alt="" />
               <div className={styles.quotationPer}>
                 <span className={styles.quotationPer__text}>
                   Туйона помогала нам на каждом шагу. Наша свадьба была именно
@@ -77,7 +100,7 @@ const Home = () => {
             </div>
           </div>
           <div className={styles.servicesReviews__imG}>
-            <img src="/src/assets/ReviewsIMG2.webp" alt="" />
+            <img src={servicesReviewsIMG2} alt="" />
           </div>
         </div>
       </div>

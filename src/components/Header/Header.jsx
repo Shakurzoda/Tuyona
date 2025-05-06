@@ -73,11 +73,11 @@ const Header = () => {
             </li>
             <li className={styles.navItem}>
               <Link
-                to="/services"
+                to="/category"
                 className={styles.navLink}
                 onClick={closeMenu}
               >
-                Услуги
+                Категории
               </Link>
             </li>
             <li className={styles.navItem}>
@@ -86,28 +86,15 @@ const Header = () => {
               </Link>
             </li>
             <li className={styles.navItem}>
-              <Link to="/contact" className={styles.navLink} onClick={closeMenu}>
+              <Link
+                to="/contact"
+                className={styles.navLink}
+                onClick={closeMenu}
+              >
                 Контакты
               </Link>
             </li>
-            {/* {["Главная", "Услуги", "О нас", "Контакты"].map((item, index) => (
-              <li key={index} className={styles.navItem}>
-                <a
-                  href={`#${item.toLowerCase().replace(" ", "-")}`}
-                  className={styles.navLink}
-                  onClick={closeMenu}
-                >
-                  <span className={styles.linkText} data-text={item}>
-                    {item}
-                  </span>
-                </a>
-              </li>
-            ))} */}
           </ul>
-
-          {/*           <button className={styles.ctaButton} onClick={closeMenu}>
-            Заказать звонок
-          </button> */}
         </nav>
       </div>
 
