@@ -9,6 +9,8 @@ import marksImg from "/src/assets/quotation-marks-svgrepo-com.svg";
 import resturantImg from "/src/assets/pexels-photo-1395967.webp";
 import singerImg from "/src/assets/7097523.png";
 import registrationImg from "/src/assets/8715396.png";
+import { Link } from "react-router-dom";
+import Category from './../../Category/Category';
 
 const Home = () => {
   return (
@@ -32,7 +34,7 @@ const Home = () => {
           </div>
           <div className={styles.home__content__text__btn}>
             <MyButton color="pink" size="medium">
-              Все категории
+              <Link to="/category">Все категории</Link>
             </MyButton>
             <MyButton color="white" size="medium">
               О нас

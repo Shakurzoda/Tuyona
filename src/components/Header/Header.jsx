@@ -18,18 +18,15 @@ const Header = () => {
      { name: "Главная", to: "/" },
      { name: "Категории", to: "/category" },
      { name: "О нас", to: "#about" },
-     { name: "Контакты", to: "#contact" },
+     { name: "Добавить свое объявление", to: "#contact" },
    ];
 
    return (
      <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
        <div className={styles.container}>
-         {/* Логотип */}
          <Link to="/" className={styles.logo}>
            Tuyona
          </Link>
-
-         {/* Десктопное меню */}
          <nav className={styles.desktopNav}>
            {navItems.map((item) => (
              <Link key={item.name} to={item.to} className={styles.navLink}>
@@ -38,8 +35,6 @@ const Header = () => {
              </Link>
            ))}
          </nav>
-
-         {/* Бургер-кнопка для мобильных */}
          <button
            className={`${styles.burger} ${isOpen ? styles.open : ""}`}
            onClick={() => setIsOpen(!isOpen)}
@@ -49,8 +44,6 @@ const Header = () => {
            <span></span>
            <span></span>
          </button>
-
-         {/* Мобильное меню */}
          <div className={`${styles.mobileNav} ${isOpen ? styles.open : ""}`}>
            <nav className={styles.mobileNavContent}>
              {navItems.map((item) => (

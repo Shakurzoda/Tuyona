@@ -74,6 +74,8 @@
   align-items: center;
   flex-direction: column;
   width: 100%;
+  height: 100%;
+/*   border: 1px solid black; */
 }
 
 .card__title {
@@ -185,16 +187,6 @@
   opacity: 1;
 }
 
-/* .servicesReviews__imG img {
-  width: 232px;
-  height: 293px;
-  max-width: 350px;
-  border-radius: 8%;
-  margin: 0 auto;
-  display: block;
-  object-fit: cover;
-} */
-
 .servicesReviews__imG {
   position: relative;
   width: 232px;
@@ -228,7 +220,6 @@
   transform: scale(1.05) translateX(0);
 }
 
-/* Эффект синего свечения */
 .servicesReviews__imG::after {
   content: "";
   position: absolute;
@@ -309,10 +300,10 @@
   }
 
   .home__content__text {
-    width: 100%;
     padding: 0 10px;
     align-items: center;
     text-align: center;
+
   }
 
   .home__content__text__title {
@@ -350,7 +341,6 @@
   }
 }
 
-/* Планшеты (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .home__content {
     width: 100%;
@@ -363,11 +353,12 @@
   }
 
   .home__content__text__desc__title {
-    font-size: 42px;
+    font-size: 40px;
   }
 
   .home__content__text__desc__desc {
     font-size: 18px;
+    width: 50%;
   }
 
   .home__content__text__btn {

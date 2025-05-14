@@ -12,7 +12,16 @@ const CategoryPage = () => {
     return (
       <div className={styles.category}>
         <Category direction={direction} setDirection={setDirection} />
-        <CardItem />
+        <div className={styles.category__content}>
+          <div className={styles.category__items}>
+            <CardItem />
+            <CardItem />
+            <CardItem />
+            <CardItem />
+            <CardItem />
+            <CardItem />
+          </div>
+        </div>
       </div>
     );
 };

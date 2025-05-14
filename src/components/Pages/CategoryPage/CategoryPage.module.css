@@ -1,5 +1,17 @@
-.corsesList {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+.category__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    width: 1500px;
+    margin-top: 30px;
+}
+
+.category__items {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
 }
