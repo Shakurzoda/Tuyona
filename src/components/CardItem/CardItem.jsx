@@ -1,10 +1,10 @@
 import "./CardItem.css";
 /* import image from "/src/assets/driving-car-their-honeymoon_3446-291.jpg"; */
-import { Link } from 'react-router';
+import { Link } from "react-router";
 
 const CardItem = () => {
   return (
-    <Link to="/userAdDetails" className="card-item">
+    <Link to="/userAdDetails">
       <div class="card">
         <div class="card-image">
           <img

@@ -45,12 +45,14 @@ const Home = () => {
           <img src={image} alt="wedding" />
         </div>
       </div>
+
       <Section />
+
       <div className={styles.servicesContent}>
         <div className={styles.card__title}>
-          <p>Наши Услуги</p>
+          <p>Категории</p>
         </div>
-        <div className={styles.servicesCard}>
+        <div className={styles.servicesCards}>
           <ServicesCard
             card={{
               img: resturantImg,
@@ -106,6 +108,8 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      
     </section>
   );
 };

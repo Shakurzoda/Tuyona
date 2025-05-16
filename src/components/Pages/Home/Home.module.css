@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .home {
   display: flex;
   flex-direction: column;
@@ -8,9 +14,11 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 1700px;
   flex-wrap: wrap;
+/*   border: 1px solid black; */
+  margin: 0 20px;
 }
+
 
 .home__content__text {
   display: flex;
@@ -29,7 +37,6 @@
   color: #f7c6c7;
   font-weight: 600;
   font-size: 18px;
-  /* line-height: 33px; */
   transform: scale(1);
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -75,7 +82,7 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-/*   border: 1px solid black; */
+  /* border: 1px solid black; */
 }
 
 .card__title {
@@ -86,11 +93,13 @@
   margin-bottom: 50px;
 }
 
-.servicesCard {
+.servicesCards {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 3rem;
   width: 1250px;
+  /* border: 1px solid black; */
   height: 100%;
 }
 
@@ -117,18 +126,6 @@
 }
 
 .servicesReviews__img {
-  /*   width: 100%;
-  height: 335px;
-  max-width: 350px;
-  border-radius: 20px;
-  margin: 0 auto;
-  display: block;
-  transition: transform 0.5s ease, box-shadow 0.5s ease;
-  transform-style: preserve-3d;
-  transform: perspective(800px) rotateX(0) rotateY(0) rotateZ(0);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative; */
-
   position: relative;
   width: 300px;
   border-radius: 12px;
@@ -148,13 +145,6 @@
 }
 
 .servicesReviews__img img {
-  /*   width: 100%;
-  height: 435px;
-  transition: transform 0.5s ease;
-  display: block;
-  border-radius: 20px;
-  object-fit: cover; */
-
   width: 100%;
   height: auto;
   display: block;
@@ -190,7 +180,6 @@
 .servicesReviews__imG {
   position: relative;
   width: 232px;
-  /* height: 293px; */
   border-radius: 12px;
   overflow: hidden;
   transform: perspective(1000px) rotateY(-5deg) /* Изначальный наклон влево */
@@ -297,6 +286,8 @@
     flex-direction: column;
     justify-content: center;
     gap: 2rem;
+    padding: 0;
+    margin: 0;
   }
 
   .home__content__text {
@@ -307,11 +298,13 @@
   }
 
   .home__content__text__title {
+    width: 350px;
     font-size: 16px;
     padding: 6px 15px;
   }
 
   .home__content__text__desc__title {
+    width: 350px;
     font-size: 32px;
     padding-bottom: 15px;
     text-align: center;
@@ -331,7 +324,51 @@
     justify-content: center;
   }
 
-  img {
+  .servicesCards {
+    width: 90%;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+.servicesReviews__content {
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    margin-top: 30px;
+  }
+
+  .servicesReviews__text {
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+  }
+
+  .servicesReviews__text__title {
+    font-size: 32px;
+    padding-bottom: 20px;
+  }
+
+  .servicesReviews__text__desc {
+    font-size: 16px;
+    line-height: 1.6rem;
+    text-align: center;
+  }
+
+  .servicesReviews__img {
+    width: 100%;
+    height: auto;
+    max-width: 350px;
+    border-radius: 8%;
+    margin: 0 auto;
+    display: block;
+}
+
+.servicesReviews__text {
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+   img {
     width: 100%;
     height: auto;
     max-width: 350px;
