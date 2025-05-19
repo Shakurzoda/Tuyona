@@ -12,13 +12,11 @@
 
 .home__content {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-/*   border: 1px solid black; */
   margin: 0 20px;
 }
-
 
 .home__content__text {
   display: flex;
@@ -70,9 +68,9 @@
 }
 
 .home__content__img img {
-  width: 800px;
+  width: 700px;
   height: 600px;
-  border-radius: 10%;
+  /* border: 1px solid black; */
 }
 
 .servicesContent {
@@ -294,7 +292,6 @@
     padding: 0 10px;
     align-items: center;
     text-align: center;
-
   }
 
   .home__content__text__title {
@@ -330,7 +327,7 @@
     flex-wrap: wrap;
   }
 
-.servicesReviews__content {
+  .servicesReviews__content {
     flex-direction: column;
     gap: 2rem;
     width: 100%;
@@ -361,14 +358,14 @@
     border-radius: 8%;
     margin: 0 auto;
     display: block;
-}
+  }
 
-.servicesReviews__text {
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-}
-   img {
+  .servicesReviews__text {
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+  img {
     width: 100%;
     height: auto;
     max-width: 350px;

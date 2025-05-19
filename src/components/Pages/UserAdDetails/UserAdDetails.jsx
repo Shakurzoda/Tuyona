@@ -20,7 +20,7 @@ const UserAdDetails = () => {
               <span>
                 <p>Душанбе</p>
               </span>
-            </div>
+            </div> 
           </div>
         </div>
         <div className={styles.userAdPricing}>

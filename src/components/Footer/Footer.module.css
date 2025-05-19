@@ -1,5 +1,5 @@
 .footer {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background:#292929;
   color: #fff;
   padding: 4rem 0 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -29,10 +29,6 @@
   color: #fff;
   text-decoration: none;
   transition: color 0.3s ease;
-}
-
-.logo:hover {
-  color: #fbbf24;
 }
 
 .description {
@@ -81,7 +77,7 @@
 .columnTitle {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #fbbf24;
+  color: #f7c6c7;
   margin-bottom: 0.5rem;
 }
 
@@ -101,7 +97,7 @@
 }
 
 .link:hover {
-  color: #fbbf24;
+  color: #f7c6c7;
 }
 
 .link::after {
@@ -111,7 +107,7 @@
   left: 0;
   width: 0;
   height: 1px;
-  background-color: #fbbf24;
+  background-color: #f7c6c7;
   transition: width 0.3s ease;
 }
 

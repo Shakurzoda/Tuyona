@@ -9,7 +9,7 @@ const Footer = () => {
       title: "Навигация",
       links: [
         { name: "Главная", path: "/" },
-        { name: "Категории", path: "/categories" },
+        { name: "Категории", path: "/category" },
         { name: "О нас", path: "/about" },
         { name: "Контакты", path: "/contact" },
       ],
@@ -36,7 +36,6 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        {/* Лого и описание */}
         <div className={styles.brandSection}>
           <Link to="/" className={styles.logo}>
             Tuyona

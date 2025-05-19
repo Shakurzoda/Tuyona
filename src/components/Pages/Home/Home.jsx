@@ -1,4 +1,4 @@
-import image from "/src/assets/homeImg.webp";
+import image from "/src/assets/24122343_bwink_ppl_11_single_08.svg";
 import styles from "./Home.module.css";
 import MyButton from "../../MyButton/MyButton";
 import Section from "../../Section/Section";
@@ -6,7 +6,7 @@ import ServicesCard from "../../ServicesCard/ServicesCard";
 import servicesReviewsIMG from "/src/assets/ReviewsIMG1.webp";
 import servicesReviewsIMG2 from "/src/assets/ReviewsIMG2.webp";
 import marksImg from "/src/assets/quotation-marks-svgrepo-com.svg";
-import resturantImg from "/src/assets/pexels-photo-1395967.webp";
+import resturantImg from "/src/assets/9000463_4067778.svg";
 import singerImg from "/src/assets/7097523.png";
 import registrationImg from "/src/assets/8715396.png";
 import { Link } from "react-router-dom";
@@ -26,9 +26,9 @@ const Home = () => {
             </div>
             <div className={styles.home__content__text__desc__desc}>
               <p>
-                Tyuona воплощает ваши свадебные мечты: от изысканных цветочных
-                композиций до элегантного кейтеринга. Создадим ваш идеальный
-                день вместе
+                Tyuona - ваша онлайн-площадка для свадебных товаров и услуг.
+                Здесь вы найдете всё необходимое для организации свадьбы: от
+                профессиональных фотографов и стилистов до свадебного кортежа!
               </p>
             </div>
           </div>
@@ -95,11 +95,11 @@ const Home = () => {
               <img src={marksImg} alt="" />
               <div className={styles.quotationPer}>
                 <span className={styles.quotationPer__text}>
-                  Туйона помогала нам на каждом шагу. Наша свадьба была именно
-                  такой, о какой мы мечтали!
+                  Туйона - лучший помощник в подготовке свадьбы. Проверенные
+                  продавцы, идеальный результат!
                 </span>{" "}
                 <br /> <br />
-                <p className={styles.quotationName}>Jessica & Mark</p>
+                <p className={styles.quotationName}>Малика & Фаррух</p>
               </div>
             </div>
           </div>
@@ -108,8 +108,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      
     </section>
   );
 };
