@@ -1,0 +1,78 @@
+/* Общий контейнер галереи */
+.galleryContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  margin: 0 auto;
+}
+
+/* Основное изображение */
+.mainImageContainer {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.mainImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Кнопки навигации */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 24px;
+  z-index: 10;
+}
+
+.navButton:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.navButton:first-of-type {
+  left: 10px;
+}
+
+.navButton:last-of-type {
+  right: 10px;
+}
+
+/* Миниатюры */
+.thumbnailsContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.thumbnail {
+  width: 100px;
+  height: 75px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.3s;
+}
+
+.thumbnail:hover {
+  border-color: #ccc;
+}
+
+.activeThumbnail {
+  border-color: #007bff;
+}

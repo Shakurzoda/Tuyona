@@ -1,0 +1,319 @@
+.userAdDetails {
+  width: 1900px;
+  margin: 0 30px;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  gap: 3rem;
+}
+
+.userAdData {
+  width: 450px;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userAdData__title {
+  font-size: 30px;
+  font-weight: 600;
+  color: black;
+  margin: 20px 0;
+}
+
+.userAdData__desc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.userAdData__desc__title {
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  width: 450px;
+  padding-left: 5px;
+}
+
+.userAdData__desc__body {
+  font-size: 16px;
+  font-weight: 400;
+  color: black;
+  width: 450px;
+  padding-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 250px;
+  border-bottom: 1px solid gray;
+}
+
+.userAdPricing {
+  width: 350px;
+  height: 230px;
+  box-shadow: 4px 4px 23px 0px rgba(34, 60, 80, 0.2);
+  border-radius: 10px;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.userAdPricing__price__title {
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
+  margin: 10px 0;
+}
+
+.price {
+  margin-top: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  color: white;
+  background-color: #10c44c;
+  width: 90px;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card {
+  width: fit-content;
+  height: fit-content;
+  background-color: rgb(238, 238, 238);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px 25px;
+  gap: 20px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055);
+  border-radius: 10px;
+}
+
+.socialContainer {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgb(44, 44, 44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition-duration: 0.3s;
+}
+
+.socialContainer:hover {
+  animation: bounce 0.4s linear;
+}
+
+.socialContainer:active {
+  transform: scale(0.9);
+  transition-duration: 0.3s;
+}
+
+.socialSvg {
+  width: 17px;
+}
+
+.socialSvg path {
+  fill: rgb(255, 255, 255);
+}
+
+.socialContainer:hover .socialSvg {
+  animation: slide-in-top 0.3s both;
+}
+
+.socialContainer:hover {
+  background-color: #d62976;
+}
+
+.twitter:hover {
+  background-color: #00acee;
+}
+
+.linkedin:hover {
+  background-color: #0072b1;
+}
+
+.whatsapp:hover {
+  background-color: #128c7e;
+}
+
+@keyframes slide-in-top {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  20%,
+  50%,
+  80%,
+  to {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  90% {
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 768px) {
+  .userAdDetails {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .userPhotoGallery {
+    width: 100%;
+    padding: 0;
+  }
+
+  .userAdData {
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  .userAdData__title {
+    font-size: 24px;
+    margin: 15px 0;
+    text-align: center;
+    color: #2d3748;
+    position: relative;
+    padding-bottom: 10px;
+  }
+
+  .userAdData__title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    border-radius: 3px;
+  }
+
+  .userAdData__desc {
+    margin: 15px 0;
+    gap: 1rem;
+  }
+
+  .userAdData__desc__title {
+    font-size: 18px;
+    width: 100%;
+    padding-left: 0;
+    color: #4a5568;
+    font-weight: 600;
+  }
+
+  .userAdData__desc__body {
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 1px solid #e2e8f0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .userAdPricing {
+    width: 100%;
+    height: auto;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: white;
+  }
+
+  .userAdPricing__price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .userAdPricing__price__title {
+    font-size: 18px;
+    margin: 0;
+    color: #4a5568;
+  }
+
+  .price {
+    width: auto;
+    padding: 0 15px;
+    height: 36px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #10c44c, #0d9f3d);
+  }
+
+  .userAdSocialMedia {
+    margin-top: 30px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f8fafc;
+    justify-content: space-around;
+    gap: 15px;
+  }
+
+  .socialContainer {
+    width: 44px;
+    height: 44px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .socialSvg {
+    width: 20px;
+  }
+}
+
+@media (hover: hover) {
+  .socialContainer:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .userAdDetails {
+    width: 100%;
+    padding: 0 20px;
+    gap: 2rem;
+  }
+
+  .userAdData {
+    width: 60%;
+  }
+
+  .userAdPricing {
+    width: 300px;
+  }
+}

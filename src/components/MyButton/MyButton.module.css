@@ -1,0 +1,70 @@
+.MyButton {
+  min-width: 120px;
+  position: relative;
+  cursor: pointer;
+  padding: 12px 17px;
+  border: 0;
+  border-radius: 7px;
+  color: rgb(255, 255, 255, 0.66);
+  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+.MyButton::before {
+  width: 10%;
+  height: 1px;
+  position: absolute;
+  bottom: 0;
+  left: 15%;
+  opacity: 0.2;
+  transition: all 1s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+.MyButton:hover {
+  transform: scale(1.03);
+}
+
+.MyButton:hover::before {
+  opacity: 1;
+}
+
+.green {
+  background-color: #00af66;
+  color: white;
+  box-shadow: rgba(247, 198, 199, 0.2) 0px 8px 15px 0px,
+    rgba(242, 230, 217, 0.2) 0px 8px 15px 0px;
+}
+
+.green:hover {
+  background-color: #00af66;
+}
+
+.white {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  box-shadow: 10px 5px 10px 2px rgba(34, 60, 80, 0.2);
+}
+
+.white:hover {
+  background-color: #f2f2f2;
+}
+
+.medium {
+  padding: 10px 20px;
+  font-size: 16px;
+  height: 52px;
+  width: 169px;
+}
+
+.large {
+  padding: 14px 28px;
+  font-size: 16px;
+  width: 318px;
+  height: 52px;
+  border-radius: 15px;
+}
+
+.large:hover {
+  box-shadow: 0px 5px 5px 2px rgba(34, 60, 80, 0.2);
+    background-color: white;
+}

@@ -1,0 +1,66 @@
+.category__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1500px;
+    margin-top: 30px;
+}
+
+.category__items {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
+}
+
+/* Мобильная адаптация - современный дизайн */
+@media (max-width: 768px) {
+    .category {
+      padding: 0 15px;
+    }
+  
+    .category__content {
+      width: 100%;
+      border: none;
+      margin-top: 20px;
+      background: transparent;
+    }
+  
+    .category__items {
+      margin: 15px 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 0;
+    }
+  
+    /* Стили для CardItem (если нужно) */
+    .card-item {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: white;
+    }
+  
+    .card-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+  }
+  
+  /* Планшетная версия */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .category__content {
+      width: 100%;
+      max-width: 100%;
+      padding: 0 20px;
+    }
+  
+    .category__items {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+    }
+  }
