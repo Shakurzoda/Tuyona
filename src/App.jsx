@@ -14,6 +14,7 @@ import PresentersPage from './components/Pages/PresentersPage/PresentersPage';
 import PhotographersPage from './components/Pages/PhotographersPage/PhotographersPage';
 import SingersPage from './components/Pages/SingersPage/SingersPage';
 import BeautySalonsPage from './components/Pages/BeautySalonsPage/BeautySalonsPage';
+import PartnershipsPage from './components/Pages/PartnershipsPage/PartnershipsPage';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/singers/:id" element={<SingersPage />} />
         <Route path="/beautySalons/:id" element={<BeautySalonsPage />} />
         <Route path="/userAdDetails" element={<UserAdDetails />} />
+        <Route path="/partnerships" element={<PartnershipsPage />} />
       </Routes>
       <Footer />
     </div>

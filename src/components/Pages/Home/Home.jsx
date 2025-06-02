@@ -10,7 +10,6 @@ import resturantImg from "/src/assets/9000463_4067778.svg";
 import singerImg from "/src/assets/violin-orchestra-concept-illustration_114360-17225.jpg";
 import registrationImg from "/src/assets/8715396.png";
 import { Link } from "react-router-dom";
-import Category from "./../../Category/Category";
 
 const Home = () => {
   return (

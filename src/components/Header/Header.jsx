@@ -17,8 +17,8 @@ const Header = () => {
    const navItems = [
      { name: "Главная", to: "/" },
      { name: "Категории", to: "/category" },
-     { name: "О нас", to: "#about" },
-     { name: "Добавить свое объявление", to: "#contact" },
+     { name: "О нас", to: "/about" },
+     { name: "Стать парнером", to: "/partnerships" },
    ];
 
    return (

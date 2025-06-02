@@ -24,7 +24,6 @@ const ThumbsGallery = ({ imgList, img }) => {
 
   return (
     <div className={styles.galleryContainer}>
-      {/* Main image */}
       <div className={styles.mainImageContainer}>
         <button onClick={handlePrev} className={styles.navButton}>
           &lt;
@@ -38,8 +37,6 @@ const ThumbsGallery = ({ imgList, img }) => {
           &gt;
         </button>
       </div>
-
-      {/* Thumbnails */}
       <div className={styles.thumbnailsContainer}>
         {images.map((img, index) => (
           <img

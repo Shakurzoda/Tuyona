@@ -56,7 +56,7 @@
 }
 
 .userAdPricing {
-  width: 350px;
+  max-width: 350px;
   height: 230px;
   box-shadow: 4px 4px 23px 0px rgba(34, 60, 80, 0.2);
   border-radius: 10px;
@@ -223,6 +223,7 @@
 
   .userAdData__desc__title {
     font-size: 18px;
+    text-align: center;
     width: 100%;
     padding-left: 0;
     color: #4a5568;
@@ -230,10 +231,10 @@
   }
 
   .userAdData__desc__body {
-    width: 100%;
+    width: 150px;
     padding: 10px 0;
     border-bottom: 1px solid #e2e8f0;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     gap: 5px;
   }

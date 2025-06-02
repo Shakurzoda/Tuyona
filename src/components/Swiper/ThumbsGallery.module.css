@@ -22,7 +22,132 @@
 
 .mainImage {
   width: 100%;
-  height: 100%;
+  height: 100%;/* ThumbsGallery.module.css */
+
+  /* Общий контейнер галереи */
+  .galleryContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  
+  /* Основное изображение */
+  .mainImageContainer {
+    position: relative;
+    width: 100%;
+    height: 300px; /* Уменьшенная высота для мобильных */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  
+  .mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Кнопки навигации */
+  .navButton {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .navButton:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .navButton:first-of-type {
+    left: 5px;
+  }
+  
+  .navButton:last-of-type {
+    right: 5px;
+  }
+  
+  /* Миниатюры */
+  .thumbnailsContainer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .thumbnail {
+    width: 80px;
+    height: 60px;
+    min-width: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s;
+    border-radius: 4px;
+  }
+  
+  .thumbnail:hover {
+    border-color: #ccc;
+  }
+  
+  .activeThumbnail {
+    border-color: #007bff;
+  }
+  
+  /* Адаптация для планшетов */
+  @media (min-width: 768px) {
+    .mainImageContainer {
+      height: 400px;
+    }
+    
+    .navButton {
+      padding: 10px 15px;
+      font-size: 24px;
+      width: auto;
+      height: auto;
+      border-radius: 0;
+    }
+    
+    .thumbnail {
+      width: 100px;
+      height: 75px;
+    }
+  }
+  
+  /* Адаптация для маленьких мобильных */
+  @media (max-width: 480px) {
+    .mainImageContainer {
+      height: 250px;
+    }
+    
+    .thumbnail {
+      width: 70px;
+      height: 50px;
+      min-width: 70px;
+    }
+  }
   object-fit: cover;
 }
 
