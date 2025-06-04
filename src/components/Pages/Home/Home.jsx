@@ -9,7 +9,6 @@ import marksImg from "/src/assets/quotation-marks-svgrepo-com.svg";
 import resturantImg from "/src/assets/9000463_4067778.svg";
 import singerImg from "/src/assets/violin-orchestra-concept-illustration_114360-17225.jpg";
 import registrationImg from "/src/assets/8715396.png";
-import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -32,10 +31,10 @@ const Home = () => {
             </div>
           </div>
           <div className={styles.home__content__text__btn}>
-            <MyButton color="green" size="medium">
-              <Link to="/category">Все категории</Link>
+            <MyButton color="green" size="medium" href="/category">
+              Все категории
             </MyButton>
-            <MyButton color="white" size="medium">
+            <MyButton color="white" size="medium" href="#">
               О нас
             </MyButton>
           </div>
@@ -87,7 +86,7 @@ const Home = () => {
                 Начните планировать свадьбу <br /> Своей мечты уже сегодня!
               </p>
             </div>
-            <MyButton color="pink" size="medium">
+            <MyButton color="pink" size="medium" href="/category">
               Категории
             </MyButton>
             <div className={styles.quotationMarks}>

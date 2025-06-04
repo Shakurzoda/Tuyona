@@ -16,8 +16,8 @@ const ServicesCard = ({ card }) => {
         <div className={styles.card_content__desc}>
           <p>{body}</p>
         </div>
-        <MyButton color="white" size="large">
-          <Link to="/category">Узнать больше</Link>
+        <MyButton color="white" size="large" href="/category">
+          К категориям
         </MyButton>
       </div>
     </div>
