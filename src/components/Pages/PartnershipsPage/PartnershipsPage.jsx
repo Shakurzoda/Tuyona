@@ -1,6 +1,8 @@
 import PartnerText from "../../PartnerText/PartnerText";
 import styles from "./PartnershipsPage.module.css";
 import banerImage from "/src/assets/parnt_baner.png";
+import tgIMG from "/src/assets/TG_Poster.png";
+import ggfrmIMG from "/src/assets/form-concept.png";
 import MyButton from "./../../MyButton/MyButton";
 
 const PartnershipsPage = () => {
@@ -22,7 +24,7 @@ const PartnershipsPage = () => {
           <div className={styles.linkItems}>
             <div className={styles.linkItemTG}>
               <div className={styles.backgroundImage}>
-                <img src="/src/assets/TG_Poster.png" alt="Telegram Poster" />
+                <img src={tgIMG} alt="Telegram Poster" />
               </div>
               <div
                 style={{ position: "relative", zIndex: 1 }}
@@ -44,10 +46,7 @@ const PartnershipsPage = () => {
 
             <div className={styles.linkItemGglFrm}>
               <div className={styles.backgroundImage2}>
-                <img
-                  src="/src/assets/form-concept.png"
-                  alt="Google Forms Poster"
-                />
+                <img src={ggfrmIMG} alt="Google Forms Poster" />
               </div>
               <div
                 style={{ position: "relative", zIndex: 1 }}
