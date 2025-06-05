@@ -36,7 +36,7 @@
   }
 
   .category__items {
-    grid-template-columns: 1fr; /* Одна колонка */
+    grid-template-columns: 1fr;
     gap: 1rem;
     margin: 15px 0;
   }

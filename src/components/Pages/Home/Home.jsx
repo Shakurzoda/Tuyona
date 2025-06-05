@@ -1,4 +1,4 @@
-import image from "/src/assets/24122343_bwink_ppl_11_single_08.svg";
+import image from "/src/assets/24122343_bwink_ppl_11_single_08.webp";
 import styles from "./Home.module.css";
 import MyButton from "../../MyButton/MyButton";
 import Section from "../../Section/Section";
@@ -40,7 +40,7 @@ const Home = () => {
           </div>
         </div>
         <div className={styles.home__content__img}>
-          <img src={image} alt="wedding" />
+          <img src={image} rel="preload" as="image" />
         </div>
       </div>
 

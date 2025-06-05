@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet"><link rel="stylesheet" href="/path/to/main.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/path/to/main.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/path/to/App.css" media="print" onload="this.media='all'">
+    <link rel="preload" as="image" href="/src/assets/24122343_bwink_ppl_11_single_08.webp">
     <title>Tuyona</title>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" defer src="/src/main.jsx"></script>
   </body>
 </html>

@@ -5,10 +5,6 @@
   font-family: "Playfair Display", serif;
 }
 
-/* html {
-  scroll-behavior: smooth;
-} */
-
 .App {
   display: flex;
   flex-direction: column;

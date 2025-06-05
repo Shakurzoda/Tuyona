@@ -1,22 +1,35 @@
+import { useEffect } from "react";
+import { preload } from "react-dom";
 import "./App.css";
-import { Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import Header from "./components/Header/Header";
 import Home from "./components/Pages/Home/Home";
 import CategoryPage from "./components/Pages/CategoryPage/CategoryPage";
 import UserAdDetails from "./components/Pages/UserAdDetails/UserAdDetails";
 import Footer from "./components/Footer/Footer";
-import RestaurantPage from './components/Pages/RestaurantPage/RestaurantPage';
+import RestaurantPage from "./components/Pages/RestaurantPage/RestaurantPage";
 import MusiciansPage from "./components/Pages/MusiciansPage/MusiciansPage";
-import CarsPage from './components/Pages/CarsPage/CarsPage';
-import DecorationPage from './components/Pages/DecorationPage/DecorationPage';
-import PresentersPage from './components/Pages/PresentersPage/PresentersPage';
-import PhotographersPage from './components/Pages/PhotographersPage/PhotographersPage';
-import SingersPage from './components/Pages/SingersPage/SingersPage';
-import BeautySalonsPage from './components/Pages/BeautySalonsPage/BeautySalonsPage';
-import PartnershipsPage from './components/Pages/PartnershipsPage/PartnershipsPage';
+import CarsPage from "./components/Pages/CarsPage/CarsPage";
+import DecorationPage from "./components/Pages/DecorationPage/DecorationPage";
+import PresentersPage from "./components/Pages/PresentersPage/PresentersPage";
+import PhotographersPage from "./components/Pages/PhotographersPage/PhotographersPage";
+import SingersPage from "./components/Pages/SingersPage/SingersPage";
+import BeautySalonsPage from "./components/Pages/BeautySalonsPage/BeautySalonsPage";
+import PartnershipsPage from "./components/Pages/PartnershipsPage/PartnershipsPage";
 
 function App() {
+  useEffect(() => {
+    const lcpImages = ["/hero-image.webp", "/main-banner.jpg"];
+    lcpImages.forEach((img) => {
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = img;
+      document.head.appendChild(link);
+    });
+  }, []);
+
   return (
     <div className="App">
       <Header />
