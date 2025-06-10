@@ -286,6 +286,10 @@
     margin: 0;
   }
 
+  .home__content__img img {
+    height: 450px;
+  }
+
   .home__content__text {
     padding: 0 10px;
     align-items: center;
@@ -356,8 +360,12 @@
     border-radius: 8%;
     margin: 0 auto;
     display: block;
+    display: none;
   }
 
+  .servicesReviews__imG {
+    display: none;
+  }
   .servicesReviews__text {
     gap: 1rem;
     margin: 0;

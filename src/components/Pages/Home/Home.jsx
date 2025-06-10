@@ -5,7 +5,6 @@ import Section from "../../Section/Section";
 import ServicesCard from "../../ServicesCard/ServicesCard";
 import servicesReviewsIMG from "/src/assets/ReviewsIMG1.webp";
 import servicesReviewsIMG2 from "/src/assets/ReviewsIMG2.webp";
-import marksImg from "/src/assets/quotation-marks-svgrepo-com.svg";
 import resturantImg from "/src/assets/9000463_4067778.svg";
 import singerImg from "/src/assets/violin-orchestra-concept-illustration_114360-17225.jpg";
 import registrationImg from "/src/assets/8715396.png";
@@ -24,8 +23,8 @@ const Home = () => {
             </div>
             <div className={styles.home__content__text__desc__desc}>
               <p>
-                Tyuona - ваша онлайн-площадка для свадебных товаров и услуг.
-                Здесь вы найдете всё необходимое для организации свадьбы: от
+                Tyuona - ваша онлайн-площадка для свадебных услуг. Здесь вы
+                найдете всё необходимое для организации свадьбы: от
                 профессиональных фотографов и стилистов до свадебного кортежа!
               </p>
             </div>
@@ -89,17 +88,6 @@ const Home = () => {
             <MyButton color="pink" size="medium" href="/category">
               Категории
             </MyButton>
-            <div className={styles.quotationMarks}>
-              <img src={marksImg} alt="" />
-              <div className={styles.quotationPer}>
-                <span className={styles.quotationPer__text}>
-                  Туйона - лучший помощник в подготовке свадьбы. Проверенные
-                  продавцы, идеальный результат!
-                </span>{" "}
-                <br /> <br />
-                <p className={styles.quotationName}>Малика & Фаррух</p>
-              </div>
-            </div>
           </div>
           <div className={styles.servicesReviews__imG}>
             <img src={servicesReviewsIMG2} alt="" />
