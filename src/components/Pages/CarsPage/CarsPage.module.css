@@ -1,5 +1,5 @@
 .userAdDetails {
-  width: 1900px;
+  width: 100%;
   margin: 0 30px;
   padding: 20px 0;
   display: flex;
@@ -9,11 +9,12 @@
 }
 
 .userAdData {
-  width: 450px;
+  width: 400px;
   height: 100%;
   display: flex;
+  padding: 10px;
   justify-content: flex-start;
-  flex-direction: column;
+  flex-direction: column; 
   align-items: center;
 }
 
@@ -22,7 +23,10 @@
   font-weight: 600;
   color: black;
   margin: 20px 0;
+  border-bottom: 1px solid rgb(201, 198, 198);
 }
+
+
 
 .userAdData__desc {
   display: flex;
@@ -38,7 +42,7 @@
   font-weight: 500;
   color: black;
   width: 450px;
-  padding-left: 5px;
+  padding-left: 35px;
 }
 
 .userAdData__desc__body {
@@ -52,7 +56,7 @@
   align-items: center;
   flex-wrap: wrap;
   width: 250px;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid rgb(201, 198, 198);
 }
 
 .userAdPricing {

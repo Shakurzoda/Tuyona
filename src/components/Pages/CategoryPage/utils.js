@@ -10,7 +10,6 @@ import {
 } from "./variables";
 
 export const getCategoryItems = (category) => {
-    console.log("getCategoryItems", category);
   switch (category) {
     case "Все категории":
       return [...RESTAURANTS, ...MUSICIANS, ...CARS, ...DECORATION, ...PRESENTERS, ...PHOTOGRAPHERS, ...SINGERS, ...BEAUTY_SALON];

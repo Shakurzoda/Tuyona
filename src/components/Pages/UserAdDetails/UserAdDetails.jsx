@@ -26,7 +26,7 @@ const UserAdDetails = () => {
       <div className={styles.userAdPricing}>
         <div className={styles.userAdPricing__price}>
           <span className={styles.userAdPricing__price__title}>Цена:</span>
-          <p className={styles.price}>500 с</p>
+          <p className={styles.price}>600 с</p>
         </div>
 
         <div className={styles.userAdSocialMedia}>

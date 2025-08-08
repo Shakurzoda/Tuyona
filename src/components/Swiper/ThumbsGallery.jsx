@@ -1,11 +1,8 @@
 import { useState } from "react";
 import styles from "./ThumbsGallery.module.css";
 
-
 const ThumbsGallery = ({ imgList, img }) => {
-
   const images = [img, ...imgList];
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleThumbnailClick = (index) => {
@@ -24,18 +21,42 @@ const ThumbsGallery = ({ imgList, img }) => {
 
   return (
     <div className={styles.galleryContainer}>
-      <div className={styles.mainImageContainer}>
-        <button onClick={handlePrev} className={styles.navButton}>
-          &lt;
-        </button>
-        <img
-          src={images[activeIndex]}
-          alt={`Slide ${activeIndex + 1}`}
-          className={styles.mainImage}
-        />
-        <button onClick={handleNext} className={styles.navButton}>
-          &gt;
-        </button>
+      <div className={styles.mainImageWrapper}>
+        <div className={styles.mainImageContainer}>
+          {activeIndex > 0 && (
+            <button
+              onClick={handlePrev}
+              className={`${styles.navButton} ${styles.prevButton}`}
+            >
+              &lt;
+            </button>
+          )}
+          <img
+            src={images[activeIndex]}
+            alt={`Slide ${activeIndex + 1}`}
+            className={styles.mainImage}
+          />
+          {activeIndex < images.length - 1 && (
+            <button
+              onClick={handleNext}
+              className={`${styles.navButton} ${styles.nextButton}`}
+            >
+              &gt;
+            </button>
+          )}
+        </div>
+      </div>
+      <div className={styles.dotsContainer}>
+        {images.map((_, index) => (
+          <button
+            key={index}
+            className={`${styles.dot} ${
+              index === activeIndex ? styles.activeDot : ""
+            }`}
+            onClick={() => handleThumbnailClick(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
       <div className={styles.thumbnailsContainer}>
         {images.map((img, index) => (

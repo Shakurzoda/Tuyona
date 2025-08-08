@@ -12,22 +12,24 @@ const CarsPage = () => {
       <div className={styles.userPhotoGallery}>
         <ThumbsGallery img={cars.img} imgList={cars.imgList} />
       </div>
+
       <div className={styles.userAdData}>
         <div className={styles.userAdData__title}>
           <p>{cars.title}</p>
         </div>
         <div className={styles.userAdData__desc}>
           <div className={styles.userAdData__desc__title}>
-            <p>Об услуге</p>
+            <p>Об услуге:</p>
           </div>
           <div className={styles.userAdData__desc__body}>
-            <p>Город</p>
+            <p className={styles.userAdData_City}>Город</p>
             <span>
               <p>Душанбе</p>
             </span>
           </div>
         </div>
       </div>
+      
       <div className={styles.userAdPricing}>
         <div className={styles.userAdPricing__price}>
           <span className={styles.userAdPricing__price__title}>Цена:</span>
