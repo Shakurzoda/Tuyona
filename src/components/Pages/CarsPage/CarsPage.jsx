@@ -29,11 +29,11 @@ const CarsPage = () => {
           </div>
         </div>
       </div>
-      
+
       <div className={styles.userAdPricing}>
         <div className={styles.userAdPricing__price}>
           <span className={styles.userAdPricing__price__title}>Цена:</span>
-          <p className={styles.price}>500 с</p>
+          <p className={styles.price}>{cars.price}</p>
         </div>
 
         <div className={styles.userAdSocialMedia}>

@@ -62,6 +62,7 @@
   width: 100%;
 }
 
+/* Улучшенный бургер-меню */
 .burger {
   display: flex;
   flex-direction: column;
@@ -72,26 +73,31 @@
   border: none;
   cursor: pointer;
   z-index: 1001;
+  transition: all 0.3s ease;
 }
 
 .burger span {
   display: block;
   width: 100%;
-  height: 2px;
+  height: 3px;
   background-color: black;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  transform-origin: center;
 }
 
 .burger.open span:nth-child(1) {
   transform: translateY(9px) rotate(45deg);
+  background-color: white;
 }
 
 .burger.open span:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .burger.open span:nth-child(3) {
   transform: translateY(-9px) rotate(-45deg);
+  background-color: white;
 }
 
 .mobileNav {
@@ -100,37 +106,83 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1000;
+  transition: all 0.4s ease;
+  z-index: 999;
+  transform: translateY(-100%);
 }
 
 .mobileNav.open {
   opacity: 1;
   visibility: visible;
+  transform: translateY(0);
+}
+
+/* Запрет скролла при открытом меню */
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
 }
 
 .mobileNavContent {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
+  padding: 2rem;
+  width: 100%;
 }
 
 .mobileNavLink {
   color: white;
   text-decoration: none;
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
+  font-size: 1.8rem;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
 }
 
 .mobileNavLink:hover {
+  color: #00af66;
+  transform: translateX(10px);
+}
+
+.mobileNavLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #00af66;
+  transition: width 0.3s ease;
+}
+
+.mobileNavLink:hover::after {
+  width: 100%;
+}
+
+.close-btn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: rotate(90deg);
   color: #00af66;
 }
 
@@ -154,6 +206,6 @@
   }
   
   .mobileNav {
-    background-color: rgba(0, 0, 0, 0.95);
+    background-color: rgba(0, 0, 0, 0.98);
   }
 }

@@ -79,11 +79,11 @@
 
 .price {
   margin-top: 10px;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 600;
   color: white;
   background-color: #10c44c;
-  width: 90px;
+  width: 110px;
   height: 40px;
   border-radius: 10px;
   text-align: center;
@@ -206,6 +206,7 @@
     color: #2d3748;
     position: relative;
     padding-bottom: 10px;
+        border: none;
   }
 
   .userAdData__title::after {
@@ -232,6 +233,7 @@
     padding-left: 0;
     color: #4a5568;
     font-weight: 600;
+    border: none;
   }
 
   .userAdData__desc__body {
