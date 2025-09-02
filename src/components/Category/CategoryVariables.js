@@ -5,7 +5,7 @@ export const CategoryVariables = [
   },
   {
     title: "Рестораны",
-    directionName: "restaurant",
+    directionName: "restaurants",
   },
   {
     title: "Музыканты",
@@ -32,7 +32,7 @@ export const CategoryVariables = [
     directionName: "cars",
   },
   {
-    title: "Салоны красоты",
+    title: "Свадебные салоны",
     directionName: "beautySalons",
   },
 ];

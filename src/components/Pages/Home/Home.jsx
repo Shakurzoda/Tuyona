@@ -1,3 +1,5 @@
+// Home.jsx
+import { memo, useMemo } from "react";
 import image from "/src/assets/24122343_bwink_ppl_11_single_08.webp";
 import styles from "./Home.module.css";
 import MyButton from "../../MyButton/MyButton";
@@ -9,93 +11,120 @@ import resturantImg from "/src/assets/9000463_4067778.svg";
 import singerImg from "/src/assets/violin-orchestra-concept-illustration_114360-17225.jpg";
 import registrationImg from "/src/assets/8715396.png";
 
-const Home = () => {
+const CATEGORY_CARDS = [
+  {
+    img: resturantImg,
+    title: "Рестораны",
+    body: "1000 и 1 ресторан для проведения вашей свадьбы",
+    alt: "Иконка ресторана",
+  },
+  {
+    img: singerImg,
+    title: "Певцы",
+    body: "Изысканные певцы для вашего свадебного вечера",
+    alt: "Иллюстрация певца и скрипки",
+  },
+  {
+    img: registrationImg,
+    title: "Оформление",
+    body: "Сказочные оформления для вашей свадьбы",
+    alt: "Иконка оформления зала",
+  },
+];
+
+function Home() {
+  // на случай будущих вычислений — мемоизируем список карточек
+  const cards = useMemo(() => CATEGORY_CARDS, []);
+
   return (
-    <section className={styles.home}>
+    <section className={styles.home} aria-labelledby="home-title">
       <div className={styles.home__content}>
         <div className={styles.home__content__text}>
           <div className={styles.home__content__text__title}>
-            <p className={styles.txtPink}>Свадьба Вашей Мечты Ждет Вас</p>
+            {" "}
+            <p className={styles.txtPink}>Свадьба Вашей Мечты Ждет Вас</p>{" "}
           </div>
           <div className={styles.home__content__text__desc}>
-            <div className={styles.home__content__text__desc__title}>
-              <p>Добро Пожаловать в Туйона</p>
-            </div>
-            <div className={styles.home__content__text__desc__desc}>
-              <p>
-                Tyuona - ваша онлайн-площадка для свадебных услуг. Здесь вы
-                найдете всё необходимое для организации свадьбы: от
-                профессиональных фотографов и стилистов до свадебного кортежа!
-              </p>
-            </div>
+            <h2 className={styles.home__content__text__desc__title}>
+              Добро пожаловать в Туйона
+            </h2>
+            <p className={styles.home__content__text__desc__desc}>
+              Tuyuona — ваша онлайн-площадка для свадебных услуг. Здесь вы
+              найдёте всё необходимое для организации свадьбы: от
+              профессиональных фотографов и стилистов до свадебного кортежа!
+            </p>
           </div>
+
           <div className={styles.home__content__text__btn}>
             <MyButton color="green" size="medium" href="/category">
               Все категории
             </MyButton>
-            <MyButton color="white" size="medium" href="#">
+            <MyButton color="white" size="medium" href="#about">
               О нас
             </MyButton>
           </div>
         </div>
+
         <div className={styles.home__content__img}>
-          <img src={image} rel="preload" as="image" />
+          <img
+            src={image}
+            alt="Счастливая пара — иллюстрация на главной"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
         </div>
       </div>
 
       <Section />
 
-      <div className={styles.servicesContent}>
-        <div className={styles.card__title}>
-          <p>Категории</p>
-        </div>
-        <div className={styles.servicesCards}>
-          <ServicesCard
-            card={{
-              img: resturantImg,
-              title: "Рестораны",
-              body: "1000 и 1 ресторан для проведения вашей свадьбы",
-            }}
-          />
-          <ServicesCard
-            card={{
-              img: singerImg,
-              title: "Певцы",
-              body: "Изысанынные певцы для вашего свадебного вечера",
-            }}
-          />
-          <ServicesCard
-            card={{
-              img: registrationImg,
-              title: "Оформление",
-              body: "Сазочные оформления для вашей свадьбы",
-            }}
-          />
-        </div>
-      </div>
+      <section className={styles.servicesContent} aria-labelledby="cats-title">
+        <h2 id="cats-title" className={styles.card__title}>
+          Категории
+        </h2>
 
-      <div className={styles.servicesReviews}>
+        <div className={styles.servicesCards}>
+          {cards.map((card) => (
+            <ServicesCard key={card.title} card={card} />
+          ))}
+        </div>
+      </section>
+
+      <section
+        className={styles.servicesReviews}
+        aria-label="Призыв к действию"
+      >
         <div className={styles.servicesReviews__content}>
           <div className={styles.servicesReviews__img}>
-            <img src={servicesReviewsIMG} alt="" />
+            <img
+              src={servicesReviewsIMG}
+              alt="Счастливая пара на свадьбе"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
+
           <div className={styles.servicesReviews__text}>
-            <div className={styles.servicesReviews__text__title}>
-              <p>
-                Начните планировать свадьбу <br /> Своей мечты уже сегодня!
-              </p>
-            </div>
+            <h2 className={styles.servicesReviews__text__title}>
+              Начните планировать свадьбу <br /> своей мечты уже сегодня!
+            </h2>
             <MyButton color="pink" size="medium" href="/category">
               Категории
             </MyButton>
           </div>
+
           <div className={styles.servicesReviews__imG}>
-            <img src={servicesReviewsIMG2} alt="" />
+            <img
+              src={servicesReviewsIMG2}
+              alt="Сервированный стол на свадебном банкете"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
-      </div>
+      </section>
     </section>
   );
-};
+}
 
-export default Home;
+export default memo(Home);

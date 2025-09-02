@@ -10,9 +10,8 @@
 
 .userAdData {
   width: 400px;
-  height: 100%;
+  height: 350px;
   display: flex;
-  padding: 10px;
   justify-content: flex-start;
   flex-direction: column; 
   align-items: center;
@@ -22,11 +21,8 @@
   font-size: 30px;
   font-weight: 600;
   color: black;
-  margin: 20px 0;
   border-bottom: 1px solid rgb(201, 198, 198);
 }
-
-
 
 .userAdData__desc {
   display: flex;
@@ -49,14 +45,24 @@
   font-size: 16px;
   font-weight: 400;
   color: black;
-  width: 450px;
   padding-bottom: 5px;
+  width: 350px;
+  height: 300px;
+}
+
+.userAdData__desc__body__data {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  width: 250px;
+  width: 100%;
+  padding: 10px 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid rgb(201, 198, 198);
+}
+
+.userAdData__desc__body__data_text {
+  color: #4a5568;
+  font-weight: 400;;
 }
 
 .userAdPricing {
@@ -83,7 +89,7 @@
   font-weight: 600;
   color: white;
   background-color: #10c44c;
-  width: 90px;
+  width: 155px;
   height: 40px;
   border-radius: 10px;
   text-align: center;
@@ -112,6 +118,10 @@
   justify-content: center;
   overflow: hidden;
   transition-duration: 0.3s;
+}
+
+.userAdDataLink {
+  color: rgb(66, 66, 233);
 }
 
 .socialContainer:hover {
@@ -144,12 +154,14 @@
 }
 
 .linkedin:hover {
-  background-color: #0072b1;
+  background-color: rgb(238, 68, 68);
 }
 
 .whatsapp:hover {
   background-color: #128c7e;
 }
+
+
 
 @keyframes slide-in-top {
   0% {
@@ -237,11 +249,11 @@
   }
 
   .userAdData__desc__body {
-    width: 150px;
+    width: 300px;
     padding: 10px 0;
-    border-bottom: 1px solid #e2e8f0;
     flex-direction: row;
     align-items: flex-start;
+    justify-content: space-between;
     gap: 5px;
   }
 
@@ -301,6 +313,7 @@
     width: 20px;
   }
 }
+
 
 @media (hover: hover) {
   .socialContainer:hover {

@@ -57,6 +57,7 @@
     border: 1px solid rgb(47, 47, 235);
 }
 
+
 @media (max-width: 768px) {
     .content__wrapper {
       margin-top: 20px;

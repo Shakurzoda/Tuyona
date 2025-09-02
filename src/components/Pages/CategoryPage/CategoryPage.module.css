@@ -2,11 +2,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; 
-  max-width: 1500px; 
-  margin: 30px auto 0; 
-  padding: 0 20px; 
-  box-sizing: border-box; 
+  width: 100%;
+  max-width: 1500px;
+  margin: 30px auto 0;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .category__items {
@@ -15,11 +15,10 @@
   margin: 20px 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 5rem;
   justify-content: center;
 }
-
 
 @media (max-width: 1024px) {
   .category__items {
@@ -28,7 +27,7 @@
   }
 }
 
-
+/* Мобильная плитка: 2 в ряд */
 @media (max-width: 768px) {
   .category__content {
     margin-top: 20px;
@@ -36,21 +35,22 @@
   }
 
   .category__items {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
     margin: 15px 0;
+    max-width: 100%;
   }
 
-  .card-item {
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white;
+  /* чтобы <Link> растягивался на всю ячейку */
+  .category__items > a {
+    display: block;
+    height: 100%;
   }
+}
 
-  .card-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+/* Очень узкие экраны — по одной */
+@media (max-width: 380px) {
+  .category__items {
+    grid-template-columns: 1fr;
   }
 }

@@ -6,12 +6,12 @@ import {
   PRESENTERS,
   PHOTOGRAPHERS,
   SINGERS,
-  BEAUTY_SALON
-} from "./variables";
+  BEAUTY_SALON,
+} from "../Pages/CategoryPage/variables";
 
-export const getCategoryItems = (category) => {
-  switch (category) {
-    case "Все категории":
+export const getCategoryItems = (categoryName) => {
+  switch (categoryName) {
+    case "all":
       return [
         ...RESTAURANTS,
         ...MUSICIANS,
@@ -22,21 +22,23 @@ export const getCategoryItems = (category) => {
         ...SINGERS,
         ...BEAUTY_SALON,
       ];
-    case "Рестораны":
+    case "restaurants":
       return RESTAURANTS;
-    case "Музыканты":
+    case "musicians":
       return MUSICIANS;
-    case "Машины":
+    case "cars":
       return CARS;
-    case "Оформление":
+    case "decoration":
       return DECORATION;
-    case "Ведущие":
+    case "presenters":
       return PRESENTERS;
-    case "Фотографы":
+    case "photographers":
       return PHOTOGRAPHERS;
-    case "Певцы":
+    case "singers":
       return SINGERS;
-    case "Свадебные салоны":
+    case "beautySalons":
       return BEAUTY_SALON;
+    default:
+      return []; // 🔑 никогда не undefined
   }
 };
