@@ -1,0 +1,137 @@
+/* ЕДИНЫЙ РАЗМЕР: Instagram 4:5 */
+.wrap{
+  --stage-w: 680px;
+  --stage-ratio: 4/5;
+  --gap: 16px;
+  --thumb: 64px;
+  --radius: 16px;
+
+  display:grid;
+  grid-template-columns: calc(var(--thumb) + var(--gap)) var(--stage-w);
+  gap: var(--gap);
+  align-items:start;
+
+  width: auto;
+  max-width: calc(var(--thumb) + var(--gap) + var(--stage-w) + var(--gap));
+  margin:0;
+/*   background:#0c0c0c; */
+  color:#fff;
+  border-radius: calc(var(--radius) + 2px);
+  padding: var(--gap);
+/*   box-shadow: 0 10px 28px rgba(0,0,0,.35); */
+border: 1px solid black,
+}
+
+/* thumbs */
+.thumbs{ display:flex; flex-direction:column; gap:10px; overflow:auto; padding-right:4px; }
+.thumb{ position:relative; width:var(--thumb); height:var(--thumb); border-radius:12px; overflow:hidden;
+        border:2px solid transparent; background:#171717; cursor:pointer;
+        transition: transform .18s, border-color .18s, box-shadow .18s; }
+.thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.active{ border-color:#00af66; box-shadow:0 0 0 4px rgba(198,255,0,.16); }
+.playBadge{ position:absolute; right:6px; bottom:6px; font-size:14px; background:rgba(0,0,0,.6);
+            padding:4px 6px; border-radius:8px; }
+
+/* stage */
+.stage{
+  position:relative;
+  width: var(--stage-w);
+  aspect-ratio: var(--stage-ratio);
+  border-radius: var(--radius);
+  overflow:hidden;
+  background:#000;
+  display:flex; align-items:center; justify-content:center;
+}
+.track{ 
+    width:100%; 
+    height:100%; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center;
+    transition: transform .24s ease;
+    border: 3px solid red, 
+}
+/* медиа: всегда полностью видно */
+.media{
+  display:block !important;
+  max-width:100% !important;
+  max-height:100% !important;
+  width:auto !important;
+  height:auto !important;
+  object-fit:contain !important;
+  background:#000;
+}
+
+/* стрелки */
+.nav{ position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%;
+      border:1px solid rgba(255,255,255,.18); background:rgba(0,0,0,.45); color:#fff; font-size:24px;
+      display:grid; place-items:center; cursor:pointer; backdrop-filter: blur(4px);
+      transition: transform .18s, background .18s; user-select:none; }
+.prev{ left:12px; } .next{ right:12px; }
+.nav:hover{ background:rgba(0,0,0,.6); transform:translateY(-50%) scale(1.05); }
+
+/* точки */
+.dots{ position:absolute; left:0; right:0; bottom:10px; display:flex; justify-content:center; gap:8px; }
+.dot{ width:8px; height:8px; border-radius:999px; background:#3a3a3a; border:0; cursor:pointer; }
+.dotActive{ background:#c6ff00; width:22px; }
+
+/* ===== кастомный видеоплеер ===== */
+.videoWrap{ position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+
+/* большая кнопка play */
+.bigPlay{
+  position:absolute; inset:0; margin:auto; width:84px; height:84px; border-radius:50%;
+  border:0; color:#111; font-size:34px; font-weight:700; line-height:1;
+  display:grid; place-items:center; cursor:pointer;
+  background: rgba(198,255,0,.95);
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+}
+.bigPlay:hover{ filter:brightness(.95); }
+
+/* панель управления */
+.controls{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:10px 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.75) 100%);
+  opacity:0; visibility:hidden; transform:translateY(8px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s ease;
+  display:grid; grid-template-columns: auto 1fr auto; align-items:center; gap:10px;
+}
+.controlsVisible{ opacity:1; visibility:visible; transform:translateY(0); }
+
+.leftControls{ display:flex; align-items:center; gap:8px; }
+.rightControls{ display:flex; align-items:center; gap:8px; }
+.ctrlBtn{
+  width:36px; height:36px; border-radius:10px; border:1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.35); color:#fff; font-size:16px; cursor:pointer; display:grid; place-items:center;
+}
+.ctrlBtn:hover{ background: rgba(0,0,0,.5); }
+.time{ font-size:12px; opacity:.9; }
+
+/* таймлайн */
+.timeline{
+  position:relative; height:8px; border-radius:999px; background:rgba(255,255,255,.18); cursor:pointer;
+}
+.buffered{
+  position:absolute; left:0; top:0; height:100%; border-radius:999px; background:rgba(255,255,255,.32);
+  width:0%;
+}
+.progress{
+  position:absolute; left:0; top:0; height:100%; border-radius:999px; background:#c6ff00;
+  width:0%;
+}
+.scrubber{
+  position:absolute; top:50%; transform:translate(-50%,-50%);
+  width:14px; height:14px; border-radius:50%; background:#c6ff00; box-shadow:0 0 0 4px rgba(198,255,0,.2);
+}
+
+/* громкость (скрываем на узких экранах) */
+.volume{ width:110px; accent-color:#c6ff00; }
+@media (max-width: 520px){ .volume{ display:none; } }
+
+/* адаптив */
+@media (max-width: 900px){
+  .wrap{ grid-template-columns: 1fr; max-width:100%; }
+  .thumbs{ order:2; flex-direction:row; padding:6px 4px 0; }
+  .stage{ order:1; width:min(92vw, var(--stage-w)); }
+}

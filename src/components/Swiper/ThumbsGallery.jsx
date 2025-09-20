@@ -11,6 +11,7 @@ const ThumbsGallery = ({ imgList }) => {
 
   const videoRef = useRef(null);
   const videoWrapperRef = useRef(null);
+  const thumbsContainerRef = useRef(null);
 
   const isVideo = (media) =>
     typeof media === "object" && media.type === "video";
@@ -31,11 +32,19 @@ const ThumbsGallery = ({ imgList }) => {
     (index) => {
       pauseIfVideo();
       setActiveIndex(index);
-      document.querySelector(`#thumb-${index}`)?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
+      // Прокрутка к активной миниатюре
+      const thumbElement = document.querySelector(`#thumb-${index}`);
+      if (thumbElement && thumbsContainerRef.current) {
+        const container = thumbsContainerRef.current;
+        const thumbRect = thumbElement.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        if (thumbRect.top < containerRect.top) {
+          thumbElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else if (thumbRect.bottom > containerRect.bottom) {
+          thumbElement.scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+      }
     },
     [imgList]
   );
@@ -163,169 +172,258 @@ const ThumbsGallery = ({ imgList }) => {
 
   return (
     <div className={styles.galleryContainer}>
-      {/* Главное медиа */}
-      <div className={styles.mainImageWrapper}>
-        <div className={styles.mainMediaContainer}>
-          {activeIndex > 0 && (
-            <button
-              onClick={handlePrev}
-              className={`${styles.navButton} ${styles.prevButton}`}
-              aria-label="Предыдущий слайд"
-            >
-              ‹
-            </button>
-          )}
-
-          {isVideo(imgList[activeIndex]) ? (
-            <div className={styles.videoWrapper} ref={videoWrapperRef}>
-              <video
-                ref={videoRef}
-                src={imgList[activeIndex].src}
-                poster={imgList[activeIndex].poster}
-                className={styles.mainMedia}
-                preload="metadata"
-                playsInline
-                loop
-              />
-              {!isPlaying && (
-                <button
-                  className={styles.playCenterButton}
-                  onClick={togglePlayPause}
-                  aria-label="Воспроизвести"
-                >
-                  ▶
-                </button>
-              )}
-              <div
-                className={styles.controlsBar}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className={styles.progressRow}>
-                  <input
-                    className={styles.progressInput}
-                    type="range"
-                    min={0}
-                    max={duration || 0}
-                    value={currentTime}
-                    step="0.1"
-                    onChange={handleSeek}
-                    aria-label="Прогресс видео"
-                    style={{ "--progress": `${progressPercent}%` }}
+      <div className={styles.galleryContent}>
+        {/* Миниатюры слева */}
+        <div
+          className={styles.thumbnailsContainerVertical}
+          ref={thumbsContainerRef}
+        >
+          {imgList.map((media, index) => (
+            <div key={index} className={styles.thumbnailWrapperVertical}>
+              {isVideo(media) ? (
+                <div className={styles.videoThumbnail}>
+                  <img
+                    id={`thumb-${index}`}
+                    src={media.poster}
+                    className={`${styles.thumbnailVertical} ${
+                      index === activeIndex
+                        ? styles.activeThumbnailVertical
+                        : ""
+                    }`}
+                    onClick={() => handleThumbnailClick(index)}
+                    alt={`Видео превью ${index + 1}`}
                   />
-                </div>
-                <div className={styles.controlsRow}>
-                  <div className={styles.leftGroup}>
-                    <button
-                      className={`${styles.controlButton} ${styles.primary}`}
-                      onClick={togglePlayPause}
-                      aria-label={isPlaying ? "Пауза" : "Воспроизвести"}
+                  <div className={styles.videoIndicator}>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="white"
                     >
-                      {isPlaying ? "❚❚" : "▶"}
-                    </button>
-                    <div className={styles.timeLabel}>
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </div>
-                  </div>
-                  <div className={styles.rightGroup}>
-                    <button
-                      className={styles.controlButton}
-                      onClick={toggleMute}
-                      aria-label={isMuted ? "Включить звук" : "Выключить звук"}
-                    >
-                      {isMuted ? "🔇" : "🔊"}
-                    </button>
-                    <input
-                      className={styles.volumeInput}
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={volume}
-                      onChange={handleVolumeChange}
-                    />
-                    <button
-                      className={styles.controlButton}
-                      onClick={handlePiP}
-                      aria-label="Картинка в картинке"
-                    >
-                      ⧉
-                    </button>
-                    <button
-                      className={styles.controlButton}
-                      onClick={handleFullscreen}
-                      aria-label="Во весь экран"
-                    >
-                      ⛶
-                    </button>
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
                   </div>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <img
-              src={imgList[activeIndex]}
-              alt={`Slide ${activeIndex + 1}`}
-              className={styles.mainMedia}
-              loading="lazy"
-            />
-          )}
-
-          {activeIndex < imgList.length - 1 && (
-            <button
-              onClick={handleNext}
-              className={`${styles.navButton} ${styles.nextButton}`}
-              aria-label="Следующий слайд"
-            >
-              ›
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Навигация (dots) */}
-      <div className={styles.dotsContainer}>
-        {imgList.map((_, index) => (
-          <button
-            key={index}
-            className={`${styles.dot} ${
-              index === activeIndex ? styles.activeDot : ""
-            } ${isVideo(imgList[index]) ? styles.videoDot : ""}`}
-            onClick={() => handleThumbnailClick(index)}
-            aria-label={`К слайду ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      {/* Миниатюры */}
-      <div className={styles.thumbnailsContainer}>
-        {imgList.map((media, index) => (
-          <div key={index} className={styles.thumbnailWrapper}>
-            {isVideo(media) ? (
-              <div className={styles.videoThumbnail}>
+              ) : (
                 <img
                   id={`thumb-${index}`}
-                  src={media.poster}
-                  className={`${styles.thumbnail} ${
-                    index === activeIndex ? styles.activeThumbnail : ""
+                  src={media}
+                  alt={`Thumbnail ${index + 1}`}
+                  className={`${styles.thumbnailVertical} ${
+                    index === activeIndex ? styles.activeThumbnailVertical : ""
                   }`}
                   onClick={() => handleThumbnailClick(index)}
-                  alt={`Видео превью ${index + 1}`}
                 />
-                <div className={styles.videoIndicator}>▶</div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Главное медиа */}
+        <div className={styles.mainMediaWrapper}>
+          <div className={styles.mainMediaContainer}>
+            {activeIndex > 0 && (
+              <button
+                onClick={handlePrev}
+                className={`${styles.navButton} ${styles.prevButton}`}
+                aria-label="Предыдущий слайд"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                </svg>
+              </button>
+            )}
+
+            {isVideo(imgList[activeIndex]) ? (
+              <div className={styles.videoWrapper} ref={videoWrapperRef}>
+                <video
+                  ref={videoRef}
+                  src={imgList[activeIndex].src}
+                  poster={imgList[activeIndex].poster}
+                  className={styles.mainMedia}
+                  preload="metadata"
+                  playsInline
+                  loop
+                />
+                {!isPlaying && (
+                  <button
+                    className={styles.playCenterButton}
+                    onClick={togglePlayPause}
+                    aria-label="Воспроизвести"
+                  >
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="white"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </button>
+                )}
+                <div
+                  className={styles.controlsBar}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className={styles.progressRow}>
+                    <input
+                      className={styles.progressInput}
+                      type="range"
+                      min={0}
+                      max={duration || 0}
+                      value={currentTime}
+                      step="0.1"
+                      onChange={handleSeek}
+                      aria-label="Прогресс видео"
+                      style={{ "--progress": `${progressPercent}%` }}
+                    />
+                  </div>
+                  <div className={styles.controlsRow}>
+                    <div className={styles.leftGroup}>
+                      <button
+                        className={`${styles.controlButton} ${styles.primary}`}
+                        onClick={togglePlayPause}
+                        aria-label={isPlaying ? "Пауза" : "Воспроизвести"}
+                      >
+                        {isPlaying ? (
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        )}
+                      </button>
+                      <div className={styles.timeLabel}>
+                        {formatTime(currentTime)} / {formatTime(duration)}
+                      </div>
+                    </div>
+                    <div className={styles.rightGroup}>
+                      <button
+                        className={styles.controlButton}
+                        onClick={toggleMute}
+                        aria-label={
+                          isMuted ? "Включить звук" : "Выключить звук"
+                        }
+                      >
+                        {isMuted ? (
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                          </svg>
+                        )}
+                      </button>
+                      <input
+                        className={styles.volumeInput}
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={handleVolumeChange}
+                      />
+                      <button
+                        className={styles.controlButton}
+                        onClick={handlePiP}
+                        aria-label="Картинка в картинке"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z" />
+                        </svg>
+                      </button>
+                      <button
+                        className={styles.controlButton}
+                        onClick={handleFullscreen}
+                        aria-label="Во весь экран"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <img
-                id={`thumb-${index}`}
-                src={media}
-                alt={`Thumbnail ${index + 1}`}
-                className={`${styles.thumbnail} ${
-                  index === activeIndex ? styles.activeThumbnail : ""
-                }`}
-                onClick={() => handleThumbnailClick(index)}
+                src={imgList[activeIndex]}
+                alt={`Slide ${activeIndex + 1}`}
+                className={styles.mainMedia}
+                loading="lazy"
               />
             )}
+
+            {activeIndex < imgList.length - 1 && (
+              <button
+                onClick={handleNext}
+                className={`${styles.navButton} ${styles.nextButton}`}
+                aria-label="Следующий слайд"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </svg>
+              </button>
+            )}
           </div>
-        ))}
+
+          {/* Навигация (dots) для мобильных */}
+          <div className={styles.dotsContainer}>
+            {imgList.map((_, index) => (
+              <button
+                key={index}
+                className={`${styles.dot} ${
+                  index === activeIndex ? styles.activeDot : ""
+                } ${isVideo(imgList[index]) ? styles.videoDot : ""}`}
+                onClick={() => handleThumbnailClick(index)}
+                aria-label={`К слайду ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

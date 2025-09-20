@@ -2,6 +2,7 @@ import styles from "./RestaurantPage.module.css";
 import ThumbsGallery from "../../Swiper/ThumbsGallery";
 import { useParams } from "react-router";
 import { RESTAURANTS } from "../CategoryPage/variables";
+import SegmentedChips from "../../SegmentedChips/SegmentedChips";
 
 
 const RestaurantPage = () => {
@@ -20,9 +21,16 @@ const RestaurantPage = () => {
         </div>
 
         <div className={styles.userAdData__desc}>
+{/*           <div className={styles.userAdData__desc__body__data_text}>
+            <div className={styles.userAdData_format}>
+              Формат
+            </div>
+            <SegmentedChips />
+          </div> */}
+          
           <div className={styles.userAdData__desc__title}>
             <p>О заведении</p>
-          </div>
+          </div> 
 
           <div className={styles.userAdData__desc__body}>
             <div className={styles.userAdData__desc__body__data}>

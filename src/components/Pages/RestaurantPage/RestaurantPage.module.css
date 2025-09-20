@@ -1,339 +1,260 @@
+:root {
+  --primary-color: #10c44c;
+  --primary-dark: #0d9f3d;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-light: #718096;
+  --border-color: #e2e8f0;
+  --border-light: #e5e7eb;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .userAdDetails {
-  width: 100%;
-  margin: 0 30px;
-  padding: 20px 0;
   display: flex;
   justify-content: center;
-  align-items: start;
-  gap: 3rem;
+  align-items: flex-start;
+  gap: 2.5rem;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
 }
 
 .userAdData {
-  width: 400px;
-  height: 350px;
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column; 
-  align-items: center;
+  flex: 1;
+  max-width: 1000px;
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.userAdData:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .userAdData__title {
-  font-size: 30px;
-  font-weight: 600;
-  color: black;
-  border-bottom: 1px solid rgb(201, 198, 198);
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.userAdData__title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+  border-radius: var(--radius-sm);
+}
+
+.userAdData_format {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .userAdData__desc {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 10px;
-  margin: 20px 0;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+  width: 400px;
+  height: 280px;
 }
 
 .userAdData__desc__title {
-  font-size: 20px;
-  font-weight: 500;
-  color: black;
-  width: 450px;
-  padding-left: 35px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .userAdData__desc__body {
-  font-size: 16px;
-  font-weight: 400;
-  color: black;
-  padding-bottom: 5px;
-  width: 350px;
-  height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .userAdData__desc__body__data {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding: 10px 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid rgb(201, 198, 198);
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.userAdData__desc__body__data:last-child {
+  border-bottom: none;
 }
 
 .userAdData__desc__body__data_text {
-  color: #4a5568;
-  font-weight: 400;;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.userAdData__desc__body__data_value {
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .userAdPricing {
-  max-width: 350px;
-  height: 230px;
-  box-shadow: 4px 4px 23px 0px rgba(34, 60, 80, 0.2);
-  border-radius: 10px;
-  padding: 10px 10px;
+  flex: 0 0 350px;
+  background: white;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+}
+
+.userAdPricing__price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .userAdPricing__price__title {
-  font-size: 20px;
-  font-weight: 500;
-  color: black;
-  margin: 10px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .price {
-  margin-top: 10px;
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: white;
-  background-color: #10c44c;
-  width: 155px;
-  height: 40px;
-  border-radius: 10px;
-  text-align: center;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.userAdSocialMedia {
+  margin-top: 1.5rem;
 }
 
 .card {
-  width: fit-content;
-  height: fit-content;
-  background-color: rgb(238, 238, 238);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 25px 25px;
-  gap: 20px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055);
-  border-radius: 10px;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .socialContainer {
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background-color: rgb(44, 44, 44);
+  background-color: #2d3748;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  transition-duration: 0.3s;
-}
-
-.userAdDataLink {
-  color: rgb(66, 66, 233);
+  transition: var(--transition);
+  cursor: pointer;
 }
 
 .socialContainer:hover {
-  animation: bounce 0.4s linear;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .socialContainer:active {
-  transform: scale(0.9);
-  transition-duration: 0.3s;
+  transform: scale(0.95);
 }
 
 .socialSvg {
-  width: 17px;
+  width: 20px;
+  height: 20px;
 }
 
 .socialSvg path {
-  fill: rgb(255, 255, 255);
+  fill: white;
 }
 
-.socialContainer:hover .socialSvg {
-  animation: slide-in-top 0.3s both;
+.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.twitter:hover { background-color: #1DA1F2; }
+.facebook:hover { background-color: #3b5998; }
+.whatsapp:hover { background-color: #25D366; }
+.telegram:hover { background-color: #0088cc; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.socialContainer:hover {
-  background-color: #d62976;
+.userAdData, .userAdPricing {
+  animation: fadeIn 0.5s ease-out;
 }
 
-.twitter:hover {
-  background-color: #00acee;
-}
-
-.linkedin:hover {
-  background-color: rgb(238, 68, 68);
-}
-
-.whatsapp:hover {
-  background-color: #128c7e;
-}
-
-
-
-@keyframes slide-in-top {
-  0% {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes bounce {
-  20%,
-  50%,
-  80%,
-  to {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.2);
-  }
-  70% {
-    transform: scale(1.1);
-  }
-  90% {
-    transform: scale(1.05);
-  }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 968px) {
   .userAdDetails {
-    width: 100%;
-    margin: 0;
-    padding: 0;
     flex-direction: column;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem;
   }
-
-  .userPhotoGallery {
+  
+  .userAdData, .userAdPricing {
+    max-width: 100%;
     width: 100%;
-    padding: 0;
   }
-
-  .userAdData {
-    width: 100%;
-    padding: 0 20px;
-  }
-
-  .userAdData__title {
-    font-size: 24px;
-    margin: 15px 0;
-    text-align: center;
-    color: #2d3748;
-    position: relative;
-    padding-bottom: 10px;
-        border: none;
-  }
-
-  .userAdData__title::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #4f46e5, #7c3aed);
-    border-radius: 3px;
-  }
-
-  .userAdData__desc {
-    margin: 15px 0;
-    gap: 1rem;
-  }
-
-  .userAdData__desc__title {
-    font-size: 18px;
-    text-align: center;
-    width: 100%;
-    padding-left: 0;
-    color: #4a5568;
-    font-weight: 600;
-    border: none;
-  }
-
-  .userAdData__desc__body {
-    width: 300px;
-    padding: 10px 0;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 5px;
-  }
-
+  
   .userAdPricing {
-    width: 100%;
-    height: auto;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    background: white;
+    order: -1;
   }
+}
 
+@media (max-width: 640px) {
+  .userAdData__title {
+    font-size: 1.5rem;
+  }
+  
   .userAdPricing__price {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
-
-  .userAdPricing__price__title {
-    font-size: 18px;
-    margin: 0;
-    color: #4a5568;
-  }
-
+  
   .price {
-    width: auto;
-    padding: 0 15px;
-    height: 36px;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #10c44c, #0d9f3d);
+    align-self: flex-start;
   }
-
-  .userAdSocialMedia {
-    margin-top: 30px;
-  }
-
+  
   .card {
-    width: 100%;
-    padding: 20px;
-    border-radius: 12px;
-    background: #f8fafc;
+    flex-wrap: wrap;
     justify-content: space-around;
-    gap: 15px;
   }
-
+  
   .socialContainer {
     width: 44px;
     height: 44px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .socialSvg {
-    width: 20px;
-  }
-}
-
-
-@media (hover: hover) {
-  .socialContainer:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .userAdDetails {
-    width: 100%;
-    padding: 0 20px;
-    gap: 2rem;
-  }
-
-  .userAdData {
-    width: 60%;
-  }
-
-  .userAdPricing {
-    width: 300px;
+  
+  .userAdData__desc__body__data {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }

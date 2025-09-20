@@ -2,6 +2,7 @@ import styles from "./MusiciansPage.module.css";
 import ThumbsGallery from "../../Swiper/ThumbsGallery";
 import { useParams } from "react-router";
 import { MUSICIANS } from "../CategoryPage/variables";
+import ProductCarousel from "../../ProductCarousel/ProductCarousel";
 
 const MusiciansPage = () => {
   const { id } = useParams();
