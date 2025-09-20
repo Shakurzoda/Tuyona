@@ -1,0 +1,38 @@
+.courses__items {
+    display: flex;
+    justify-content: start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+.item {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 6px 7px;
+    color: black;
+    font-size: 13px;
+    transition: transform 0.3s ease;
+    background: #f5f5f6;
+}
+
+.item:hover {
+    
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 0;
+    border-radius: 15px;
+    background-color: #00af66;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.item a:hover {
+    color: white;
+}
+
+.activeItem {
+    background-color: rgb(47, 47, 235);
+    color: white;
+    border: 1px solid rgb(47, 47, 235);
+}

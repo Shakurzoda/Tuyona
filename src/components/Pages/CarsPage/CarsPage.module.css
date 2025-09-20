@@ -1,326 +1,96 @@
-.userAdDetails {
-  width: 100%;
-  margin: 0 30px;
-  padding: 20px 0;
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  gap: 3rem;
+:root{
+  --bg:#0a0a0a;
+  --card:#12110f;
+  --ink:#f4f1ea;
+  --ink-d:#d2ccbe;
+  --muted:#b7b09f;
+  --line:#26231f;
+  --gold:#d9be77; /* основной золотой */
+  --gold-2:#b69144; /* обводки/акценты */
+  --shadow:0 14px 40px rgba(0,0,0,.5);
 }
 
-.userAdData {
-  width: 400px;
-  height: 100%;
-  display: flex;
-  padding: 10px;
-  justify-content: flex-start;
-  flex-direction: column; 
-  align-items: center;
+/* page */
+.page{
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100dvh;
+  font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
 }
 
-.userAdData__title {
-  font-size: 30px;
-  font-weight: 600;
-  color: black;
-  margin: 20px 0;
-  border-bottom: 1px solid rgb(201, 198, 198);
+/* hero */
+.hero{
+  max-width:1200px;
+  margin:24px auto 0;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap:28px;
+}
+.heroImgWrap{ border-radius:18px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--line); }
+.heroImg{ width:100%; height:100%; aspect-ratio: 16/11; object-fit:cover; display:block; }
+
+.panel{ background:linear-gradient(180deg,#15130f,#0f0e0c); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+.panelPriceLine{ font-family:"Cormorant Garamond",serif; font-weight:700; font-size:32px; letter-spacing:.02em; }
+.panelSub{ color:var(--ink-d); }
+.panelRow{ display:flex; align-items:center; gap:8px; margin-top:10px; }
+.panelRowSmall{ display:flex; align-items:center; gap:8px; margin-top:14px; }
+.chev{ color:var(--gold); transform: translateY(-1px); }
+.dot{ color:var(--gold); }
+
+.panelBtns{ display:grid; gap:10px; margin:16px 0 8px; }
+.primaryBtn, .secondaryBtn{ appearance:none; border-radius:12px; padding:12px 16px; font-weight:700; cursor:pointer; transition: .15s ease; border:1px solid transparent; }
+.primaryBtn{ background: radial-gradient(120% 120% at 30% 20%, #efe0b2, var(--gold)); color:#1c1408; border-color:#8b6930; }
+.primaryBtn:hover{ filter:brightness(1.06); }
+.secondaryBtn{ background:transparent; color:var(--ink); border-color:var(--gold-2); }
+.secondaryBtn:hover{ background:#161513; }
+
+/* title */
+.h1{ max-width:1200px; margin:22px auto 0; padding:0 16px; font-family:"Cormorant Garamond",serif; font-weight:700; font-size:44px; }
+
+/* nav pills */
+.nav{ max-width:1200px; margin:12px auto 0; padding:0 16px; display:flex; flex-wrap:wrap; gap:10px; }
+.pill{ border:1px solid var(--line); background:#12110f; color:var(--ink-d); padding:8px 14px; border-radius:999px; }
+.pillMuted{ opacity:.9; }
+
+/* badges under nav */
+.badges{ max-width:1200px; margin:14px auto 0; padding:0 16px; display:flex; gap:12px; flex-wrap:wrap; }
+.badge{ background:var(--card); border:1px solid var(--line); color:var(--ink-d); padding:10px 12px; border-radius:12px; }
+
+/* info rows */
+.infoGrid{ max-width:1200px; margin:10px auto 0; padding:0 16px; display:grid; grid-template-columns: repeat(4,1fr); gap:16px; }
+.infoCol{ background:transparent; }
+.infoTitle{ color:var(--muted); font-size:13px; letter-spacing:.06em; text-transform:uppercase; }
+.infoText{ font-size:18px; margin-top:6px; }
+
+/* section title */
+.sectionTitle{ max-width:1200px; margin:28px auto 12px; padding:0 16px; font-family:"Cormorant Garamond",serif; font-weight:600; font-size:30px; }
+
+/* gallery with big left tile */
+.gallery{ max-width:1200px; margin:0 auto; padding:0 16px; display:grid; grid-template-columns: 2fr 1fr 1fr; grid-auto-rows: 220px; gap:16px; }
+.gItem{ border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#0f0e0c; }
+.gItem img{ width:100%; height:100%; object-fit:cover; display:block; }
+.gMain{ grid-row: span 2; }
+
+/* reviews */
+.reviews{ max-width:1200px; margin:18px auto 40px; padding:0 16px; display:grid; grid-template-columns:1fr; gap:12px; }
+.reviewCard{ display:grid; grid-template-columns:56px 1fr; gap:12px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; }
+.avatar{ width:56px; height:56px; border-radius:50%; object-fit:cover; }
+.reviewTop{ display:flex; align-items:center; gap:10px; }
+.reviewer{ font-weight:600; }
+.stars{ color:var(--gold); letter-spacing:2px; font-size:16px; }
+.reviewText{ color:var(--ink); opacity:.92; margin-top:6px; }
+.bottomPad{ height:40px; }
+
+/* responsive */
+@media (max-width: 1024px){
+  .hero{ grid-template-columns:1fr; }
+  .infoGrid{ grid-template-columns: repeat(2,1fr); }
+  .gallery{ grid-template-columns: 1fr; grid-auto-rows: 200px; }
+  .gMain{ grid-row: span 1; }
 }
 
-
-
-.userAdData__desc {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.userAdData__desc__title {
-  font-size: 20px;
-  font-weight: 500;
-  color: black;
-  width: 450px;
-  padding-left: 35px;
-}
-
-.userAdData__desc__body {
-  font-size: 16px;
-  font-weight: 400;
-  color: black;
-  width: 450px;
-  padding-bottom: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 250px;
-  border-bottom: 1px solid rgb(201, 198, 198);
-}
-
-.userAdPricing {
-  max-width: 350px;
-  height: 230px;
-  box-shadow: 4px 4px 23px 0px rgba(34, 60, 80, 0.2);
-  border-radius: 10px;
-  padding: 10px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.userAdPricing__price__title {
-  font-size: 20px;
-  font-weight: 500;
-  color: black;
-  margin: 10px 0;
-}
-
-.price {
-  margin-top: 10px;
-  font-size: 24px;
-  font-weight: 600;
-  color: white;
-  background-color: #10c44c;
-  width: 110px;
-  height: 40px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.card {
-  width: fit-content;
-  height: fit-content;
-  background-color: rgb(238, 238, 238);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 25px 25px;
-  gap: 20px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.055);
-  border-radius: 10px;
-}
-
-.socialContainer {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background-color: rgb(44, 44, 44);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  transition-duration: 0.3s;
-}
-
-.socialContainer:hover {
-  animation: bounce 0.4s linear;
-}
-
-.socialContainer:active {
-  transform: scale(0.9);
-  transition-duration: 0.3s;
-}
-
-.socialSvg {
-  width: 17px;
-}
-
-.socialSvg path {
-  fill: rgb(255, 255, 255);
-}
-
-.socialContainer:hover .socialSvg {
-  animation: slide-in-top 0.3s both;
-}
-
-.socialContainer:hover {
-  background-color: #d62976;
-}
-
-.twitter:hover {
-  background-color: #00acee;
-}
-
-.linkedin:hover {
-  background-color: #0072b1;
-}
-
-.whatsapp:hover {
-  background-color: #128c7e;
-}
-
-@keyframes slide-in-top {
-  0% {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes bounce {
-  20%,
-  50%,
-  80%,
-  to {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.2);
-  }
-  70% {
-    transform: scale(1.1);
-  }
-  90% {
-    transform: scale(1.05);
-  }
-}
-
-@media (max-width: 768px) {
-  .userAdDetails {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .userPhotoGallery {
-    width: 100%;
-    padding: 0;
-  }
-
-  .userAdData {
-    width: 100%;
-    padding: 0 20px;
-  }
-
-  .userAdData__title {
-    font-size: 24px;
-    margin: 15px 0;
-    text-align: center;
-    color: #2d3748;
-    position: relative;
-    padding-bottom: 10px;
-        border: none;
-  }
-
-  .userAdData__title::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #4f46e5, #7c3aed);
-    border-radius: 3px;
-  }
-
-  .userAdData__desc {
-    margin: 15px 0;
-    gap: 1rem;
-  }
-
-  .userAdData__desc__title {
-    font-size: 18px;
-    text-align: center;
-    width: 100%;
-    padding-left: 0;
-    color: #4a5568;
-    font-weight: 600;
-    border: none;
-  }
-
-  .userAdData__desc__body {
-    width: 150px;
-    padding: 10px 0;
-    border-bottom: 1px solid #e2e8f0;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 5px;
-  }
-
-  .userAdPricing {
-    width: 100%;
-    height: auto;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    background: white;
-  }
-
-  .userAdPricing__price {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .userAdPricing__price__title {
-    font-size: 18px;
-    margin: 0;
-    color: #4a5568;
-  }
-
-  .price {
-    width: auto;
-    padding: 0 15px;
-    height: 36px;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #10c44c, #0d9f3d);
-  }
-
-  .userAdSocialMedia {
-    margin-top: 30px;
-  }
-
-  .card {
-    width: 100%;
-    padding: 20px;
-    border-radius: 12px;
-    background: #f8fafc;
-    justify-content: space-around;
-    gap: 15px;
-  }
-
-  .socialContainer {
-    width: 44px;
-    height: 44px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .socialSvg {
-    width: 20px;
-  }
-}
-
-@media (hover: hover) {
-  .socialContainer:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .userAdDetails {
-    width: 100%;
-    padding: 0 20px;
-    gap: 2rem;
-  }
-
-  .userAdData {
-    width: 60%;
-  }
-
-  .userAdPricing {
-    width: 300px;
-  }
+@media (max-width: 560px){
+  .h1{ font-size:36px; }
+  .infoText{ font-size:16px; }
 }

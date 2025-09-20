@@ -4,10 +4,9 @@
   --text:#0f172a;
   --muted:#6b7280;
   --brand:#111827;
-  --accent:#facc15;   /* жёлтая как у скрина */
-  --accent-2:#f59e0b;
+
   --chip:#f3f4f6;
-  --chip-active:#fde68a;
+/*   --chip-active:#fde68a; */
   --border:#e5e7eb;
   --shadow:0 8px 30px rgba(2,6,23,.08);
 }
@@ -16,6 +15,9 @@
   width:min(1200px,100%);
   margin:24px auto;
   padding:0 16px;
+  display: flex;
+  gap: 1rem;
+  width: 100%;
 }
 
 /* header */
@@ -77,9 +79,10 @@
 /* middle specs блок */
 .specs{
   background:var(--card);
-  border:1px dashed var(--border);
+  border:1px solid var(--border);
   border-radius:14px;
   padding:16px;
+  width: 400px;
 }
 
 .optionGroup{margin-bottom:14px;}

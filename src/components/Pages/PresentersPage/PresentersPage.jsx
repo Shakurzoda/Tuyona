@@ -44,18 +44,6 @@ export default function PresentersPage() {
   return (
     <div className={styles.page}>
       {/* Заголовок + действия */}
-      <div className={styles.headerRow}>
-        <h1 className={styles.title}>{item.title}</h1>
-
-        <div className={styles.headerActions}>
-          <button className={styles.iconBtn} aria-label="В избранное">
-            ★
-          </button>
-          <button className={styles.iconBtn} aria-label="Поделиться">
-            ↗
-          </button>
-        </div>
-      </div>
 
       {/* Главная сетка как на скрине */}
       <div className={styles.grid}>
@@ -83,6 +71,9 @@ export default function PresentersPage() {
 
         {/* Характеристики и опции (середина) */}
         <section className={styles.specs}>
+          <div className={styles.headerRow}>
+            <h1 className={styles.title}>{item.title}</h1>
+          </div>
           <div className={styles.optionGroup}>
             <div className={styles.optionLabel}>Формат</div>
             <div className={styles.chips}>
