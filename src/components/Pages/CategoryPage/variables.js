@@ -16,23 +16,27 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/bmebtozzxocgfy3v2iji.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/olypa4ivuot27hq9buj7.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/rxtwy7imercfmzbp8elf.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
     ],
     type: "restaurant",
     instagram:
       "https://www.instagram.com/restaurant.magnolia.tj?utm_source=ig_web_button_share_sheet&igsh=MWl3OTJ4ZWZwNG1iNg==",
-    youtube: "https://www.youtube.com/watch?v=2d5LKalx704",
+    youtube:
+      "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
     whatsapp: "",
     telegram: "",
   },
@@ -54,12 +58,14 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/pq4vknjxhqxlt2hyifzm.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
         src: "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/_dushanbe%20_badahshon%20_%D1%82%D1%83%D0%B9%20_tajikistan%20_tajikistan%20_kulob%20_tuy%20_kulob%20_weddingday%20_wedding%20_hisor.mp4?updatedAt=1755421329108",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
     ],
     type: "restaurant",
@@ -86,17 +92,20 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/evgki69g3wx3t0l9ricw.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "/https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/cyzxgunsctnoaajnmdlg.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/kr6dkiyaevyofamka7p6.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
     ],
     type: "restaurant",
@@ -124,12 +133,14 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/yjk4yzz0azs6bgolixp2.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/iuzzowv4f1a30s5oftgy.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+        poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
     ],
     type: "restaurant",
