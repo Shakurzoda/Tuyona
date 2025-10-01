@@ -66,10 +66,10 @@ const DecorationPage = () => {
         hero="/img/venue/hero.jpg"
         media={media}
         venue={{
-          name: "Bubble Tea Point",
+          name: "Яккасарой",
           rating: 4.8,
           reviews: 312,
-          categories: ["Чай", "Десерты", "Азиатское"],
+          categories: ["Свадьбы", "Оши нахор", "Банкеты"],
           priceLevel: "₸₸",
           openNow: true,
           hours: "Ежедневно 10:00–22:00",
