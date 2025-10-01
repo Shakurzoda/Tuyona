@@ -130,7 +130,7 @@
 
 .mainMediaContainer {
   position: relative;
-  width: 100%;
+  width: 650px;
   height: clamp(var(--media-minH), 60vh, var(--media-maxH));
   aspect-ratio: var(--ar-desktop);
   overflow: hidden;

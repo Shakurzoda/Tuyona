@@ -19,47 +19,54 @@ const ThumbsGallery = ({ imgList }) => {
   /** Формат времени */
   const formatTime = (sec) => {
     if (!isFinite(sec) || sec < 0) return "0:00";
-    const s = Math.floor(sec % 60)
-      .toString()
-      .padStart(2, "0");
+    const s = Math.floor(sec % 60).toString().padStart(2, "0");
     const m = Math.floor((sec / 60) % 60).toString();
     const h = Math.floor(sec / 3600);
     return h > 0 ? `${h}:${m.padStart(2, "0")}:${s}` : `${m}:${s}`;
   };
 
-  /** Навигация */
-  const handleThumbnailClick = useCallback(
-    (index) => {
-      pauseIfVideo();
-      setActiveIndex(index);
-      // Прокрутка к активной миниатюре
-      const thumbElement = document.querySelector(`#thumb-${index}`);
-      if (thumbElement && thumbsContainerRef.current) {
-        const container = thumbsContainerRef.current;
-        const thumbRect = thumbElement.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
+  /** Прокрутка миниатюры в видимую область (учёт горизонт/вертикаль) */
+  const scrollThumbIntoView = (index) => {
+    const container = thumbsContainerRef.current;
+    const thumbElement = document.getElementById(`thumb-${index}`);
+    if (!container || !thumbElement) return;
 
-        if (thumbRect.top < containerRect.top) {
-          thumbElement.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else if (thumbRect.bottom > containerRect.bottom) {
-          thumbElement.scrollIntoView({ behavior: "smooth", block: "end" });
-        }
+    const isHorizontal =
+      container.scrollWidth > container.clientWidth + 1 &&
+      container.scrollHeight <= container.clientHeight + 2;
+
+    if (isHorizontal) {
+      const left = thumbElement.offsetLeft;
+      const right = left + thumbElement.offsetWidth;
+      const cLeft = container.scrollLeft;
+      const cRight = cLeft + container.clientWidth;
+
+      if (left < cLeft) {
+        container.scrollTo({ left, behavior: "smooth" });
+      } else if (right > cRight) {
+        container.scrollTo({
+          left: right - container.clientWidth,
+          behavior: "smooth",
+        });
       }
-    },
-    [imgList]
-  );
+    } else {
+      const top = thumbElement.offsetTop;
+      const bottom = top + thumbElement.offsetHeight;
+      const cTop = container.scrollTop;
+      const cBottom = cTop + container.clientHeight;
 
-  const handleNext = useCallback(() => {
-    pauseIfVideo();
-    setActiveIndex((prev) => (prev + 1) % imgList.length);
-  }, [imgList]);
+      if (top < cTop) {
+        container.scrollTo({ top, behavior: "smooth" });
+      } else if (bottom > cBottom) {
+        container.scrollTo({
+          top: bottom - container.clientHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
 
-  const handlePrev = useCallback(() => {
-    pauseIfVideo();
-    setActiveIndex((prev) => (prev - 1 + imgList.length) % imgList.length);
-  }, [imgList]);
-
-  /** Управление видео */
+  /** Навигация */
   const pauseIfVideo = useCallback(() => {
     if (isVideo(imgList[activeIndex])) {
       videoRef.current?.pause();
@@ -67,6 +74,35 @@ const ThumbsGallery = ({ imgList }) => {
     }
   }, [activeIndex, imgList]);
 
+  const handleThumbnailClick = useCallback(
+    (index) => {
+      pauseIfVideo();
+      setActiveIndex(index);
+      // прокрутить активный превью в зону видимости
+      requestAnimationFrame(() => scrollThumbIntoView(index));
+    },
+    [pauseIfVideo]
+  );
+
+  const handleNext = useCallback(() => {
+    pauseIfVideo();
+    setActiveIndex((prev) => {
+      const next = (prev + 1) % imgList.length;
+      requestAnimationFrame(() => scrollThumbIntoView(next));
+      return next;
+    });
+  }, [imgList.length, pauseIfVideo]);
+
+  const handlePrev = useCallback(() => {
+    pauseIfVideo();
+    setActiveIndex((prev) => {
+      const next = (prev - 1 + imgList.length) % imgList.length;
+      requestAnimationFrame(() => scrollThumbIntoView(next));
+      return next;
+    });
+  }, [imgList.length, pauseIfVideo]);
+
+  /** Управление видео */
   const togglePlayPause = () => {
     if (!isVideo(imgList[activeIndex])) return;
     const v = videoRef.current;
@@ -173,50 +209,36 @@ const ThumbsGallery = ({ imgList }) => {
   return (
     <div className={styles.galleryContainer}>
       <div className={styles.galleryContent}>
-        {/* Миниатюры слева */}
-        <div
-          className={styles.thumbnailsContainerVertical}
-          ref={thumbsContainerRef}
-        >
-          {imgList.map((media, index) => (
-            <div key={index} className={styles.thumbnailWrapperVertical}>
-              {isVideo(media) ? (
-                <div className={styles.videoThumbnail}>
-                  <img
-                    id={`thumb-${index}`}
-                    src={media.poster}
-                    className={`${styles.thumbnailVertical} ${
-                      index === activeIndex
-                        ? styles.activeThumbnailVertical
-                        : ""
-                    }`}
-                    onClick={() => handleThumbnailClick(index)}
-                    alt={`Видео превью ${index + 1}`}
-                  />
-                  <div className={styles.videoIndicator}>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-              ) : (
+        {/* Миниатюры (горизонтально на мобиле, вертикально на десктопе) */}
+        <div className={styles.thumbnailsContainerVertical} ref={thumbsContainerRef}>
+          {imgList.map((media, index) => {
+            const isVid = isVideo(media);
+            const src = isVid ? media.poster : media;
+            return (
+              <div key={index} className={styles.thumbnailWrapperVertical}>
                 <img
                   id={`thumb-${index}`}
-                  src={media}
-                  alt={`Thumbnail ${index + 1}`}
+                  src={src}
+                  alt={isVid ? `Видео превью ${index + 1}` : `Thumbnail ${index + 1}`}
                   className={`${styles.thumbnailVertical} ${
                     index === activeIndex ? styles.activeThumbnailVertical : ""
                   }`}
                   onClick={() => handleThumbnailClick(index)}
+                  loading="lazy"
+                  decoding="async"
+                  width={80}   // резервируем место (CSS все равно ужмет до var(--thumb-w))
+                  height={80}
                 />
-              )}
-            </div>
-          ))}
+                {isVid && (
+                  <div className={styles.videoIndicator}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Главное медиа */}
@@ -228,12 +250,7 @@ const ThumbsGallery = ({ imgList }) => {
                 className={`${styles.navButton} ${styles.prevButton}`}
                 aria-label="Предыдущий слайд"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 </svg>
               </button>
@@ -249,6 +266,9 @@ const ThumbsGallery = ({ imgList }) => {
                   preload="metadata"
                   playsInline
                   loop
+                  // атрибуты для iOS: ширина/высота помогают стабилизировать бокс
+                  width={1280}
+                  height={1280}
                 />
                 {!isPlaying && (
                   <button
@@ -256,20 +276,12 @@ const ThumbsGallery = ({ imgList }) => {
                     onClick={togglePlayPause}
                     aria-label="Воспроизвести"
                   >
-                    <svg
-                      width="32"
-                      height="32"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </button>
                 )}
-                <div
-                  className={styles.controlsBar}
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <div className={styles.controlsBar} onClick={(e) => e.stopPropagation()}>
                   <div className={styles.progressRow}>
                     <input
                       className={styles.progressInput}
@@ -291,21 +303,11 @@ const ThumbsGallery = ({ imgList }) => {
                         aria-label={isPlaying ? "Пауза" : "Воспроизвести"}
                       >
                         {isPlaying ? (
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                           </svg>
                         ) : (
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         )}
@@ -318,26 +320,14 @@ const ThumbsGallery = ({ imgList }) => {
                       <button
                         className={styles.controlButton}
                         onClick={toggleMute}
-                        aria-label={
-                          isMuted ? "Включить звук" : "Выключить звук"
-                        }
+                        aria-label={isMuted ? "Включить звук" : "Выключить звук"}
                       >
                         {isMuted ? (
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3.63 3.63a.996.996 0 000 1.41L7.29 8.7 7 9H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71v-4.17l4.18 4.18c-.49.37-1.02.68-1.6.91-.36.15-.58.53-.58.92 0 .72.73 1.18 1.39.91.8-.33 1.55-.77 2.22-1.31l1.34 1.34a.996.996 0 101.41-1.41L5.05 3.63c-.39-.39-1.02-.39-1.42 0zM19 12c0 .82-.15 1.61-.41 2.34l1.53 1.53c.56-1.17.88-2.48.88-3.87 0-3.83-2.4-7.11-5.78-8.4-.59-.23-1.22.23-1.22.86v.19c0 .38.25.71.61.85C17.18 6.54 19 9.06 19 12zm-8.71-6.29l-.17.17L12 7.76V6.41c0-.89-1.08-1.33-1.71-.7zM16.5 12A4.5 4.5 0 0014 7.97v1.79l2.48 2.48c.01-.08.02-.16.02-.24z" />
                           </svg>
                         ) : (
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                           </svg>
                         )}
@@ -350,18 +340,14 @@ const ThumbsGallery = ({ imgList }) => {
                         step="0.01"
                         value={volume}
                         onChange={handleVolumeChange}
+                        aria-label="Громкость"
                       />
                       <button
                         className={styles.controlButton}
                         onClick={handlePiP}
                         aria-label="Картинка в картинке"
                       >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z" />
                         </svg>
                       </button>
@@ -370,12 +356,7 @@ const ThumbsGallery = ({ imgList }) => {
                         onClick={handleFullscreen}
                         aria-label="Во весь экран"
                       >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                         </svg>
                       </button>
@@ -389,6 +370,8 @@ const ThumbsGallery = ({ imgList }) => {
                 alt={`Slide ${activeIndex + 1}`}
                 className={styles.mainMedia}
                 loading="lazy"
+                decoding="async"
+                sizes="(max-width: 768px) 100vw, 650px"
               />
             )}
 
@@ -398,12 +381,7 @@ const ThumbsGallery = ({ imgList }) => {
                 className={`${styles.navButton} ${styles.nextButton}`}
                 aria-label="Следующий слайд"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                 </svg>
               </button>

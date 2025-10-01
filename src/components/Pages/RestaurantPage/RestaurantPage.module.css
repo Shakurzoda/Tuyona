@@ -29,10 +29,10 @@
   flex: 1;
   max-width: 1000px;
   background: white;
-  border: 1px solid var(--border-light);
+/*   border: 1px solid var(--border-light); */
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+/*   box-shadow: var(--shadow-sm); */
   transition: var(--transition);
 }
 
@@ -73,8 +73,8 @@
   flex-direction: column;
   gap: 1.25rem;
   margin: 1.5rem 0;
-  width: 400px;
-  height: 280px;
+  width: 350px;
+  height: 370px;
 }
 
 .userAdData__desc__title {
@@ -140,7 +140,11 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: white;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-dark)
+  );
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   display: inline-flex;
@@ -194,18 +198,42 @@
   fill: white;
 }
 
-.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-.twitter:hover { background-color: #1DA1F2; }
-.facebook:hover { background-color: #3b5998; }
-.whatsapp:hover { background-color: #25D366; }
-.telegram:hover { background-color: #0088cc; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.instagram:hover {
+  background: linear-gradient(
+    45deg,
+    #f09433,
+    #e6683c,
+    #dc2743,
+    #cc2366,
+    #bc1888
+  );
+}
+.twitter:hover {
+  background-color: #1da1f2;
+}
+.facebook:hover {
+  background-color: #3b5998;
+}
+.whatsapp:hover {
+  background-color: #25d366;
+}
+.telegram:hover {
+  background-color: #0088cc;
 }
 
-.userAdData, .userAdPricing {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.userAdData,
+.userAdPricing {
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -216,12 +244,13 @@
     gap: 2rem;
     padding: 1rem;
   }
-  
-  .userAdData, .userAdPricing {
+
+  .userAdData,
+  .userAdPricing {
     max-width: 100%;
     width: 100%;
   }
-  
+
   .userAdPricing {
     order: -1;
   }
@@ -231,27 +260,27 @@
   .userAdData__title {
     font-size: 1.5rem;
   }
-  
+
   .userAdPricing__price {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
-  
+
   .price {
     align-self: flex-start;
   }
-  
+
   .card {
     flex-wrap: wrap;
     justify-content: space-around;
   }
-  
+
   .socialContainer {
     width: 44px;
     height: 44px;
   }
-  
+
   .userAdData__desc__body__data {
     flex-direction: column;
     align-items: flex-start;
