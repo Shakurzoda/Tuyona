@@ -1,15 +1,90 @@
 import styles from "./DecorationPage.module.css";
-import ThumbsGallery from "../../Swiper/ThumbsGallery";
+import ChannelHeader from "../../ChannelHeader/ChannelHeader";
+/* import ThumbsGallery from "../../Swiper/ThumbsGallery";
 import { useParams } from "react-router";
-import { DECORATION } from "../CategoryPage/variables";
+import { DECORATION } from "../CategoryPage/variables"; */
+import AuroraVenueMedia from "./../../VenueGallery/AuroraVenue";
 
 const DecorationPage = () => {
-  const { id } = useParams();
-  const decoration = DECORATION.find((item) => item.id === parseInt(id));
+/*   const { id } = useParams();
+  const decoration = DECORATION.find((item) => item.id === parseInt(id)); */
+
+
+  const media = [
+    {
+      type: "image",
+      src: "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/XXL_height.webp?updatedAt=1754731707719",
+      alt: "Интерьер",
+    },
+    {
+      type: "image",
+      src: "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/h-_qtcOlIrQ.jpg?updatedAt=1754731707913",
+      alt: "Фото 2",
+    },
+
+    // Пример видео: можно один src или массив sources (лучше два формата)
+    {
+      type: "video",
+      poster:
+        "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/ChatGPT%20Image%201%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.,%2003_38_33.png?updatedAt=1759279195204",
+      sources: [
+        {
+          src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/yjk4yzz0azs6bgolixp2.mp4",
+          type: "video/mp4",
+        },
+        {
+          src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/iuzzowv4f1a30s5oftgy.mp4",
+          type: "video/mp4",
+        },
+      ],
+      alt: "Видео тизер",
+    },
+
+    {
+      type: "image",
+      src: "https://sun9-25.userapi.com/impf/8t69vnL2FfQTFY1uYTjWK963SoTu8_CSMur5Og/OAcehxdBO0s.jpg?size=2268x378&quality=95&crop=0,426,2560,426&sign=219424b58f1577a6cb66f2abbd20827c&type=cover_group",
+      alt: "Фото 4",
+    },
+
+    {
+      type: "video",
+      poster:
+        "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/ChatGPT%20Image%201%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.,%2003_38_33.png?updatedAt=1759279195204",
+      sources: [
+        {
+          src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/iuzzowv4f1a30s5oftgy.mp4",
+          type: "video/mp4",
+        },
+      ],
+      alt: "Бар и процесс",
+    },
+  ];
 
   return (
     <div className={styles.userAdDetails}>
-      <div className={styles.userPhotoGallery}>
+      <AuroraVenueMedia
+        hero="/img/venue/hero.jpg"
+        media={media}
+        venue={{
+          name: "Bubble Tea Point",
+          rating: 4.8,
+          reviews: 312,
+          categories: ["Чай", "Десерты", "Азиатское"],
+          priceLevel: "₸₸",
+          openNow: true,
+          hours: "Ежедневно 10:00–22:00",
+          phone: "+7 (777) 000-00-00",
+          website: "https://bubbletea.example",
+          address: "просп. Саади Шерози, 16",
+          mapLink: "https://yandex.tj/maps/-/CHtwfFYy",
+          description:
+            "Авторские напитки с тапиокой. Уютная атмосфера, сезонные лимитки и десерты.",
+        }}
+        onBook={() => alert("Бронь оформлена")}
+        onShare={() => navigator.share?.({ title: "Bubble Tea Point" })}
+      />
+
+      {/* <div className={styles.userPhotoGallery}>
         <ThumbsGallery img={decoration.img} imgList={decoration.imgList} />
       </div>
 
@@ -169,7 +244,7 @@ const DecorationPage = () => {
             </a>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,20 +1,18 @@
 :root {
-  /* тёмная тема под ChannelHeader */
-  --tileRadius: 14px;
-  --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
-  --text: #f1f1f1;
-  --muted: #a1a1a1;
-  --accent: #3ea6ff;
-
-  /* фон/границы (из старого Aurora) — можешь не менять */
   --bg: #0c0d11;
   --glass: rgba(255, 255, 255, 0.08);
   --glass-2: rgba(255, 255, 255, 0.06);
+  --text: #f6f7fb;
+  --muted: #b7bcc8;
+  --accent: #6ad0ff;
+  --accent-2: #9d7bff;
+  --ok: #092b16;
+  --bad: #ff6b6b;
   --border: rgba(255, 255, 255, 0.12);
   --radius: 16px;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
 
-/* ---------- базовая обёртка/герой/инфо (без изменений, только размеры не трогаем) ---------- */
 .wrap {
   position: relative;
   display: grid;
@@ -26,25 +24,16 @@
 .aurora {
   position: absolute;
   inset: -40px;
-  background: radial-gradient(
-      1200px 500px at 20% 20%,
-      rgba(106, 208, 255, 0.25),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 400px at 80% 0%,
-      rgba(157, 123, 255, 0.25),
-      transparent 60%
-    ),
-    radial-gradient(
-      700px 400px at 50% 100%,
-      rgba(116, 255, 199, 0.18),
-      transparent 60%
-    ),
+  /*   background:
+    radial-gradient(1200px 500px at 20% 20%, rgba(106,208,255,.25), transparent 60%),
+    radial-gradient(900px 400px at 80% 0%, rgba(157,123,255,.25), transparent 60%),
+    radial-gradient(700px 400px at 50% 100%, rgba(116,255,199,.18), transparent 60%),
     linear-gradient(180deg, #0c0d11, #0b0c10);
+  filter:saturate(1.2); */
   z-index: -1;
-  filter: saturate(1.2);
 }
+
+/* Hero */
 .hero {
   position: relative;
   border: 1px solid var(--border);
@@ -76,6 +65,7 @@
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 0.2px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
 .metaRow {
   display: flex;
@@ -105,10 +95,12 @@
   font-size: 13px;
 }
 .open {
-  color: #c9ffe0;
+  color: #337a52;
+  box-shadow: inset 0 0 0 1px rgba(79, 226, 138, 0.2);
 }
 .closed {
   color: #ffd1d1;
+  box-shadow: inset 0 0 0 1px rgba(255, 107, 107, 0.2);
 }
 .price {
   padding: 6px 10px;
@@ -117,10 +109,11 @@
   border: 1px solid var(--border);
   font-weight: 700;
 }
+
 .desc {
   margin: 10px 0 14px;
-  max-width: 72ch;
   opacity: 0.95;
+  max-width: 72ch;
 }
 .ctaRow {
   display: flex;
@@ -133,13 +126,25 @@
   background: var(--glass-2);
   color: var(--text);
   cursor: pointer;
+  transition: transform 0.04s ease, filter 0.25s ease, box-shadow 0.25s ease,
+    background 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+.btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+.btn:active {
+  transform: translateY(1px);
 }
 .primary {
-  background: linear-gradient(135deg, #6ad0ff, #9d7bff);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #071018;
   border-color: transparent;
+  font-weight: 700;
 }
 
+/* Info */
 .infoGrid {
   display: grid;
   gap: 12px;
@@ -180,6 +185,7 @@
   text-underline-offset: 3px;
 }
 
+/* Адрес */
 .addrRow {
   display: flex;
   align-items: center;
@@ -204,20 +210,22 @@
   background: rgba(255, 255, 255, 0.1);
   padding: 6px 12px;
   border-radius: 10px;
+  text-decoration: none;
   color: var(--text);
+  font-size: 13px;
   border: 1px solid var(--border);
+  transition: background 0.2s ease, transform 0.05s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+.addrBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+.addrBtn:active {
+  transform: translateY(1px);
 }
 
-/* ---------- размеры галереи как в твоём сниппете ---------- */
-
-/* сетка превью (в десктопной части мы показываем Bento, но сетка нужна для лайтбокс превью и возможных доп. секций) */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-/* Bento: те же визуальные размеры, что и .grid (высота плиток 200/180/160/220 на брейкпоинтах) */
+/* Bento */
 .bento {
   position: relative;
   margin-top: 6px;
@@ -225,8 +233,8 @@
 .bentoGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 200px; /* 200 как в твоей .tile */
-  gap: 10px;
+  grid-auto-rows: 180px;
+  gap: 12px;
 }
 .bentoItem {
   position: relative;
@@ -234,36 +242,40 @@
   padding: 0;
   background: none;
   cursor: pointer;
-  border-radius: var(--tileRadius);
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  transform: translateZ(0);
 }
 .bentoItem img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.28s ease, filter 0.28s ease;
-  filter: saturate(1.04);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.3s ease;
+  filter: saturate(1.06);
 }
 .bentoItem:hover img {
   transform: scale(1.03);
-  filter: saturate(1.1);
+  filter: saturate(1.12);
+}
+.hasPlay {
+  position: relative;
 }
 .noPoster {
   width: 100%;
   height: 100%;
   background: #0a0a0a;
 }
-.hasPlay .playBadge {
+.playBadge {
   position: absolute;
   right: 10px;
   bottom: 8px;
   padding: 4px 8px;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.5);
-  font-size: 12px;
   color: #fff;
+  font-size: 12px;
 }
 
 .bentoHero {
@@ -287,7 +299,7 @@
   grid-row: 2 / span 1;
 }
 
-/* мобильная “плёнка” с peek */
+/* Filmstrip mobile */
 .filmstripWrap {
   display: none;
   position: relative;
@@ -313,13 +325,13 @@
   padding: 0;
   background: none;
   cursor: pointer;
-  border-radius: var(--tileRadius);
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 .filmItem img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
   display: block;
 }
@@ -328,7 +340,7 @@
 }
 .videoThumb img {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
   display: block;
 }
@@ -344,54 +356,52 @@
     rgba(12, 13, 17, 0) 0%,
     rgba(12, 13, 17, 0.85) 100%
   );
-  border-radius: 0 var(--tileRadius) var(--tileRadius) 0;
+  border-radius: 0 14px 14px 0;
 }
 
-/* ---------- лайтбокс (размеры = из твоего сниппета) ---------- */
+/* Lightbox */
 .lb {
   position: fixed;
   inset: 0;
-  z-index: 70;
   display: grid;
   place-items: center;
+  z-index: 50;
 }
-.lbGlass,
-.backdrop {
+.lbGlass {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(2px);
+  background: rgba(8, 10, 14, 0.65);
+  backdrop-filter: blur(10px) saturate(1.1);
 }
 .stage {
   position: relative;
   z-index: 1;
   display: grid;
   place-items: center;
-  max-width: min(95vw, 1400px);
-  max-height: 78vh;
-  padding: 0 12px;
+  max-width: min(92vw, 1400px);
+  max-height: 76vh;
 }
 .lbImg,
 .lbVid {
   max-width: 100%;
-  max-height: 78vh;
+  max-height: 76vh;
   border-radius: 16px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow);
   background: #000;
 }
-
 .nav {
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 2;
   border: 0;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: #fff;
   padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
   font-size: 28px;
+  backdrop-filter: blur(6px);
+  z-index: 2;
 }
 .prev {
   left: 16px;
@@ -403,37 +413,35 @@
   position: fixed;
   top: 14px;
   right: 14px;
-  z-index: 2;
   border: 0;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: #fff;
   padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
   font-size: 18px;
+  backdrop-filter: blur(6px);
+  z-index: 2;
 }
-
-/* миниатюры внизу */
-.thumbRow,
-.thumbs {
+.thumbRow {
   position: fixed;
   bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
   display: flex;
   gap: 8px;
   padding: 8px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
   max-width: 90vw;
   overflow: auto;
+  z-index: 2;
 }
 .thumb {
   width: 72px;
   height: 54px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
   padding: 0;
@@ -467,25 +475,13 @@
   opacity: 1;
 }
 
-/* ---------- брейкпоинты один в один с твоими ---------- */
+/* Responsive */
 @media (max-width: 1100px) {
   .infoGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .bentoGrid {
-    grid-auto-rows: 180px;
-  } /* как .tile 180 в 980px */
-}
-@media (max-width: 980px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .bentoGrid {
-    grid-auto-rows: 180px;
-  }
-  .filmItem img,
-  .videoThumb img {
-    height: 180px;
+    grid-auto-rows: 150px;
   }
 }
 @media (max-width: 720px) {
@@ -501,15 +497,6 @@
   .filmstrip {
     grid-auto-columns: 78%;
   }
-  .filmItem img,
-  .videoThumb img {
-    height: 160px;
-  } /* как .tile 160 в 680px */
-}
-@media (max-width: 680px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 @media (max-width: 460px) {
   .infoGrid {
@@ -518,13 +505,4 @@
   .filmstrip {
     grid-auto-columns: 84%;
   }
-}
-@media (max-width: 420px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-  .filmItem img,
-  .videoThumb img {
-    height: 220px;
-  } /* как .tile 220 в 420px */
 }
