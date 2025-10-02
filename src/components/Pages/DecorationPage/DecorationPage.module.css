@@ -14,7 +14,17 @@
   --radius: 16px;
 }
 
+html, body { overflow-x: hidden; }
+
 /* ---------- базовая обёртка/герой/инфо (без изменений, только размеры не трогаем) ---------- */
+.userAdDetails {
+  width: 100%;
+  max-width: 1300px;
+  margin-inline: auto;
+  padding-inline: 14px; /* безопасные внутренние отступы */
+  box-sizing: border-box;
+}
+
 .wrap {
   position: relative;
   display: grid;
@@ -483,6 +493,7 @@
   .bentoGrid {
     grid-auto-rows: 180px;
   }
+  .infoGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .filmItem img,
   .videoThumb img {
     height: 180px;
@@ -505,11 +516,73 @@
   .videoThumb img {
     height: 160px;
   } /* как .tile 160 в 680px */
+  .aurora {
+    filter: saturate(1.05) blur(0.2px);
+  }
+  .titleBlock {
+    padding: 16px;
+  }
+  .title {
+    font-size: clamp(20px, 4.5vw, 24px);
+  }
+  .desc {
+    margin: 8px 0 12px;
+  }
+  .hasPlay .playBadge { right: 8px; bottom: 6px; font-size: 11px; }
+}
+
+/* 6) Лайтбокс: безопасные зоны, кликабельность, адаптивная высота */
+@media (max-width: 720px) {
+  .stage { max-width: 100vw; max-height: 76vh; padding: 0 8px; }
+  .lbImg, .lbVid { max-height: 76vh; border-radius: 14px; }
+  .nav {
+    padding: 10px 12px;
+    font-size: 24px;
+    top: auto;
+    bottom: 50%;
+    transform: translateY(50%);
+  }
+  .prev { left: 10px; }
+  .next { right: 10px; }
+  .close { top: 10px; right: 10px; padding: 8px 10px; }
+
+  .thumbRow, .thumbs {
+    bottom: calc(10px + env(safe-area-inset-bottom, 0));
+    padding: 6px;
+    gap: 6px;
+  }
+  .thumb { width: 64px; height: 48px; }
 }
 @media (max-width: 680px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .wrap {
+    gap: 12px;
+    padding: 6px;
+  }
+  .hero img {
+    opacity: 0.42;
+  }
+  .metaRow {
+    gap: 8px;
+  }
+  .ctaRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .btn { width: 100%; padding: 12px 16px; }
+
+  /* бейджи и цена — компактнее */
+  .badge, .price {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  /* адресная строка — переносы и кликабельные области побольше */
+  .addrRow { gap: 8px; }
+  .addrText { font-size: 13px; }
+  .addrBtn { padding: 8px 12px; }
 }
 @media (max-width: 460px) {
   .infoGrid {
@@ -527,4 +600,8 @@
   .videoThumb img {
     height: 220px;
   } /* как .tile 220 в 420px */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bentoItem img { transition: none; }
 }

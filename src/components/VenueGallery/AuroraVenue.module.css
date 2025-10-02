@@ -24,12 +24,6 @@
 .aurora {
   position: absolute;
   inset: -40px;
-  /*   background:
-    radial-gradient(1200px 500px at 20% 20%, rgba(106,208,255,.25), transparent 60%),
-    radial-gradient(900px 400px at 80% 0%, rgba(157,123,255,.25), transparent 60%),
-    radial-gradient(700px 400px at 50% 100%, rgba(116,255,199,.18), transparent 60%),
-    linear-gradient(180deg, #0c0d11, #0b0c10);
-  filter:saturate(1.2); */
   z-index: -1;
 }
 
@@ -39,11 +33,7 @@
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) + 4px);
   overflow: hidden;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
-  );
+  background-color: white;
   box-shadow: var(--shadow);
 }
 .hero img {

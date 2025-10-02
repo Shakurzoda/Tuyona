@@ -1,12 +1,15 @@
+// src/App.jsx
 import { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+
 import Home from "./components/Pages/Home/Home";
 import CategoryPage from "./components/Pages/CategoryPage/CategoryPage";
 import UserAdDetails from "./components/Pages/UserAdDetails/UserAdDetails";
-import Footer from "./components/Footer/Footer";
 import RestaurantPage from "./components/Pages/RestaurantPage/RestaurantPage";
 import MusiciansPage from "./components/Pages/MusiciansPage/MusiciansPage";
 import CarsPage from "./components/Pages/CarsPage/CarsPage";
@@ -17,8 +20,18 @@ import SingersPage from "./components/Pages/SingersPage/SingersPage";
 import BeautySalonsPage from "./components/Pages/BeautySalonsPage/BeautySalonsPage";
 import PartnershipsPage from "./components/Pages/PartnershipsPage/PartnershipsPage";
 
+// Админка
+import AdminLogin from "./admin/AdminLogin";
+import AdminLayout from "./admin/AdminLayout";
+import AdminVenues from "./admin/AdminVenues";
+import AdminVenueEdit from "./admin/AdminVenueEdit";
+
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   useEffect(() => {
+    // прелоад важных изображений (необязательно)
     const lcpImages = ["/hero-image.webp", "/main-banner.jpg"];
     lcpImages.forEach((img) => {
       const link = document.createElement("link");
@@ -31,8 +44,9 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      {!isAdminRoute && <Header />}
       <ScrollToTop />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/category" element={<CategoryPage />} />
@@ -47,8 +61,17 @@ function App() {
         <Route path="/beautySalons/:id" element={<BeautySalonsPage />} />
         <Route path="/userAdDetails" element={<UserAdDetails />} />
         <Route path="/partnerships" element={<PartnershipsPage />} />
+
+        {/* Админка */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminVenues />} />
+          <Route path="venues/new" element={<AdminVenueEdit />} />
+          <Route path="venues/:id" element={<AdminVenueEdit />} />
+        </Route>
       </Routes>
-      <Footer />
+
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }

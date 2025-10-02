@@ -1,180 +1,254 @@
-import styles from "./RestaurantPage.module.css";
-import ThumbsGallery from "../../Swiper/ThumbsGallery";
-import { useParams } from "react-router";
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import AuroraVenueMedia from "/src/components/VenueGallery/AuroraVenue"; // проверь путь
 import { RESTAURANTS } from "../CategoryPage/variables";
-import SegmentedChips from "../../SegmentedChips/SegmentedChips";
+import { supabase } from "/src/lib/supabaseClient.js";
 
+// === helpers ======================================================
+const normalizeMediaLocal = (imgList = [], title = "") =>
+  imgList
+    .map((item, idx) => {
+      if (typeof item === "string") {
+        return { type: "image", src: item, alt: `${title} — фото ${idx + 1}` };
+      }
+      if (item && item.type === "video" && typeof item.src === "string") {
+        return {
+          type: "video",
+          poster: item.poster || "",
+          sources: [{ src: item.src, type: "video/mp4" }],
+          alt: `${title} — видео ${idx + 1}`,
+        };
+      }
+      if (item && item.src) {
+        return {
+          type: "image",
+          src: item.src,
+          alt: `${title} — медиа ${idx + 1}`,
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
 
-const RestaurantPage = () => {
+// маппим строки БД → пропсы Aurora
+function mapDbVenueToAurora({ venue, socials, media }) {
+  const auroraVenue = {
+    name: venue.title || "",
+    categories: [venue.type || "Ресторан"].filter(Boolean),
+    priceLevel: venue.price_level || "",
+    openNow: !!venue.open_now,
+    hours: venue.hours || "",
+    phone: venue.phone || "",
+    address: venue.address || "",
+    mapLink: venue.map_link || "",
+    description: venue.description || "",
+    socials: {
+      instagram: socials?.instagram || "",
+      youtube: socials?.youtube || "",
+      telegram: socials?.telegram || "",
+      whatsapp: socials?.whatsapp || "",
+    },
+  };
+
+  const auroraMedia = (media || []).map((m, i) =>
+    m.kind === "video"
+      ? {
+          type: "video",
+          poster: m.poster || "",
+          sources: [{ src: m.src, type: "video/mp4" }],
+          alt: `${venue.title || "Видео"} — ${i + 1}`,
+        }
+      : {
+          type: "image",
+          src: m.src,
+          alt: `${venue.title || "Фото"} — ${i + 1}`,
+        }
+  );
+
+  // hero: первая картинка, если есть
+  const hero =
+    auroraMedia.find((x) => x.type === "image")?.src ||
+    auroraMedia[0]?.sources?.[0]?.src ||
+    "";
+
+  return { auroraVenue, auroraMedia, hero };
+}
+
+// === component ====================================================
+export default function RestaurantAuroraPage() {
   const { id } = useParams();
-  const restaurant = RESTAURANTS.find((item) => item.id === parseInt(id));
+  const nId = Number(id);
+  const isNumeric = Number.isFinite(nId);
+
+  // 1) сначала пробуем локальные рестораны
+  const local = isNumeric ? RESTAURANTS.find((x) => x.id === nId) : null;
+
+  // 2) состояние для БД-варианта (если локального нет)
+  const [dbState, setDbState] = useState({
+    loading: !local,
+    error: "",
+    venue: null,
+    socials: null,
+    media: [],
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    if (local) {
+      // ничего не грузим — показываем локальные
+      setDbState((s) => ({ ...s, loading: false, error: "" }));
+      return;
+    }
+    // грузим из БД
+    (async () => {
+      try {
+        setDbState({
+          loading: true,
+          error: "",
+          venue: null,
+          socials: null,
+          media: [],
+        });
+
+        // venue
+        const { data: v, error: e1 } = await supabase
+          .from("venues")
+          .select("*")
+          .eq("id", nId) // id из URL
+          .eq("type", "restaurant") // только рестораны
+          .eq("is_published", true) // только опубликованные
+          .maybeSingle();
+
+        if (e1) throw e1;
+        if (!v) throw new Error("Ресторан не найден в БД");
+
+        // socials
+        const { data: s, error: e2 } = await supabase
+          .from("venue_socials")
+          .select("*")
+          .eq("venue_id", v.id)
+          .maybeSingle();
+        if (e2) throw e2;
+
+        // media
+        const { data: m, error: e3 } = await supabase
+          .from("venue_media")
+          .select("*")
+          .eq("venue_id", v.id)
+          .order("sort_order", { ascending: true });
+        if (e3) throw e3;
+
+        if (!cancelled) {
+          setDbState({
+            loading: false,
+            error: "",
+            venue: v,
+            socials: s || {},
+            media: m || [],
+          });
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setDbState({
+            loading: false,
+            error: err.message || "Ошибка загрузки",
+            venue: null,
+            socials: null,
+            media: [],
+          });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, local, nId]);
+
+  // === данные для Aurora: локальные ИЛИ из БД ===
+  if (local) {
+    const list = normalizeMediaLocal(local.imgList, local.title);
+    const hasHero = list.some((m) => m.type === "image" && m.src === local.img);
+    const media = hasHero
+      ? list
+      : [
+          { type: "image", src: local.img, alt: `${local.title} — обложка` },
+          ...list,
+        ];
+
+    const venue = {
+      name: local.title,
+      categories: ["Ресторан"],
+      priceLevel: local.price || "",
+      openNow: true,
+      hours: local.time || "",
+      phone: local.tel || "",
+      address: local.street || "",
+      mapLink: local.yandexMap || "",
+      description: local.description || "",
+      socials: {
+        instagram: local.instagram || "",
+        youtube: local.youtube || "",
+        telegram: local.telegram || "",
+        whatsapp: local.whatsapp || "",
+      },
+    };
+
+    return (
+      <AuroraVenueMedia
+        hero={local.img}
+        media={media}
+        venue={venue}
+        onShare={() => {
+          if (navigator.share)
+            navigator
+              .share({ title: local.title, url: window.location.href })
+              .catch(() => {});
+          else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
+        }}
+        showShare={true}
+        showBook={false}
+      />
+    );
+  }
+
+  // БД-вариант
+  if (dbState.loading) {
+    return (
+      <section style={{ padding: 24 }}>
+        <p>Загрузка…</p>
+      </section>
+    );
+  }
+  if (dbState.error || !dbState.venue) {
+    return (
+      <section style={{ padding: 24 }}>
+        <h1>Ресторан не найден</h1>
+        <p>{dbState.error || "Проверьте ссылку или вернитесь к списку."}</p>
+      </section>
+    );
+  }
+
+  const { auroraVenue, auroraMedia, hero } = mapDbVenueToAurora({
+    venue: dbState.venue,
+    socials: dbState.socials,
+    media: dbState.media,
+  });
 
   return (
-    <div className={styles.userAdDetails}>
-      <div className={styles.userPhotoGallery}>
-        <ThumbsGallery img={restaurant.img} imgList={restaurant.imgList} />
-      </div>
-
-      <div className={styles.userAdData}>
-        <div className={styles.userAdData__title}>
-          <p>{restaurant.title}</p>
-        </div>
-
-        <div className={styles.userAdData__desc}>
-          {/*           <div className={styles.userAdData__desc__body__data_text}>
-            <div className={styles.userAdData_format}>
-              Формат
-            </div>
-            <SegmentedChips />
-          </div> */}
-
-          <div className={styles.userAdData__desc__title}>
-            <p>О заведении</p>
-          </div>
-
-          <div className={styles.userAdData__desc__body}>
-            <div className={styles.userAdData__desc__body__data}>
-              <span>
-                <p className={styles.userAdData__desc__body__data_text}>
-                  Город
-                </p>
-              </span>
-              <span>Душанбе</span>
-            </div>
-
-            <div className={styles.userAdData__desc__body__data}>
-              <span>
-                <p className={styles.userAdData__desc__body__data_text}>
-                  Улица
-                </p>
-              </span>
-              <span>
-                {" "}
-                <a
-                  href={restaurant.yandexMap}
-                  target="_blank"
-                  className={styles.userAdDataLink}
-                >
-                  {restaurant.street}
-                </a>
-              </span>
-            </div>
-
-            <div className={styles.userAdData__desc__body__data}>
-              <span>
-                <p className={styles.userAdData__desc__body__data_text}>
-                  Номер телефона
-                </p>
-              </span>
-              <a href={restaurant.telLink} className={styles.userAdDataLink}>
-                {restaurant.tel}
-              </a>
-            </div>
-
-            <div className={styles.userAdData__desc__body__data}>
-              <span>
-                <p className={styles.userAdData__desc__body__data_text}>
-                  Режим работы
-                </p>
-              </span>
-              <p>{restaurant.time}</p>
-            </div>
-          </div>
-          <div>
-            <div className={styles.userAdSocialMedia}>
-              <div className={styles.card}>
-                <a
-                  href={restaurant.instagram}
-                  className={styles.socialContainer}
-                  target="_blank"
-                >
-                  <svg className={styles.socialSvg} viewBox="0 0 16 16">
-                    <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"></path>
-                  </svg>
-                </a>
-
-                <a
-                  href={restaurant.youtube}
-                  className={`${styles.socialContainer} ${styles.linkedin}`}
-                  target="_blank"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="35"
-                    height="40"
-                    viewBox="0 0 48 48"
-                  >
-                    <path
-                      fill="#455A64"
-                      d="M14.539 6h2.125l1.37 5.496h.133l1.308-5.493h2.147l-2.458 8.036V20h-2.112v-5.703L14.539 6zM21.525 11.923c0-.784.254-1.411.759-1.874.504-.466 1.182-.7 2.035-.7.778 0 1.413.245 1.908.737.495.488.743 1.121.743 1.894v5.235c0 .866-.242 1.548-.728 2.044C25.756 19.753 25.09 20 24.235 20c-.823 0-1.477-.259-1.974-.767-.493-.508-.738-1.194-.738-2.055v-5.256H21.525zM23.455 17.368c0 .275.066.494.205.646.132.15.322.226.571.226.255 0 .454-.077.604-.234.149-.151.226-.366.226-.638v-5.522c0-.22-.079-.399-.231-.536-.151-.135-.352-.205-.599-.205-.229 0-.417.07-.561.205-.143.137-.215.316-.215.536V17.368zM33.918 9.605V20h-1.875v-1.266c-.346.414-.705.728-1.081.941C30.59 19.89 30.227 20 29.876 20c-.435 0-.76-.149-.981-.452-.221-.3-.329-.751-.329-1.357V9.605h1.874v7.886c0 .236.04.41.12.519.075.104.207.162.38.162.141 0 .315-.071.522-.215.213-.141.406-.324.581-.544V9.605H33.918z"
-                    ></path>
-                    <path
-                      fill="#FFF"
-                      d="M38.799,26.439c0-2.342-1.94-4.24-4.329-4.24c-3.412-0.143-6.905-0.203-10.47-0.198c-3.563-0.005-7.056,0.056-10.47,0.198c-2.387,0-4.327,1.898-4.327,4.24C9.061,28.291,8.995,30.145,9,32.001c-0.005,1.853,0.06,3.707,0.204,5.561c0,2.345,1.938,4.243,4.326,4.243c3.414,0.14,6.907,0.2,10.47,0.195c3.564,0.008,7.058-0.056,10.47-0.195c2.389,0,4.329-1.898,4.329-4.243c0.142-1.854,0.209-3.708,0.201-5.561C39.008,30.145,38.941,28.291,38.799,26.439z"
-                    ></path>
-                    <g>
-                      <path
-                        fill="#F44336"
-                        d="M33.851 30.346c-.219 0-.368.058-.458.18-.064.091-.145.299-.145.752v.774h1.193v-.774c0-.446-.083-.655-.151-.757C34.205 30.402 34.061 30.346 33.851 30.346zM26.865 30.386c-.086.042-.17.105-.258.193v5.876c.11.111.217.191.316.242.111.055.224.08.346.08.231 0 .303-.091.326-.123.057-.071.119-.219.119-.54v-5.005c0-.278-.053-.493-.152-.625C27.428 30.306 27.164 30.236 26.865 30.386z"
-                      ></path>
-                      <path
-                        fill="#F44336"
-                        d="M38.799,26.439c0-2.342-1.94-4.24-4.329-4.24c-3.412-0.143-6.905-0.203-10.47-0.198c-3.563-0.005-7.056,0.056-10.47,0.198c-2.387,0-4.327,1.898-4.327,4.24C9.061,28.291,8.995,30.145,9,32.001c-0.005,1.853,0.06,3.707,0.204,5.561c0,2.345,1.938,4.243,4.326,4.243c3.414,0.14,6.907,0.2,10.47,0.195c3.564,0.008,7.058-0.056,10.47-0.195c2.389,0,4.329-1.898,4.329-4.243c0.142-1.854,0.209-3.708,0.201-5.561C39.008,30.145,38.941,28.291,38.799,26.439z M15.701,38.382c0,0.111-0.092,0.204-0.206,0.204h-2.049c-0.114,0-0.206-0.093-0.206-0.204v-11.03h-1.914c-0.113,0-0.205-0.092-0.205-0.203v-1.904c0-0.112,0.092-0.204,0.205-0.204h6.291c0.114,0,0.206,0.092,0.206,0.204v1.904c0,0.111-0.091,0.203-0.206,0.203h-1.916V38.382z M22.995,38.382c0,0.111-0.092,0.204-0.206,0.204h-1.822c-0.114,0-0.206-0.093-0.206-0.204v-0.551c-0.243,0.233-0.486,0.418-0.738,0.56c-0.397,0.227-0.776,0.336-1.16,0.336c-0.488,0-0.864-0.176-1.117-0.517c-0.238-0.324-0.361-0.803-0.361-1.421v-8.1c0-0.112,0.092-0.204,0.207-0.204h1.821c0.114,0,0.206,0.092,0.206,0.204v7.428c0,0.244,0.044,0.343,0.072,0.382c0.013,0.017,0.05,0.067,0.205,0.067c0.052,0,0.172-0.022,0.389-0.169c0.176-0.115,0.334-0.259,0.473-0.425v-7.283c0-0.112,0.092-0.204,0.207-0.204h1.821c0.114,0,0.206,0.092,0.206,0.204v9.692H22.995z M30,36.373c0,0.736-0.159,1.31-0.473,1.708c-0.326,0.418-0.797,0.626-1.398,0.626c-0.383,0-0.733-0.077-1.046-0.233c-0.166-0.083-0.327-0.191-0.479-0.325v0.233c0,0.114-0.093,0.204-0.206,0.204h-1.837c-0.114,0-0.207-0.09-0.207-0.204v-13.14c0-0.112,0.092-0.203,0.207-0.203h1.837c0.113,0,0.206,0.091,0.206,0.203v3.717c0.15-0.136,0.31-0.25,0.474-0.343c0.309-0.17,0.625-0.256,0.941-0.256c0.641,0,1.143,0.238,1.484,0.706c0.328,0.45,0.495,1.101,0.495,1.933L30,36.373L30,36.373z M36.729,33.765c0,0.113-0.093,0.205-0.207,0.205h-3.273v1.621c0,0.592,0.082,0.845,0.148,0.951c0.053,0.088,0.152,0.199,0.438,0.199c0.23,0,0.388-0.055,0.469-0.164c0.037-0.058,0.139-0.28,0.139-0.988v-0.675c0-0.114,0.093-0.204,0.207-0.204h1.872c0.114,0,0.205,0.09,0.205,0.204v0.729c0,1.044-0.249,1.844-0.737,2.384c-0.49,0.543-1.23,0.82-2.198,0.82c-0.872,0-1.574-0.296-2.079-0.871c-0.5-0.571-0.755-1.354-0.755-2.333v-4.352c0-0.892,0.278-1.63,0.83-2.196c0.55-0.568,1.274-0.857,2.144-0.857c0.89,0,1.587,0.271,2.072,0.803c0.48,0.526,0.724,1.284,0.724,2.251v2.474H36.729z"
-                      ></path>
-                    </g>
-                  </svg>
-                </a>
-
-                <a
-                  href={restaurant.telegram}
-                  className={`${styles.socialContainer} ${styles.twitter}`}
-                  target="_blank"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="35"
-                    height="30"
-                    viewBox="0 0 48 48"
-                  >
-                    <path
-                      fill="#29b6f6"
-                      d="M24 4A20 20 0 1 0 24 44A20 20 0 1 0 24 4Z"
-                    ></path>
-                    <path
-                      fill="#fff"
-                      d="M33.95,15l-3.746,19.126c0,0-0.161,0.874-1.245,0.874c-0.576,0-0.873-0.274-0.873-0.274l-8.114-6.733 l-3.97-2.001l-5.095-1.355c0,0-0.907-0.262-0.907-1.012c0-0.625,0.933-0.923,0.933-0.923l21.316-8.468 c-0.001-0.001,0.651-0.235,1.126-0.234C33.667,14,34,14.125,34,14.5C34,14.75,33.95,15,33.95,15z"
-                    ></path>
-                    <path
-                      fill="#b0bec5"
-                      d="M23,30.505l-3.426,3.374c0,0-0.149,0.115-0.348,0.12c-0.069,0.002-0.143-0.009-0.219-0.043 l0.964-5.965L23,30.505z"
-                    ></path>
-                    <path
-                      fill="#cfd8dc"
-                      d="M29.897,18.196c-0.169-0.22-0.481-0.26-0.701-0.093L16,26c0,0,2.106,5.892,2.427,6.912 c0.322,1.021,0.58,1.045,0.58,1.045l0.964-5.965l9.832-9.096C30.023,18.729,30.064,18.416,29.897,18.196z"
-                    ></path>
-                  </svg>
-                </a>
-
-                <a
-                  href={restaurant.whatsapp}
-                  className={`${styles.socialContainer} ${styles.whatsapp}`}
-                  target="_blank"
-                >
-                  <svg className={styles.socialSvg} viewBox="0 0 16 16">
-                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"></path>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AuroraVenueMedia
+      hero={hero}
+      media={auroraMedia}
+      venue={auroraVenue}
+      onShare={() => {
+        if (navigator.share)
+          navigator
+            .share({ title: auroraVenue.name, url: window.location.href })
+            .catch(() => {});
+        else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
+      }}
+      showShare={true}
+      showBook={false}
+    />
   );
-};
-
-export default RestaurantPage;
+}
