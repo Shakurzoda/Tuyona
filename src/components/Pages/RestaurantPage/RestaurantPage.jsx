@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AuroraVenueMedia from "/src/components/VenueGallery/AuroraVenue"; // проверь путь
 import { RESTAURANTS } from "../CategoryPage/variables";
 import { supabase } from "/src/lib/supabaseClient.js";
-
 // === helpers ======================================================
 const normalizeMediaLocal = (imgList = [], title = "") =>
   imgList
@@ -216,7 +215,7 @@ export default function RestaurantAuroraPage() {
   if (dbState.loading) {
     return (
       <section style={{ padding: 24 }}>
-        <p>Загрузка…</p>
+        <p></p>
       </section>
     );
   }

@@ -1,5 +1,5 @@
 :root {
-  --bg: #f7f8fb;
+/*   --bg: #f7f8fb; */
   --card: #ffffff;
   --text: #0f172a;
   --muted: #6b7280;
@@ -26,13 +26,13 @@ body,
     "Helvetica Neue", Arial;
 }
 
-a {
+/* a {
   color: var(--primary);
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
-}
+} */
 
 /* ---------- Layout ---------- */
 .admin-shell {

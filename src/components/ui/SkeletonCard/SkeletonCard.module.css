@@ -1,0 +1,21 @@
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+.card {
+  width:100%; max-width: 320px; border-radius:16px; overflow:hidden;
+  background:#fff; box-shadow: 0 10px 30px rgba(2,6,23,.06);
+}
+.thumb { height: 160px; }
+.thumb, .line { composes: shimmer; }
+.text { padding: 12px 14px; }
+.line { height: 12px; border-radius: 6px; margin-top:10px; }
+.line:first-child { height:16px; width: 70%; }
+.dim { opacity:.65; width: 90%; }

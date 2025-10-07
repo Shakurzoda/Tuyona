@@ -8,19 +8,14 @@ import React, {
 } from "react";
 import s from "./AuroraVenue.module.css";
 import MyButton from "../MyButton/MyButton";
+import FullPageLoader from "/src/components/UI/FullPageLoader/FullPageLoader";
 
 /**
  * Пропсы:
  * - hero: string
  * - media: [{type:"image",src,alt?} | {type:"video",poster?,sources:[{src,type?}]} | {type:"video",src,poster?}]
- * - venue: {
- *     name, rating?, reviews?, categories?, priceLevel?, openNow?, hours?, phone?, address?, mapLink?, description?,
- *     socials?: { instagram?, telegram?, whatsapp?, youtube? }
- *   }
- * - onShare?: () => void
- * - onBook?: () => void
- * - showShare?: boolean (default: true)
- * - showBook?: boolean (default: false)
+ * - venue: { name, rating?, reviews?, categories?, priceLevel?, openNow?, hours?, phone?, address?, mapLink?, description? }
+ * - onShare?, onBook?, showShare=true, showBook=false
  */
 export default function AuroraVenueMedia({
   venue = {},
@@ -43,7 +38,6 @@ export default function AuroraVenueMedia({
     address,
     mapLink,
     description,
-    socials = {},
   } = venue;
 
   // === нормализация медиа ===
@@ -66,6 +60,61 @@ export default function AuroraVenueMedia({
       return { type: "image", src: m.src, alt: m.alt || "" };
     });
   }, [media]);
+
+  // === ЛОАДЕР: ждём одну первую превью (src/poster) ===
+  // Стабильный ключ только по URL превью (не по всему items)
+  const previewUrl = useMemo(() => {
+    const cand =
+      items
+        .slice(0, 5)
+        .find((it) => (it.type === "image" ? !!it.src : !!it.poster)) || null;
+    return cand ? (cand.type === "image" ? cand.src : cand.poster) : "";
+  }, [items]);
+
+  const [previewReady, setPreviewReady] = useState(false);
+
+  // ЗАМЕНИ этот useEffect, который управляет previewReady:
+
+  // Мини-лоадер: минимум 0.5 c, авто-снятие через 2 c на всякий случай
+  useEffect(() => {
+    const MIN_SHOW_MS = 500; // ← полсекунды
+    const HARD_CAP_MS = 2000; // ← форс-скрытие, если превью не загрузится
+
+    // нет превью — просто показываем лоадер ровно 0.5 c и выходим
+    if (!previewUrl) {
+      setPreviewReady(false);
+      const t = setTimeout(() => setPreviewReady(true), MIN_SHOW_MS);
+      return () => clearTimeout(t);
+    }
+
+    setPreviewReady(false);
+
+    let done = false;
+    const img = new Image();
+    const startedAt = Date.now();
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      const elapsed = Date.now() - startedAt;
+      const delay = Math.max(MIN_SHOW_MS - elapsed, 0);
+      const t = setTimeout(() => setPreviewReady(true), delay);
+      timers.push(t);
+    };
+
+    // форс-снятие лоадера, если onload/onerror не пришли
+    const hardCap = setTimeout(finish, HARD_CAP_MS);
+    const timers = [hardCap];
+
+    img.onload = finish;
+    img.onerror = finish;
+    img.src = previewUrl;
+
+    return () => {
+      done = true;
+      timers.forEach(clearTimeout);
+    };
+  }, [previewUrl]);
 
   // === лайтбокс и навигация ===
   const [lb, setLb] = useState({ open: false, i: 0 });
@@ -98,12 +147,10 @@ export default function AuroraVenueMedia({
     if (!lb.open) return;
     const cur = items[lb.i];
 
-    // если ушли с видео — пауза
     if (cur?.type !== "video" && videoRef.current) {
       videoRef.current.pause();
     }
 
-    // если пришли на видео — пытаться воспроизвести
     if (cur?.type === "video") {
       requestAnimationFrame(() => {
         const el = videoRef.current;
@@ -111,7 +158,6 @@ export default function AuroraVenueMedia({
         const p = el.play?.();
         if (p && p.catch) {
           p.catch(() => {
-            // на случай запрета автоплея
             el.muted = true;
             el.play?.().catch(() => {});
           });
@@ -151,315 +197,256 @@ export default function AuroraVenueMedia({
   };
 
   return (
-    <section className={s.wrap}>
-      {/* Aurora фон */}
-      <div className={s.aurora} aria-hidden />
+    <>
+      {!previewReady && <FullPageLoader title="Подгружаем медиа…" />}
 
-      {/* Hero 
-      {hero && <img src={hero} alt="" />}*/}
-      <div className={s.hero}>
-        <div className={s.titleBlock}>
-          <h1 className={s.title}>{name}</h1>
+      <section className={s.wrap} aria-busy={!previewReady}>
+        {/* Aurora фон */}
+        <div className={s.aurora} aria-hidden />
 
-          <div className={s.metaRow}>
-            {typeof rating === "number" && (
-              <>
-                <Rating value={rating} />
-                <span className={s.rateVal}>
-                  {rating.toFixed ? rating.toFixed(1) : rating}
+        {/* Hero (опционально)
+        {hero && <img src={hero} alt="" />} */}
+        <div className={s.hero}>
+          <div className={s.titleBlock}>
+            <h1 className={s.title}>{name}</h1>
+
+            <div className={s.metaRow}>
+              {typeof rating === "number" && (
+                <>
+                  <Rating value={rating} />
+                  <span className={s.rateVal}>
+                    {rating.toFixed ? rating.toFixed(1) : rating}
+                  </span>
+                </>
+              )}
+              {typeof reviews === "number" && (
+                <span className={s.muted}>({reviews})</span>
+              )}
+              {categories?.length > 0 && (
+                <span className={s.muted}>{categories.join(" · ")}</span>
+              )}
+              {typeof openNow === "boolean" && (
+                <span className={`${s.badge} ${openNow ? s.open : s.closed}`}>
+                  {openNow ? "Проверено" : "Закрыто"}
                 </span>
-              </>
+              )}
+              {priceLevel && <span className={s.price}>{priceLevel}</span>}
+            </div>
+
+            {description && <p className={s.desc}>{description}</p>}
+
+            {(showShare || showBook) && (
+              <div className={s.ctaRow}>
+                {showShare && (
+                  <MyButton size="medium" color="green" onClick={onShare}>
+                    Поделиться
+                  </MyButton>
+                )}
+                {showBook && (
+                  <MyButton size="medium" color="primary" onClick={onBook}>
+                    Забронировать
+                  </MyButton>
+                )}
+              </div>
             )}
-            {typeof reviews === "number" && (
-              <span className={s.muted}>({reviews})</span>
+          </div>
+        </div>
+
+        {/* Инфо */}
+        <div className={s.infoGrid}>
+          {hours && <Info icon="clock" label="Часы" value={hours} />}
+
+          {(address || mapLink) && (
+            <Info
+              icon="pin"
+              label="Адрес"
+              value={
+                <div className={s.addrRow}>
+                  <span className={s.addrText}>
+                    <span className={s.addrIcon}>📍</span>
+                    {mapLink ? (
+                      <a href={mapLink} target="_blank" rel="noreferrer">
+                        {address || "Открыть карту"}
+                      </a>
+                    ) : (
+                      address || "—"
+                    )}
+                  </span>
+                </div>
+              }
+            />
+          )}
+
+          {phone && (
+            <Info
+              icon="phone"
+              label="Телефон"
+              value={<a href={cleanTel(phone)}>{phone}</a>}
+            />
+          )}
+        </div>
+
+        {/* Bento-коллаж */}
+        <div className={s.bento}>
+          <div className={s.bentoGrid}>
+            {items[0] && (
+              <Tile
+                item={items[0]}
+                className={`${s.bentoItem} ${s.bentoHero}`}
+                onClick={() => open(0)}
+              />
             )}
-            {categories?.length > 0 && (
-              <span className={s.muted}>{categories.join(" · ")}</span>
+            {items[1] && (
+              <Tile
+                item={items[1]}
+                className={`${s.bentoItem} ${s.bentoA}`}
+                onClick={() => open(1)}
+              />
             )}
-            {typeof openNow === "boolean" && (
-              <span className={`${s.badge} ${openNow ? s.open : s.closed}`}>
-                {openNow ? "Проверено" : "Закрыто"}
-              </span>
+            {items[2] && (
+              <Tile
+                item={items[2]}
+                className={`${s.bentoItem} ${s.bentoB}`}
+                onClick={() => open(2)}
+              />
             )}
-            {priceLevel && <span className={s.price}>{priceLevel}</span>}
+            {items[3] && (
+              <Tile
+                item={items[3]}
+                className={`${s.bentoItem} ${s.bentoC}`}
+                onClick={() => open(3)}
+              />
+            )}
+            {items[4] && (
+              <Tile
+                item={items[4]}
+                className={`${s.bentoItem} ${s.bentoD}`}
+                onClick={() => open(4)}
+              />
+            )}
           </div>
 
-          {description && <p className={s.desc}>{description}</p>}
+          {/* Mobile filmstrip */}
+          <div className={s.filmstripWrap}>
+            <div className={s.filmstrip} role="list">
+              {items.slice(0, 12).map((it, i) => (
+                <button
+                  key={i}
+                  className={s.filmItem}
+                  onClick={() => open(i)}
+                  role="listitem"
+                  aria-label={`Медиа ${i + 1}`}
+                >
+                  {it.type === "image" ? (
+                    <img
+                      src={it.src}
+                      alt={it.alt || `Фото ${i + 1}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className={s.videoThumb}>
+                      {it.poster ? (
+                        <img src={it.poster} alt="" />
+                      ) : (
+                        <div className={s.noPoster} />
+                      )}
+                      <span className={s.playBadge}>▶</span>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className={s.edgeFade} aria-hidden />
+          </div>
+        </div>
 
-          {(showShare || showBook) && (
-            <div className={s.ctaRow}>
-              {showShare && (
-                <MyButton size="medium" color="green" onClick={onShare}>
-                  Поделиться
-                </MyButton>
-              )}
-              {showBook && (
-                <MyButton size="medium" color="primary" onClick={onBook}>
-                  Забронировать
-                </MyButton>
+        {/* Лайтбокс */}
+        {lb.open && items.length > 0 && (
+          <div className={s.lb} role="dialog" aria-modal="true">
+            <div className={s.lbGlass} onClick={close} />
+            <img style={{ display: "none" }} alt="" />
+            <button
+              className={`${s.nav} ${s.prev}`}
+              onClick={prev}
+              aria-label="Назад"
+            >
+              ‹
+            </button>
+            <button
+              className={`${s.nav} ${s.next}`}
+              onClick={next}
+              aria-label="Вперёд"
+            >
+              ›
+            </button>
+            <button className={s.close} onClick={close} aria-label="Закрыть">
+              ✕
+            </button>
+
+            <div
+              className={s.stage}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {items[lb.i].type === "image" ? (
+                <img
+                  className={s.lbImg}
+                  src={items[lb.i].src}
+                  alt={items[lb.i].alt || "Фото"}
+                />
+              ) : (
+                <video
+                  key={items[lb.i].sources?.[0]?.src || lb.i}
+                  className={s.lbVid}
+                  ref={videoRef}
+                  controls
+                  playsInline
+                  autoPlay
+                  preload="metadata"
+                  poster={items[lb.i].poster}
+                >
+                  {items[lb.i].sources.map((srcObj, idx) => (
+                    <source
+                      key={idx}
+                      src={srcObj.src}
+                      type={srcObj.type || "video/mp4"}
+                    />
+                  ))}
+                  Ваш браузер не поддерживает видео.
+                </video>
               )}
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Инфо */}
-      <div className={s.infoGrid}>
-        {hours && <Info icon="clock" label="Часы" value={hours} />}
-
-        {(address || mapLink) && (
-          <Info
-            icon="pin"
-            label="Адрес"
-            value={
-              <div className={s.addrRow}>
-                <span className={s.addrText}>
-                  <span className={s.addrIcon}>📍</span>
-                  {mapLink ? (
-                    <a href={mapLink} target="_blank" rel="noreferrer">
-                      {address || "Открыть карту"}
-                    </a>
+            <div className={s.thumbRow}>
+              {items.map((it, i) => (
+                <button
+                  key={i}
+                  className={`${s.thumb} ${i === lb.i ? s.active : ""}`}
+                  onClick={() => setLb({ open: true, i })}
+                  aria-label={`Открыть ${
+                    it.type === "video" ? "видео" : "фото"
+                  } ${i + 1}`}
+                >
+                  {it.type === "image" ? (
+                    <img src={it.src} alt="" />
                   ) : (
-                    address || "—"
+                    <div className={s.thumbVideo}>
+                      {it.poster ? (
+                        <img src={it.poster} alt="" />
+                      ) : (
+                        <div className={s.noPoster} />
+                      )}
+                      <span className={s.playDot} />
+                    </div>
                   )}
-                </span>
-              </div>
-            }
-          />
+                </button>
+              ))}
+            </div>
+          </div>
         )}
-
-        {phone && (
-          <Info
-            icon="phone"
-            label="Телефон"
-            value={<a href={cleanTel(phone)}>{phone}</a>}
-          />
-        )}
-
-        {/* Соцсети в Info-сетке */}
-        {/*         {(socials.instagram ||
-          socials.telegram ||
-          socials.whatsapp ||
-          socials.youtube) && (
-          <Info
-            icon="share"
-            label="Соцсети"
-            value={
-              <div className={s.socials}>
-                {socials.instagram && (
-                  <a
-                    href={socials.instagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="Instagram"
-                    title="Instagram"
-                  >
-                    <SvgIcon name="instagram" />
-                    <span>Instagram</span>
-                  </a>
-                )}
-                {socials.telegram && (
-                  <a
-                    href={socials.telegram}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="Telegram"
-                    title="Telegram"
-                  >
-                    <SvgIcon name="telegram" />
-                    <span>Telegram</span>
-                  </a>
-                )}
-                {socials.whatsapp && (
-                  <a
-                    href={socials.whatsapp}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="WhatsApp"
-                    title="WhatsApp"
-                  >
-                    <SvgIcon name="whatsapp" />
-                    <span>WhatsApp</span>
-                  </a>
-                )}
-                {socials.youtube && (
-                  <a
-                    href={socials.youtube}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="YouTube"
-                    title="YouTube"
-                  >
-                    <SvgIcon name="youtube" />
-                    <span>YouTube</span>
-                  </a>
-                )}
-              </div>
-            }
-          />
-        )} */}
-      </div>
-
-      {/* Bento-коллаж */}
-      <div className={s.bento}>
-        <div className={s.bentoGrid}>
-          {items[0] && (
-            <Tile
-              item={items[0]}
-              className={`${s.bentoItem} ${s.bentoHero}`}
-              onClick={() => open(0)}
-            />
-          )}
-          {items[1] && (
-            <Tile
-              item={items[1]}
-              className={`${s.bentoItem} ${s.bentoA}`}
-              onClick={() => open(1)}
-            />
-          )}
-          {items[2] && (
-            <Tile
-              item={items[2]}
-              className={`${s.bentoItem} ${s.bentoB}`}
-              onClick={() => open(2)}
-            />
-          )}
-          {items[3] && (
-            <Tile
-              item={items[3]}
-              className={`${s.bentoItem} ${s.bentoC}`}
-              onClick={() => open(3)}
-            />
-          )}
-          {items[4] && (
-            <Tile
-              item={items[4]}
-              className={`${s.bentoItem} ${s.bentoD}`}
-              onClick={() => open(4)}
-            />
-          )}
-        </div>
-
-        {/* Mobile filmstrip */}
-        <div className={s.filmstripWrap}>
-          <div className={s.filmstrip} role="list">
-            {items.slice(0, 12).map((it, i) => (
-              <button
-                key={i}
-                className={s.filmItem}
-                onClick={() => open(i)}
-                role="listitem"
-                aria-label={`Медиа ${i + 1}`}
-              >
-                {it.type === "image" ? (
-                  <img
-                    src={it.src}
-                    alt={it.alt || `Фото ${i + 1}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className={s.videoThumb}>
-                    {it.poster ? (
-                      <img src={it.poster} alt="" />
-                    ) : (
-                      <div className={s.noPoster} />
-                    )}
-                    <span className={s.playBadge}>▶</span>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-          <div className={s.edgeFade} aria-hidden />
-        </div>
-      </div>
-
-      {/* Лайтбокс */}
-      {lb.open && items.length > 0 && (
-        <div className={s.lb} role="dialog" aria-modal="true">
-          <div className={s.lbGlass} onClick={close} />
-          <img style={{ display: "none" }} alt="" />
-          <button
-            className={`${s.nav} ${s.prev}`}
-            onClick={prev}
-            aria-label="Назад"
-          >
-            ‹
-          </button>
-          <button
-            className={`${s.nav} ${s.next}`}
-            onClick={next}
-            aria-label="Вперёд"
-          >
-            ›
-          </button>
-          <button className={s.close} onClick={close} aria-label="Закрыть">
-            ✕
-          </button>
-
-          <div
-            className={s.stage}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {items[lb.i].type === "image" ? (
-              <img
-                className={s.lbImg}
-                src={items[lb.i].src}
-                alt={items[lb.i].alt || "Фото"}
-              />
-            ) : (
-              <video
-                key={items[lb.i].sources?.[0]?.src || lb.i} // форсируем ремонт при смене индекса
-                className={s.lbVid}
-                ref={videoRef}
-                controls
-                playsInline
-                autoPlay
-                preload="metadata"
-                poster={items[lb.i].poster}
-              >
-                {items[lb.i].sources.map((srcObj, idx) => (
-                  <source key={idx} src={srcObj.src} type={srcObj.type || ""} />
-                ))}
-                Ваш браузер не поддерживает видео.
-              </video>
-            )}
-          </div>
-
-          <div className={s.thumbRow}>
-            {items.map((it, i) => (
-              <button
-                key={i}
-                className={`${s.thumb} ${i === lb.i ? s.active : ""}`}
-                onClick={() => setLb({ open: true, i })}
-                aria-label={`Открыть ${
-                  it.type === "video" ? "видео" : "фото"
-                } ${i + 1}`}
-              >
-                {it.type === "image" ? (
-                  <img src={it.src} alt="" />
-                ) : (
-                  <div className={s.thumbVideo}>
-                    {it.poster ? (
-                      <img src={it.poster} alt="" />
-                    ) : (
-                      <div className={s.noPoster} />
-                    )}
-                    <span className={s.playDot} />
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -552,31 +539,3 @@ function iconPath(name) {
     </svg>
   );
 }
-
-/* function SvgIcon({ name }) {
-  const icons = {
-    instagram: (
-      <svg viewBox="0 0 24 24">
-        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-      </svg>
-    ),
-    telegram: (
-      <svg viewBox="0 0 24 24">
-        <path d="M21.5 3.5 3 10.6c-1.2.5-1.2 2.2.1 2.6l4.3 1.4 1.6 5.1c.3 1 1.6 1.2 2.2.4l2.8-3.5 4.5 3.3c.9.7 2.2.2 2.5-1l3-14c.3-1.3-1-2.4-2.5-1.8z" />
-      </svg>
-    ),
-    whatsapp: (
-      <svg viewBox="0 0 24 24">
-        <path d="M20 3.9A10 10 0 1 0 4.2 19.7L3 23l3.4-1.2A10 10 0 1 0 20 3.9zM7.5 9.4c.2-.5.4-.6.8-.6h.6c.2 0 .5.1.6.4l.5 1.1c.1.3.1.5-.1.7l-.5.6c.6 1.1 1.6 2 2.7 2.7l.6-.5c.2-.2.4-.2.7-.1l1.1.5c.3.1.4.4.4.6v.6c0 .4-.2.6-.6.8-.3.1-.9.3-1.9.1-1.7-.4-3.8-2.4-4.5-4.1-.4-1-.2-1.6 0-1.8z" />
-      </svg>
-    ),
-    youtube: (
-      <svg viewBox="0 0 24 24">
-        <path d="M23 12c0-2.5-.3-4.2-.7-5-.3-.6-.8-1.1-1.4-1.4C19.9 5 12 5 12 5s-7.9 0-8.9.6c-.6.3-1.1.8-1.4 1.4C1.3 7.8 1 9.5 1 12s.3 4.2.7 5c.3.6.8 1.1 1.4 1.4C4.1 19 12 19 12 19s7.9 0 8.9-.6c.6-.3 1.1-.8 1.4-1.4.4-.8.7-2.5.7-5z" />
-        <path d="M10 15l5-3-5-3v6z" />
-      </svg>
-    ),
-  };
-  return <span className={s.socialIcon}>{icons[name] || null}</span>; */
-/* }
- */

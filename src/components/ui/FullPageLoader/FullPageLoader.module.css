@@ -1,0 +1,23 @@
+.overlay {
+  position:fixed; inset:0; display:grid; place-items:center;
+  background: radial-gradient(60rem 60rem at 10% -10%, #f0f9ff, transparent),
+              radial-gradient(40rem 40rem at 90% 110%, #ecfeff, transparent),
+              #f8fafc;
+  z-index: 70;
+}
+
+.card {
+  background:#ffffffcc; backdrop-filter: blur(8px);
+  border:1px solid #e2e8f0; border-radius: 16px;
+  padding: 28px 32px; box-shadow: 0 20px 60px rgba(2,6,23,.12);
+  display:flex; align-items:center; gap:14px;
+}
+
+.spinner {
+  width:22px; height:22px; border-radius:50%;
+  border:3px solid #bae6fd; border-top-color:#0284c7;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.title { font-weight:600; color:#0f172a; }

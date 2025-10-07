@@ -465,6 +465,18 @@
   opacity: 1;
 }
 
+.fadeIn {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadin 0.3s ease forwards;
+}
+@keyframes fadin {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Responsive */
 @media (max-width: 1100px) {
   .infoGrid {
