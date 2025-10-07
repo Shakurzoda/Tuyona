@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import s from "./AuroraVenue.module.css";
 import MyButton from "../MyButton/MyButton";
-import FullPageLoader from "../UI/FullPageLoader/FullPageLoader";
+/* import FullPageLoader from "../UI/FullPageLoader/FullPageLoader"; */
 
 /**
  * Пропсы:
@@ -20,7 +20,7 @@ import FullPageLoader from "../UI/FullPageLoader/FullPageLoader";
 export default function AuroraVenueMedia({
   venue = {},
   media = [],
-  hero = "",
+/*   hero = "", */
   onShare = () => {},
   onBook = () => {},
   showShare = true,
@@ -198,7 +198,7 @@ export default function AuroraVenueMedia({
 
   return (
     <>
-      {!previewReady && <FullPageLoader title="Подгружаем медиа…" />}
+      {/* {!previewReady && <FullPageLoader title="Подгружаем медиа…" />} */}
 
       <section className={s.wrap} aria-busy={!previewReady}>
         {/* Aurora фон */}
