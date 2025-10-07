@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import s from "./AuroraVenue.module.css";
 import MyButton from "../MyButton/MyButton";
-import FullPageLoader from "/src/components/UI/FullPageLoader/FullPageLoader";
+import FullPageLoader from "../UI/FullPageLoader/FullPageLoader";
 
 /**
  * Пропсы:
