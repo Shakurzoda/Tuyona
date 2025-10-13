@@ -13,6 +13,41 @@
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
 
+
+/* Socials */
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--glass-2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background .2s ease, box-shadow .2s ease, transform .05s ease;
+}
+.socialBtn:hover {
+  background: rgba(255,255,255,.14);
+  box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+.socialBtn:active { transform: translateY(1px); }
+
+.socialIcon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  opacity: .9;
+}
+
+
 .wrap {
   position: relative;
   display: grid;
