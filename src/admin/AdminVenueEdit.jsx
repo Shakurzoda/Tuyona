@@ -525,20 +525,19 @@ export default function AdminVenueEdit() {
             {media.map((m, i) => (
               <div key={i} className="media-row">
                 <select
-                  className="select media-kind"
-                  value={m.kind}
-                  onChange={(e) => updMedia(i, { kind: e.target.value })}
+                  className="select"
+                  value={venue.type}
+                  onChange={(e) =>
+                    setVenue((v) => ({ ...v, type: e.target.value }))
+                  }
                 >
-                  <option value="image">image</option>
-                  <option value="video">video</option>
                   <option value="restaurant">restaurant</option>
-                  <option value="musician">musician</option>
-                  <option value="car">car</option>
+                  <option value="musicians">musicians</option>
+                  <option value="cars">cars</option>
                   <option value="decoration">decoration</option>
                   <option value="presenter">presenter</option>
-                  <option value="photographer">photographer</option>
-                  <option value="singer">singer</option>
-                  <option value="beauty_salon">beauty_salon</option>
+                  <option value="photographers">photographers</option>
+                  <option value="beautySalons">beautySalons</option>
                 </select>
 
                 <input

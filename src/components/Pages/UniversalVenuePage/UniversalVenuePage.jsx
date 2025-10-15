@@ -1,5 +1,5 @@
 // src/components/Pages/UniversalVenuePage/UniversalVenuePage.jsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import AuroraVenue from "@/components/VenueGallery/AuroraVenue";
@@ -9,66 +9,86 @@ import { supabase } from "@/lib/supabaseClient";
 import { getCategoryItems } from "@/components/Category/getCategoryItems";
 import { CategoryVariables } from "@/components/Category/CategoryVariables";
 
-/* ---------- helpers ---------- */
+/* ================= Helpers ================= */
 
-// Приводим тип из урла к типу в БД (множественное/единственное/варианты)
-function mapToDbType(typeFromUrl) {
-  const t = String(typeFromUrl || "")
+const TYPE_ALIASES = {
+  restaurant: ["restaurant", "restaurants", "restorany", "рестораны"],
+  musicians: ["musicians", "музыканты", "singer", "singers", "музыкант"],
+  cars: ["cars", "car", "авто", "машины"],
+  decoration: ["decoration", "decorations", "decor", "оформление"],
+  presenters: ["presenters", "presenter", "ведущие", "ведущий"],
+  photographers: ["photographers", "photographer", "фотографы"],
+  singers: ["singers", "singer", "певцы", "певец"],
+  beautySalons: [
+    "beautySalons",
+    "beauty-salons",
+    "beauty",
+    "salon",
+    "салоны",
+    "свадебные салоны",
+  ],
+};
+
+const TYPE_TITLES = {
+  restaurant: "Рестораны",
+  musicians: "Музыканты",
+  cars: "Машины",
+  decoration: "Оформление",
+  presenters: "Ведущие",
+  photographers: "Фотографы",
+  singers: "Певцы",
+  beautySalons: "Свадебные салоны",
+};
+
+function normalizeType(t) {
+  const raw = String(t || "")
     .trim()
     .toLowerCase();
-  const map = {
-    restaurant: "restaurant",
-    restaurants: "restaurant",
-    restorany: "restaurant",
-    рестораны: "restaurant",
-
-    musician: "musician",
-    musicians: "musician",
-
-    car: "car",
-    cars: "car",
-
-    presenter: "presenter",
-    presenters: "presenter",
-
-    photographer: "photographer",
-    photographers: "photographer",
-
-    singer: "singer",
-    singers: "singer",
-
-    beautysalon: "beautySalons",
-    beautysalons: "beautySalons",
-    beauty_salon: "beautySalons",
-  };
-  return map[t] || t; // если совпадает 1:1
+  for (const key of Object.keys(TYPE_ALIASES)) {
+    if (TYPE_ALIASES[key].map((x) => x.toLowerCase()).includes(raw)) {
+      return key;
+    }
+  }
+  // если ничего не совпало — вернём, что дали (на всякий)
+  return raw || "restaurant";
 }
 
-// Приводим любое медиа к формату Aurora
+// приводим любой формат медиа к формату Aurora
 function normalizeMedia(media = []) {
-  return (media || []).filter(Boolean).map((m) => {
-    // строка → image
+  return (media || []).filter(Boolean).map((m, i) => {
+    // строка -> картинка
     if (typeof m === "string") {
-      return { type: "image", src: m, alt: "" };
+      return { type: "image", src: m, alt: `Фото ${i + 1}` };
     }
-    // объект video c src или sources
-    if (m.type === "video") {
-      const sources =
-        Array.isArray(m.sources) && m.sources.length
-          ? m.sources
-          : m.src
-          ? [{ src: m.src, type: "video/mp4" }]
-          : [];
+    // видео в “коротком” виде
+    if (m.type === "video" && m.src && !m.sources) {
       return {
         type: "video",
         poster: m.poster || "",
-        alt: m.alt || "",
-        sources,
+        alt: m.alt || `Видео ${i + 1}`,
+        sources: [{ src: m.src, type: "video/mp4" }],
       };
     }
-    // объект image
-    return { type: "image", src: m.src, alt: m.alt || "" };
+    // полноценный видео-объект
+    if (m.type === "video") {
+      return {
+        type: "video",
+        poster: m.poster || "",
+        alt: m.alt || `Видео ${i + 1}`,
+        sources: Array.isArray(m.sources) ? m.sources : [],
+      };
+    }
+    // картинка-объект
+    return { type: "image", src: m.src, alt: m.alt || `Фото ${i + 1}` };
   });
+}
+
+function firstHero(media = []) {
+  const img = media.find((x) => x.type === "image");
+  if (img) return img.src || "";
+  const v = media.find((x) => x.type === "video");
+  if (v?.sources?.[0]?.src) return v.sources[0].src;
+  return "";
 }
 
 // Ищем локальную карточку по id СРЕДИ ВСЕХ направлений
@@ -97,13 +117,13 @@ function findLocalById(idStr) {
   return { item: null, directionName: "" };
 }
 
-/* ---------- page ---------- */
+/* ================= Page ================= */
 
 export default function UniversalVenuePage() {
   const { type, id } = useParams();
-
-  const dbType = mapToDbType(type);
+  const routeType = normalizeType(type);
   const idStr = String(id);
+  const nId = Number(idStr);
 
   // 1) сначала пробуем ЛОКАЛЬНУЮ карточку, не завися от type
   const { item: localItem, directionName } = useMemo(
@@ -111,48 +131,28 @@ export default function UniversalVenuePage() {
     [idStr]
   );
 
-  // 2) состояние для БД-варианта
+  // 2) БД-состояние
   const [db, setDb] = useState({
-    loading: false,
+    loading: !localItem,
     error: "",
     venue: null,
     socials: null,
     media: [],
   });
 
+  // грузим из БД, если локальной карточки нет
   useEffect(() => {
     let cancelled = false;
 
     async function loadFromDb() {
-      // если нашли локальную — БД не трогаем
       if (localItem) {
-        setDb({
-          loading: false,
-          error: "",
-          venue: null,
-          socials: null,
-          media: [],
-        });
+        setDb((s) => ({ ...s, loading: false, error: "" }));
         return;
       }
-
-      const nId = Number(idStr);
       if (!Number.isFinite(nId)) {
         setDb({
           loading: false,
           error: "Некорректный идентификатор",
-          venue: null,
-          socials: null,
-          media: [],
-        });
-        return;
-      }
-
-      // если тип из URL непонятен — тоже выходим
-      if (!dbType) {
-        setDb({
-          loading: false,
-          error: "Некорректный тип объявления",
           venue: null,
           socials: null,
           media: [],
@@ -169,18 +169,22 @@ export default function UniversalVenuePage() {
           media: [],
         });
 
-        // venues
-        const { data: v, error: e1 } = await supabase
+        // Фильтр по алиасам типа
+        const aliases = TYPE_ALIASES[routeType] || [routeType];
+
+        const q = supabase
           .from("venues")
           .select("*")
           .eq("id", nId)
-          .eq("type", dbType)
-          .eq("is_published", true)
-          .maybeSingle();
+          .eq("is_published", true);
+
+        // если есть алиасы — фильтруем по ним
+        if (aliases?.length) q.in("type", aliases);
+
+        const { data: v, error: e1 } = await q.maybeSingle();
         if (e1) throw e1;
         if (!v) throw new Error("Объявление не найдено");
 
-        // socials
         const { data: s, error: e2 } = await supabase
           .from("venue_socials")
           .select("*")
@@ -188,7 +192,6 @@ export default function UniversalVenuePage() {
           .maybeSingle();
         if (e2) throw e2;
 
-        // media
         const { data: m, error: e3 } = await supabase
           .from("venue_media")
           .select("*")
@@ -220,14 +223,15 @@ export default function UniversalVenuePage() {
     return () => {
       cancelled = true;
     };
-  }, [dbType, idStr, localItem]);
+  }, [routeType, nId, localItem]);
 
-  /* ---------- render: 1) локалка ---------- */
+  /* ========== Renders ========== */
 
+  // ---------- 1) Локалка ----------
   if (localItem) {
     const it = localItem;
 
-    // Собираем медиа из img + imgList (поддерживаем строки и объекты видео)
+    // Собираем медиа из img + imgList (поддержка смешанного формата)
     const list = Array.isArray(it.imgList) ? it.imgList : [];
     const mediaPrepared = [
       it.img
@@ -236,9 +240,11 @@ export default function UniversalVenuePage() {
       ...list,
     ].filter(Boolean);
 
+    const mediaAurora = normalizeMedia(mediaPrepared);
+
     const venueProps = {
       name: it.title || "",
-      categories: [directionName].filter(Boolean),
+      categories: [TYPE_TITLES[routeType] || routeType].filter(Boolean),
       priceLevel: it.price || "",
       openNow: true,
       hours: it.time || "",
@@ -256,8 +262,8 @@ export default function UniversalVenuePage() {
 
     return (
       <AuroraVenue
-        hero={it.img || ""}
-        media={normalizeMedia(mediaPrepared)}
+        hero={firstHero(mediaAurora)}
+        media={mediaAurora}
         venue={venueProps}
         onShare={() => {
           if (navigator.share)
@@ -272,8 +278,7 @@ export default function UniversalVenuePage() {
     );
   }
 
-  /* ---------- render: 2) БД ---------- */
-
+  // ---------- 2) БД ----------
   if (db.loading) {
     return (
       <section style={{ padding: 24 }}>
@@ -281,37 +286,39 @@ export default function UniversalVenuePage() {
       </section>
     );
   }
-  if (db.error) {
+  if (db.error || !db.venue) {
     return (
       <section style={{ padding: 24 }}>
         <h1>Объявление не найдено</h1>
-        <p>{db.error}</p>
+        <p>{db.error || "Проверьте ссылку или вернитесь к списку."}</p>
       </section>
     );
   }
-  if (db.venue) {
-    const v = db.venue;
-    const m = db.media || [];
 
-    const auroraVenue = {
-      name: v.title || "",
-      categories: [dbType], // можно подставить красивое имя при желании
-      priceLevel: v.price_level || "",
-      openNow: !!v.open_now,
-      hours: v.hours || "",
-      phone: v.phone || "",
-      address: v.address || "",
-      mapLink: v.map_link || "",
-      description: v.description || "",
-      socials: {
-        instagram: db.socials?.instagram || "",
-        youtube: db.socials?.youtube || "",
-        telegram: db.socials?.telegram || "",
-        whatsapp: db.socials?.whatsapp || "",
-      },
-    };
+  // map DB → Aurora
+  const v = db.venue;
+  const m = db.media || [];
 
-    const auroraMedia = m.map((mm, i) =>
+  const auroraVenue = {
+    name: v.title || "",
+    categories: [TYPE_TITLES[routeType] || routeType].filter(Boolean),
+    priceLevel: v.price_level || "",
+    openNow: !!v.open_now,
+    hours: v.hours || "",
+    phone: v.phone || "",
+    address: v.address || "",
+    mapLink: v.map_link || "",
+    description: v.description || "",
+    socials: {
+      instagram: db.socials?.instagram || "",
+      youtube: db.socials?.youtube || "",
+      telegram: db.socials?.telegram || "",
+      whatsapp: db.socials?.whatsapp || "",
+    },
+  };
+
+  const auroraMedia = normalizeMedia(
+    m.map((mm, i) =>
       mm.kind === "video"
         ? {
             type: "video",
@@ -324,35 +331,23 @@ export default function UniversalVenuePage() {
             src: mm.src,
             alt: `${v.title || "Фото"} — ${i + 1}`,
           }
-    );
+    )
+  );
 
-    const hero =
-      auroraMedia.find((x) => x.type === "image")?.src ||
-      auroraMedia[0]?.sources?.[0]?.src ||
-      "";
-
-    return (
-      <AuroraVenue
-        hero={hero}
-        media={normalizeMedia(auroraMedia)}
-        venue={auroraVenue}
-        onShare={() => {
-          if (navigator.share)
-            navigator
-              .share({ title: auroraVenue.name, url: window.location.href })
-              .catch(() => {});
-          else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
-        }}
-        showShare
-        showBook={false}
-      />
-    );
-  }
-
-  /* ---------- ничего не нашли ---------- */
   return (
-    <section style={{ padding: 24 }}>
-      <h1>Объявление не найдено</h1>
-    </section>
+    <AuroraVenue
+      hero={firstHero(auroraMedia)}
+      media={auroraMedia}
+      venue={auroraVenue}
+      onShare={() => {
+        if (navigator.share)
+          navigator
+            .share({ title: auroraVenue.name, url: window.location.href })
+            .catch(() => {});
+        else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
+      }}
+      showShare
+      showBook={false}
+    />
   );
 }
