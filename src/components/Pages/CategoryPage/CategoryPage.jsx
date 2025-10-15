@@ -1,35 +1,34 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import styles from "./CategoryPage.module.css";
+
 import Category from "../../Category/Category";
 import { CategoryVariables } from "../../Category/CategoryVariables";
 import CardItem from "../../CardItem/CardItem";
-import { getCategoryItems } from "../../Category/getCategoryItems";
-import { supabase } from "../../../lib/supabaseClient"; // <-- проверь путь
 
+import { findCategoryBySlug } from "./categoryConfig";
+
+import OverlayLoader from "../../UI/OverlayLoader/OverlayLoader";
+import { useMinDelayLoader } from "../../UI/OverlayLoader/useMinDelayLoader";
+
+// утилита
 const toSlug = (s = "") =>
   s.toString().trim().toLowerCase().replace(/\s+/g, "-").replace(/-{2,}/g, "-");
 
 const DEFAULT_SLUG = toSlug(CategoryVariables[0].directionName);
 
-// для удобства
-const isRestaurantsSlug = (slug) =>
-  slug === "restaurant" ||
-  slug === "restaurants" ||
-  slug === "restorany" ||
-  slug === "рестораны";
-
 export default function CategoryPage() {
   const { category: categoryParam } = useParams();
 
-  // если пришли на /category без параметра — редирект на дефолт
-  if (!categoryParam) {
-    return <Navigate to={`/category/${DEFAULT_SLUG}`} replace />;
-  }
+  // важно не делать ранний return — иначе ломается порядок хуков
+  const needsRedirect = !categoryParam;
+  const raw = needsRedirect ? DEFAULT_SLUG : decodeURIComponent(categoryParam);
+  const slug = toSlug(raw);
 
-  const slug = toSlug(decodeURIComponent(categoryParam));
+  // конфиг категории
+  const cat = useMemo(() => findCategoryBySlug(slug), [slug]);
 
-  // направление по slug (без useEffect — производная от URL)
+  // активное «направление» для UI
   const direction = useMemo(() => {
     return (
       CategoryVariables.find((d) => toSlug(d.directionName) === slug) ||
@@ -37,141 +36,87 @@ export default function CategoryPage() {
     );
   }, [slug]);
 
-  // локальные карточки (как раньше)
+  // локальные карточки
   const localItems = useMemo(() => {
-    const res = getCategoryItems(direction.directionName);
-    const arr = Array.isArray(res) ? res : [];
-    return arr.map((it) => ({
-      ...it,
-      _source: "local",
-      _key: `${slug}-local-${it.type || "restaurant"}-${it.id}`,
-    }));
-  }, [direction, slug]);
+    return cat.getLocalItems(direction.directionName, slug);
+  }, [cat, direction, slug]);
 
-  // ----------------------------
-  // ДОБАВЛЯЕМ РЕСТОРАНЫ ИЗ SUPABASE
-  // ----------------------------
+  // БД-состояния
   const [dbItems, setDbItems] = useState([]);
-  const [loadingDb, setLoadingDb] = useState(false);
   const [errorDb, setErrorDb] = useState("");
 
+  // Оверлей-лоадер, который не залипает
+  const [loadingOverlay, startLoading, stopLoading] = useMinDelayLoader(
+    500,
+    12000
+  );
+
+  // Загрузка из БД (только если включено в конфиге)
   useEffect(() => {
-    if (!isRestaurantsSlug(slug)) {
-      setDbItems([]);
-      setLoadingDb(false);
-      setErrorDb("");
-      return;
-    }
-
     let cancelled = false;
+
     (async () => {
-      try {
-        setLoadingDb(true);
+      if (!cat.db?.enabled) {
+        // категория без БД — лоадер точно прячем
+        setDbItems([]);
         setErrorDb("");
+        stopLoading();
+        return;
+      }
 
-        const { data: venues, error: e1 } = await supabase
-          .from("venues")
-          .select(
-            "id, title, description, address, map_link, phone, hours, created_at"
-          )
-          .eq("type", "restaurant")
-          .eq("is_published", true)
-          .order("created_at", { ascending: false });
+      try {
+        startLoading();
 
-        if (e1) throw e1;
-        if (!venues?.length) {
-          if (!cancelled) setDbItems([]);
-          setLoadingDb(false);
-          return;
-        }
+        // таймаут-предохранитель на случай зависших запросов
+        const timeout = new Promise((_, rej) =>
+          setTimeout(() => rej(new Error("Превышено время ожидания")), 12000)
+        );
 
-        const ids = venues.map((v) => v.id);
-        const { data: media, error: e2 } = await supabase
-          .from("venue_media")
-          .select("venue_id, kind, src, poster, sort_order") // <-- ВАЖНО: poster
-          .in("venue_id", ids)
-          .order("sort_order", { ascending: true });
-
-        if (e2) throw e2;
-
-        // соберём кавер по правилу: image -> poster video
-        const coverByVenue = new Map(); // id -> url
-        if (media?.length) {
-          for (const m of media) {
-            if (coverByVenue.has(m.venue_id)) continue;
-            if (m.kind === "image" && m.src) {
-              coverByVenue.set(m.venue_id, m.src);
-            }
-          }
-          // если не нашлось image — допройдёмся и поставим poster видео
-          for (const m of media) {
-            if (coverByVenue.has(m.venue_id)) continue;
-            if (m.kind === "video" && m.poster) {
-              coverByVenue.set(m.venue_id, m.poster);
-            }
-          }
-        }
-
-        // Маппинг к формату CardItem
-        const mapped = venues.map((v) => ({
-          id: v.id,
-          type: "restaurant",
-          img: coverByVenue.get(v.id) || "", // теперь будет постер, если нет image
-          title: v.title || "",
-          description: v.description || "",
-          street: v.address || "",
-          yandexMap: v.map_link || "",
-          tel: v.phone || "",
-          telLink: v.phone || "",
-          time: v.hours || "",
-          price: "",
-          imgList: [],
-          // ВАЖНО: свой маршрут для БД, чтобы избежать коллизий с локальными
-          href: `/aurora/restaurant/${v.id}`,
-          _source: "db",
-          _key: `${slug}-db-restaurant-${v.id}`,
-        }));
-
-        if (!cancelled) setDbItems(mapped);
+        const itemsFromDb = await Promise.race([cat.db.loader(), timeout]);
+        if (!cancelled) setDbItems(itemsFromDb || []);
       } catch (err) {
-        if (!cancelled)
-          setErrorDb(err?.message || "Ошибка загрузки ресторанов");
+        if (!cancelled) setErrorDb(err?.message || "Ошибка загрузки");
       } finally {
-        if (!cancelled) setLoadingDb(false);
+        if (!cancelled) stopLoading();
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [cat, startLoading, stopLoading]);
 
-  // объединяем локальные + БД (без дублей по названию)
+  // объединяем local + db (без дублей по ключу из конфига)
   const items = useMemo(() => {
-    if (!isRestaurantsSlug(slug)) return localItems;
+    if (!cat.db?.enabled) return localItems;
 
-    const byTitle = new Set(
+    const key = cat.db.dedupeBy || "title";
+    const localSet = new Set(
       localItems
-        .filter((x) => x?.title)
-        .map((x) => x.title.trim().toLowerCase())
+        .map((x) => (x?.[key] || "").toString().trim().toLowerCase())
+        .filter(Boolean)
     );
-    const onlyNew = dbItems.filter(
-      (x) => x?.title && !byTitle.has(x.title.trim().toLowerCase())
-    );
+    const onlyNew = dbItems.filter((x) => {
+      const v = (x?.[key] || "").toString().trim().toLowerCase();
+      return v && !localSet.has(v);
+    });
     return [...localItems, ...onlyNew];
-  }, [slug, localItems, dbItems]);
+  }, [cat, localItems, dbItems]);
 
-  const listKey = slug; // ключ чтобы перерисовать список при смене URL
+  const listKey = slug;
 
   return (
     <div className={styles.category}>
+      {/* Канонический редирект, не ломая порядок хуков */}
+      {needsRedirect && <Navigate to={`/category/${DEFAULT_SLUG}`} replace />}
+
+      {/* Оверлей-лоадер */}
+      <OverlayLoader show={loadingOverlay} label="Обновляем список…" />
+
       <Category currentDirection={direction} />
 
       <div className={styles.category__content}>
-        {isRestaurantsSlug(slug) && loadingDb && (
-          <div className={styles.category__hint}>Обновляем список…</div>
-        )}
-        {isRestaurantsSlug(slug) && errorDb && (
+        {cat.db?.enabled && errorDb && (
           <div className={styles.category__error}>{errorDb}</div>
         )}
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import AuroraVenueMedia from "/src/components/VenueGallery/AuroraVenue"; // проверь путь
 import { RESTAURANTS } from "../CategoryPage/variables";
 import { supabase } from "/src/lib/supabaseClient.js";
+
 // === helpers ======================================================
 const normalizeMediaLocal = (imgList = [], title = "") =>
   imgList
@@ -64,7 +65,6 @@ function mapDbVenueToAurora({ venue, socials, media }) {
         }
   );
 
-  // hero: первая картинка, если есть
   const hero =
     auroraMedia.find((x) => x.type === "image")?.src ||
     auroraMedia[0]?.sources?.[0]?.src ||
@@ -91,37 +91,44 @@ export default function RestaurantAuroraPage() {
     media: [],
   });
 
+  // --- простой лоадер страницы: минимум 500мс при загрузке из БД ---
+  const [showLoader, setShowLoader] = useState(!local);
+  const loaderStartRef = useRef(0);
+
   useEffect(() => {
     let cancelled = false;
+
     if (local) {
-      // ничего не грузим — показываем локальные
+      // локальные данные — без загрузки
       setDbState((s) => ({ ...s, loading: false, error: "" }));
+      setShowLoader(false);
       return;
     }
-    // грузим из БД
+
+    // старт загрузки из БД
+    setDbState({
+      loading: true,
+      error: "",
+      venue: null,
+      socials: null,
+      media: [],
+    });
+    setShowLoader(true);
+    loaderStartRef.current = performance.now();
+
     (async () => {
       try {
-        setDbState({
-          loading: true,
-          error: "",
-          venue: null,
-          socials: null,
-          media: [],
-        });
-
-        // venue
         const { data: v, error: e1 } = await supabase
           .from("venues")
           .select("*")
-          .eq("id", nId) // id из URL
-          .eq("type", "restaurant") // только рестораны
-          .eq("is_published", true) // только опубликованные
+          .eq("id", nId)
+          .eq("type", "restaurant")
+          .eq("is_published", true)
           .maybeSingle();
 
         if (e1) throw e1;
         if (!v) throw new Error("Ресторан не найден в БД");
 
-        // socials
         const { data: s, error: e2 } = await supabase
           .from("venue_socials")
           .select("*")
@@ -129,7 +136,6 @@ export default function RestaurantAuroraPage() {
           .maybeSingle();
         if (e2) throw e2;
 
-        // media
         const { data: m, error: e3 } = await supabase
           .from("venue_media")
           .select("*")
@@ -145,6 +151,10 @@ export default function RestaurantAuroraPage() {
             socials: s || {},
             media: m || [],
           });
+          // удерживаем лоадер минимум 500мс
+          const elapsed = performance.now() - loaderStartRef.current;
+          const rest = Math.max(0, 500 - elapsed);
+          setTimeout(() => !cancelled && setShowLoader(false), rest);
         }
       } catch (err) {
         if (!cancelled) {
@@ -155,6 +165,9 @@ export default function RestaurantAuroraPage() {
             socials: null,
             media: [],
           });
+          const elapsed = performance.now() - loaderStartRef.current;
+          const rest = Math.max(0, 500 - elapsed);
+          setTimeout(() => !cancelled && setShowLoader(false), rest);
         }
       }
     })();
@@ -164,7 +177,7 @@ export default function RestaurantAuroraPage() {
     };
   }, [id, local, nId]);
 
-  // === данные для Aurora: локальные ИЛИ из БД ===
+  // === локальные данные ===
   if (local) {
     const list = normalizeMediaLocal(local.imgList, local.title);
     const hasHero = list.some((m) => m.type === "image" && m.src === local.img);
@@ -194,34 +207,37 @@ export default function RestaurantAuroraPage() {
     };
 
     return (
-      <AuroraVenueMedia
-        hero={local.img}
-        media={media}
-        venue={venue}
-        onShare={() => {
-          if (navigator.share)
-            navigator
-              .share({ title: local.title, url: window.location.href })
-              .catch(() => {});
-          else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
-        }}
-        showShare={true}
-        showBook={false}
-      />
+      <>
+        {/* на локальном — лоадер не нужен */}
+        <AuroraVenueMedia
+          hero={local.img}
+          media={media}
+          venue={venue}
+          onShare={() => {
+            if (navigator.share)
+              navigator
+                .share({ title: local.title, url: window.location.href })
+                .catch(() => {});
+            else
+              alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
+          }}
+          showShare={true}
+          showBook={false}
+        />
+      </>
     );
   }
 
-  // БД-вариант
-  if (dbState.loading) {
-    return (
-      <section style={{ padding: 24 }}>
-        <p></p>
-      </section>
-    );
-  }
+  // === БД-вариант ===
   if (dbState.error || !dbState.venue) {
     return (
-      <section style={{ padding: 24 }}>
+      <section style={{ padding: 24, minHeight: "60vh" }}>
+        {/* простой оверлей-лоадер, покажи через CSS классы .pageLoaderOverlay/.spinner */}
+        {showLoader && (
+          <div className="pageLoaderOverlay" aria-hidden>
+            <div className="spinner" />
+          </div>
+        )}
         <h1>Ресторан не найден</h1>
         <p>{dbState.error || "Проверьте ссылку или вернитесь к списку."}</p>
       </section>
@@ -235,19 +251,28 @@ export default function RestaurantAuroraPage() {
   });
 
   return (
-    <AuroraVenueMedia
-      hero={hero}
-      media={auroraMedia}
-      venue={auroraVenue}
-      onShare={() => {
-        if (navigator.share)
-          navigator
-            .share({ title: auroraVenue.name, url: window.location.href })
-            .catch(() => {});
-        else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
-      }}
-      showShare={true}
-      showBook={false}
-    />
+    <>
+      {/* оверлей на время первичной загрузки из БД (минимум 500мс) */}
+      {showLoader && (
+        <div className="pageLoaderOverlay" aria-hidden>
+          <div className="spinner" />
+        </div>
+      )}
+
+      <AuroraVenueMedia
+        hero={hero}
+        media={auroraMedia}
+        venue={auroraVenue}
+        onShare={() => {
+          if (navigator.share)
+            navigator
+              .share({ title: auroraVenue.name, url: window.location.href })
+              .catch(() => {});
+          else alert("Скопируйте ссылку из адресной строки, чтобы поделиться");
+        }}
+        showShare={true}
+        showBook={false}
+      />
+    </>
   );
 }

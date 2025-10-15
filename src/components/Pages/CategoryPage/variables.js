@@ -1,6 +1,6 @@
 export const RESTAURANTS = [
   {
-    id: 3,
+    id: 1001,
     img: "https://ik.imagekit.io/tuyona/Restaurants/%D0%A0%D0%B5%D1%81%D1%82%D0%BE%D1%80%D0%B0%D0%BD%20%D0%9C%D0%B0%D0%B3%D0%BD%D0%BE%D0%BB%D0%B8%D1%8F/491446376_647378241519946_5677083117529761547_n.jpg?updatedAt=1755515678329",
     title: "Ресторан Магнолия",
     description:
@@ -41,7 +41,7 @@ export const RESTAURANTS = [
     telegram: "",
   },
   {
-    id: 1,
+    id: 1002,
     img: "https://ik.imagekit.io/tuyona/Restaurants/%D0%A7%D0%B0%D0%B2%D0%BE%D0%BD%D0%BE%D0%BD/480945936_1877339413004309_2834190886052393452_n.jpg?updatedAt=1755510300591",
     title: "Чавонон",
     description:
@@ -76,7 +76,7 @@ export const RESTAURANTS = [
     telegram: "",
   },
   {
-    id: 4,
+    id: 1003,
     img: "https://ik.imagekit.io/tuyona/Restaurants/%D0%A8%D0%BE%D1%85%D1%81%D0%B0%D1%80%D0%BE%D0%B9/519590841_17844312720530918_4397888049196486083_n.jpg?updatedAt=1755517168409",
     title: "Шохсарой",
     description:
@@ -93,7 +93,7 @@ export const RESTAURANTS = [
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/evgki69g3wx3t0l9ricw.mp4",
         poster:
-          "/https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
       },
       {
         type: "video",
@@ -116,7 +116,7 @@ export const RESTAURANTS = [
     telegram: "",
   },
   {
-    id: 2,
+    id: 1004,
     img: "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/maxresdefault.jpg?updatedAt=1754731707791",
     title: "Яккасарой",
     description:
@@ -154,7 +154,7 @@ export const RESTAURANTS = [
 
 export const MUSICIANS = [
   {
-    id: 1,
+    id: 2001,
     img: "https://img.freepik.com/free-photo/beautiful-brunette-woman-singing-microphone-isolated-gray-wall_231208-12884.jpg?semt=ais_hybrid&w=740",
     title: "Группа Парем",
     description:
@@ -172,7 +172,7 @@ export const MUSICIANS = [
 
 export const CARS = [
   {
-    id: 1,
+    id: 3001,
     img: "https://www.myviplimo.de/wp-content/uploads/2019/05/Limousinenservice31.jpg",
     title: "Моши Люкс",
     description:
@@ -190,7 +190,7 @@ export const CARS = [
 
 export const DECORATION = [
   {
-    id: 1,
+    id: 4001,
     img: "https://ik.imagekit.io/tuyona/DECORATION/Mehr%20Decor/ChatGPT%20Image%2027%20%D0%B0%D0%B2%D0%B3.%202025%20%D0%B3.,%2023_46_50.png?updatedAt=1756328071034",
     title: "Mehr Decor",
     description:
@@ -233,7 +233,7 @@ export const DECORATION = [
 
 export const PRESENTERS = [
   {
-    id: 1,
+    id: 5001,
     img: "https://lh3.googleusercontent.com/pHbu0l1XY_RTyHvH-ZAkScnBKie4HzJXZYYRBOFkmu3Sl3fbVLX3Yar5tyfQcKF-xsnKwdlw7H51Gw3_haNTrgU-Kt_QPe_fIyZS-Q=w961-h641-l80-e31",
     title: "Игорь крутой",
     description:
@@ -251,7 +251,7 @@ export const PRESENTERS = [
 
 export const PHOTOGRAPHERS = [
   {
-    id: 1,
+    id: 6001,
     img: "https://ik.imagekit.io/tuyona/Photographers%20%20/Husei_Madudov/240183005_4432573940139504_4779869106680520316_n.jpg?updatedAt=1756465300591",
     title: "Husein Madudov",
     description:
@@ -291,7 +291,7 @@ export const PHOTOGRAPHERS = [
     telegram: "",
   },
   {
-    id: 2,
+    id: 6002,
     img: "https://ik.imagekit.io/tuyona/Photographers%20%20/318221292_591379192988100_5291848271175952405_n.jpg?updatedAt=1756471642938",
     title: "Abdullo Media",
     description:
@@ -331,7 +331,7 @@ export const PHOTOGRAPHERS = [
     telegram: "",
   },
   {
-    id: 3,
+    id: 6003,
     img: "https://ik.imagekit.io/tuyona/Photographers%20%20/165757028_356803148953861_7331755974801169977_n.jpg?updatedAt=1756476097698",
     title: "Marryme",
     description:
@@ -372,7 +372,7 @@ export const PHOTOGRAPHERS = [
     telegram: "",
   },
   {
-    id: 4,
+    id: 6004,
     img: "https://ik.imagekit.io/tuyona/Photographers%20%20/450793990_7684295345023120_7255959705745736108_n..jpg?updatedAt=1756581397446",
     title: "Spacewedding",
     description:
@@ -416,7 +416,7 @@ export const PHOTOGRAPHERS = [
 
 export const SINGERS = [
   {
-    id: 1,
+    id: 7001,
     img: "https://mp3.tj/img/artist/b/8/4/623.jpg",
     title: "Чонибек Муродов",
     description:
@@ -434,7 +434,7 @@ export const SINGERS = [
 
 export const BEAUTY_SALON = [
   {
-    id: 1,
+    id: 8001,
     img: "https://ik.imagekit.io/tuyona/WeddingSalon/447925236_429132973371469_5464215235295057490_n..jpg?updatedAt=1756584419071",
     title: "Sitorai Durahshon",
     description:
@@ -476,7 +476,7 @@ export const BEAUTY_SALON = [
     telegram: "",
   },
   {
-    id: 2,
+    id: 8002,
     img: "https://ik.imagekit.io/tuyona/WeddingSalon/539469047_18292963978248061_3324380605379830260_n..jpg?updatedAt=1756585730393",
     title: "Wedding House MJ",
     description:
@@ -517,7 +517,7 @@ export const BEAUTY_SALON = [
     telegram: "",
   },
   {
-    id: 3,
+    id: 8003,
     img: "https://ik.imagekit.io/tuyona/WeddingSalon/472974362_9151890181556542_21346487368858999_n..jpg?updatedAt=1756586320866",
     title: "Svadebniy Salon Mavzun",
     description:

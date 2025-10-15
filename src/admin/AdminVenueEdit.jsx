@@ -13,6 +13,52 @@ import {
 } from "../lib/storage";
 import "./admin.css";
 
+/* ===========================
+   ЕДИНЫЕ ТИПЫ + НОРМАЛИЗАЦИЯ
+   =========================== */
+const VENUE_TYPES = [
+  { value: "restaurant", label: "Ресторан" },
+  { value: "musician", label: "Музыкант" },
+  { value: "car", label: "Авто" },
+  { value: "decoration", label: "Оформление" },
+  { value: "presenter", label: "Ведущий" },
+  { value: "photographer", label: "Фотограф" },
+  { value: "singer", label: "Певец" },
+  { value: "beauty_salon", label: "Салон красоты" },
+];
+
+function normalizeType(raw = "") {
+  const r = String(raw).toLowerCase();
+  const map = {
+    restaurants: "restaurant",
+    restaurant: "restaurant",
+
+    musicians: "musician",
+    musician: "musician",
+
+    cars: "car",
+    car: "car",
+
+    decorations: "decoration",
+    decoration: "decoration",
+
+    presenters: "presenter",
+    presenter: "presenter",
+
+    photographers: "photographer",
+    photographer: "photographer",
+
+    singers: "singer",
+    singer: "singer",
+
+    beautysalons: "beauty_salon",
+    beauty_salon: "beauty_salon",
+    beautysalon: "beauty_salon",
+    "beauty-salon": "beauty_salon",
+  };
+  return map[r] || "restaurant";
+}
+
 export default function AdminVenueEdit() {
   const { id: idParam } = useParams();
   const vid = Number(idParam);
@@ -44,9 +90,9 @@ export default function AdminVenueEdit() {
 
   const [media, setMedia] = useState([]);
 
-  // Загрузка данных (ТОЛЬКО если редактирование существующего id)
+  // Загрузка существующих данных
   useEffect(() => {
-    if (isNew) return; // <— важная защита от id=NaN
+    if (isNew) return;
     (async () => {
       const { data: v, error: e1 } = await supabase
         .from("venues")
@@ -54,7 +100,11 @@ export default function AdminVenueEdit() {
         .eq("id", vid)
         .maybeSingle();
       if (e1 || !v) return;
-      setVenue(v);
+
+      setVenue({
+        ...v,
+        type: normalizeType(v.type),
+      });
 
       const { data: s } = await supabase
         .from("venue_socials")
@@ -78,7 +128,7 @@ export default function AdminVenueEdit() {
       setMedia(
         (m || []).map((x) => ({
           kind: x.kind,
-          src: x.src, // ПУБЛИЧНЫЙ URL
+          src: x.src,
           poster: x.poster || "",
           path: x.path || "",
           posterPath: x.poster_path || "",
@@ -87,7 +137,7 @@ export default function AdminVenueEdit() {
     })();
   }, [isNew, vid]);
 
-  // Добавление медиа — ВСЕГДА кладём ПУБЛИЧНЫЙ URL в src
+  // Добавление медиа
   const addImageByFile = async (file) => {
     if (!file || !uid) return;
     const base = venue.id ? `venues/${venue.id}` : `drafts/${uid}`;
@@ -150,10 +200,13 @@ export default function AdminVenueEdit() {
   const save = async () => {
     let currentId = venue.id;
 
+    // гарантируем нормализованный type
+    const payload = { ...venue, type: normalizeType(venue.type) };
+
     if (isNew) {
       const { data: ins, error } = await supabase
         .from("venues")
-        .insert(venue)
+        .insert(payload)
         .select("*")
         .single();
       if (error) return alert(error.message);
@@ -162,7 +215,7 @@ export default function AdminVenueEdit() {
     } else {
       const { error } = await supabase
         .from("venues")
-        .update(venue)
+        .update(payload)
         .eq("id", currentId);
       if (error) return alert(error.message);
     }
@@ -224,7 +277,7 @@ export default function AdminVenueEdit() {
   const auroraVenue = useMemo(
     () => ({
       name: venue.title,
-      categories: [venue.type].filter(Boolean),
+      categories: [normalizeType(venue.type)].filter(Boolean),
       priceLevel: venue.price_level || "",
       openNow: !!venue.open_now,
       hours: venue.hours || "",
@@ -270,19 +323,23 @@ export default function AdminVenueEdit() {
           {/* Основные поля */}
           <div className="form-grid">
             <div>
-              <div className="label">Тип</div>
+              <div className="label">Категория (type)</div>
               <select
                 className="select"
                 value={venue.type}
                 onChange={(e) =>
-                  setVenue((v) => ({ ...v, type: e.target.value }))
+                  setVenue((v) => ({
+                    ...v,
+                    type: normalizeType(e.target.value),
+                  }))
                 }
+                required
               >
-                <option value="restaurant">restaurant</option>
-                <option value="photographers">photographers</option>
-                <option value="beautySalons">beautySalons</option>
-                <option value="musicians">musicians</option>
-                <option value="presenters">presenters</option>
+                {VENUE_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -474,6 +531,14 @@ export default function AdminVenueEdit() {
                 >
                   <option value="image">image</option>
                   <option value="video">video</option>
+                  <option value="restaurant">restaurant</option>
+                  <option value="musician">musician</option>
+                  <option value="car">car</option>
+                  <option value="decoration">decoration</option>
+                  <option value="presenter">presenter</option>
+                  <option value="photographer">photographer</option>
+                  <option value="singer">singer</option>
+                  <option value="beauty_salon">beauty_salon</option>
                 </select>
 
                 <input
@@ -520,7 +585,7 @@ export default function AdminVenueEdit() {
         </div>
       </div>
 
-      {/* Правая колонка — предпросмотр Aurora */}
+      {/* Предпросмотр */}
       <div className="preview-card panel">
         <div className="panel-header">
           <div className="panel-title">Предпросмотр</div>
@@ -528,17 +593,14 @@ export default function AdminVenueEdit() {
         <div className="panel-body">
           <AuroraVenue
             hero={hero}
-            media={
-              // ключ на <video> внутри Aurora: авто-play при переключении
-              auroraMedia.map((it) =>
-                it.type === "video"
-                  ? {
-                      ...it,
-                      key: (it.sources?.[0]?.src || "") + Math.random(),
-                    }
-                  : it
-              )
-            }
+            media={auroraMedia.map((it) =>
+              it.type === "video"
+                ? {
+                    ...it,
+                    key: (it.sources?.[0]?.src || "") + Math.random(),
+                  }
+                : it
+            )}
             venue={auroraVenue}
             onShare={() => {}}
             showShare={false}

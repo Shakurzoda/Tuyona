@@ -20,6 +20,26 @@
   justify-content: center;
 }
 
+.loaderOverlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: rgba(10,12,16,.6);
+  backdrop-filter: blur(6px);
+}
+.loaderSpinner{
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.25);
+  border-top-color: #fff;
+  animation: catSpin .8s linear infinite;
+}
+@keyframes catSpin{ to { transform: rotate(360deg) } }
+
+
 @media (max-width: 1024px) {
   .category__items {
     gap: 1.5rem;

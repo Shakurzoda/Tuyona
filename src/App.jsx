@@ -1,6 +1,6 @@
 // src/App.jsx
 import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import "./App.css";
 
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
@@ -10,15 +10,9 @@ import Footer from "./components/Footer/Footer";
 import Home from "./components/Pages/Home/Home";
 import CategoryPage from "./components/Pages/CategoryPage/CategoryPage";
 import UserAdDetails from "./components/Pages/UserAdDetails/UserAdDetails";
-import RestaurantPage from "./components/Pages/RestaurantPage/RestaurantPage";
-import MusiciansPage from "./components/Pages/MusiciansPage/MusiciansPage";
-import CarsPage from "./components/Pages/CarsPage/CarsPage";
-import DecorationPage from "./components/Pages/DecorationPage/DecorationPage";
-import PresentersPage from "./components/Pages/PresentersPage/PresentersPage";
-import PhotographersPage from "./components/Pages/PhotographersPage/PhotographersPage";
-import SingersPage from "./components/Pages/SingersPage/SingersPage";
-import BeautySalonsPage from "./components/Pages/BeautySalonsPage/BeautySalonsPage";
 import PartnershipsPage from "./components/Pages/PartnershipsPage/PartnershipsPage";
+import UniversalVenuePage from "./components/Pages/UniversalVenuePage/UniversalVenuePage";
+import LegacyToAurora from "./components/Routing/LegacyToAurora";
 
 // Админка
 import AdminLogin from "./admin/AdminLogin";
@@ -31,7 +25,6 @@ function App() {
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
-    // прелоад важных изображений (необязательно)
     const lcpImages = ["/hero-image.webp", "/main-banner.jpg"];
     lcpImages.forEach((img) => {
       const link = document.createElement("link");
@@ -48,17 +41,49 @@ function App() {
       <ScrollToTop />
 
       <Routes>
+        {/* Главная и категории */}
         <Route path="/" element={<Home />} />
-        <Route path="/category" element={<CategoryPage />} />
+        <Route
+          path="/category"
+          element={<Navigate to="/category/restaurant" replace />}
+        />
         <Route path="/category/:category" element={<CategoryPage />} />
-        <Route path="/restaurant/:id" element={<RestaurantPage />} />
-        <Route path="/musicians/:id" element={<MusiciansPage />} />
-        <Route path="/cars/:id" element={<CarsPage />} />
-        <Route path="/decoration/:id" element={<DecorationPage />} />
-        <Route path="/presenters/:id" element={<PresentersPage />} />
-        <Route path="/photographers/:id" element={<PhotographersPage />} />
-        <Route path="/singers/:id" element={<SingersPage />} />
-        <Route path="/beautySalons/:id" element={<BeautySalonsPage />} />
+
+        {/* Универсальная детальная страница */}
+        <Route path="/aurora/:type/:id" element={<UniversalVenuePage />} />
+
+        {/* Редиректы со старых ссылок */}
+        <Route
+          path="/restaurant/:id"
+          element={<LegacyToAurora mapType="restaurant" />}
+        />
+        <Route
+          path="/musicians/:id"
+          element={<LegacyToAurora mapType="musician" />}
+        />
+        <Route path="/cars/:id" element={<LegacyToAurora mapType="car" />} />
+        <Route
+          path="/decoration/:id"
+          element={<LegacyToAurora mapType="decoration" />}
+        />
+        <Route
+          path="/presenters/:id"
+          element={<LegacyToAurora mapType="presenter" />}
+        />
+        <Route
+          path="/photographers/:id"
+          element={<LegacyToAurora mapType="photographer" />}
+        />
+        <Route
+          path="/singers/:id"
+          element={<LegacyToAurora mapType="singer" />}
+        />
+        <Route
+          path="/beautySalons/:id"
+          element={<LegacyToAurora mapType="beauty_salon" />}
+        />
+
+        {/* Прочие страницы */}
         <Route path="/userAdDetails" element={<UserAdDetails />} />
         <Route path="/partnerships" element={<PartnershipsPage />} />
 
@@ -69,6 +94,9 @@ function App() {
           <Route path="venues/new" element={<AdminVenueEdit />} />
           <Route path="venues/:id" element={<AdminVenueEdit />} />
         </Route>
+
+        {/* Фоллбек: на главную */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {!isAdminRoute && <Footer />}

@@ -13,7 +13,7 @@ import MyButton from "../MyButton/MyButton";
  * - media: [
  *     { type:"image", src, alt? } |
  *     { type:"video", poster?, sources:[{src,type?}] } |
- *     { type:"video", src, poster? } // будет превращено в sources
+ *     { type:"video", src, poster?, alt? } // src → будет превращено в sources
  *   ]
  * - venue: {
  *     name, rating?, reviews?, categories?, priceLevel?, openNow?, hours?,
@@ -22,6 +22,7 @@ import MyButton from "../MyButton/MyButton";
  *   }
  * - onShare?, onBook?, showShare=true, showBook=false
  */
+
 export default function AuroraVenueMedia({
   venue = {},
   media = [],
@@ -42,71 +43,20 @@ export default function AuroraVenueMedia({
     address,
     mapLink,
     description,
-    socials = {}, // <-- ВАЖНО: соцсети приходят сюда
+    socials = {},
   } = venue;
 
-  // --- нормализация медиа ---
-  const items = useMemo(() => {
-    return (media || []).filter(Boolean).map((m) => {
-      if (m.type === "video") {
-        const sources =
-          Array.isArray(m.sources) && m.sources.length
-            ? m.sources
-            : m.src
-            ? [{ src: m.src, type: "video/mp4" }]
-            : [];
-        return {
-          type: "video",
-          poster: m.poster || "",
-          alt: m.alt || "",
-          sources,
-        };
-      }
-      return { type: "image", src: m.src, alt: m.alt || "" };
-    });
-  }, [media]);
+  // 1) Нормализация медиа
+  const items = useMemo(() => normalizeMedia(media), [media]);
 
-  // --- «галочка» минимальной задержки показа (0.5s), без жёсткого лоадера ---
-  const previewUrl = useMemo(() => {
-    const cand =
-      items
-        .slice(0, 5)
-        .find((it) => (it.type === "image" ? !!it.src : !!it.poster)) || null;
-    return cand ? (cand.type === "image" ? cand.src : cand.poster) : "";
-  }, [items]);
-
-  const [previewReady, setPreviewReady] = useState(false);
-
+  // 2) Очень лёгкий «загрузчик» при первом показе (0.5 c)
+  const [isBooting, setIsBooting] = useState(true);
   useEffect(() => {
-    const MIN_SHOW_MS = 500;
-    if (!previewUrl) {
-      setPreviewReady(false);
-      const t = setTimeout(() => setPreviewReady(true), MIN_SHOW_MS);
-      return () => clearTimeout(t);
-    }
-    setPreviewReady(false);
-    let done = false;
-    const img = new Image();
-    const startedAt = Date.now();
-    const finish = () => {
-      if (done) return;
-      done = true;
-      const elapsed = Date.now() - startedAt;
-      const delay = Math.max(MIN_SHOW_MS - elapsed, 0);
-      const t = setTimeout(() => setPreviewReady(true), delay);
-      timers.push(t);
-    };
-    const timers = [];
-    img.onload = finish;
-    img.onerror = finish;
-    img.src = previewUrl;
-    return () => {
-      done = true;
-      timers.forEach(clearTimeout);
-    };
-  }, [previewUrl]);
+    const t = setTimeout(() => setIsBooting(false), 500);
+    return () => clearTimeout(t);
+  }, []);
 
-  // --- лайтбокс и навигация ---
+  // 3) Лайтбокс и навигация
   const [lb, setLb] = useState({ open: false, i: 0 });
   const open = useCallback((i) => setLb({ open: true, i }), []);
   const close = useCallback(() => setLb((x) => ({ ...x, open: false })), []);
@@ -119,7 +69,7 @@ export default function AuroraVenueMedia({
     [items.length]
   );
 
-  // клавиатура
+  // 4) Клавиатура
   useEffect(() => {
     if (!lb.open) return;
     const onKey = (e) => {
@@ -131,30 +81,28 @@ export default function AuroraVenueMedia({
     return () => window.removeEventListener("keydown", onKey);
   }, [lb.open, close, prev, next]);
 
-  // автопауза/автоплей видео
+  // 5) Автопауза/автоплей видео
   const videoRef = useRef(null);
   useEffect(() => {
     if (!lb.open) return;
     const cur = items[lb.i];
     if (cur?.type !== "video" && videoRef.current) {
-      videoRef.current.pause();
+      try {
+        videoRef.current.pause();
+      } catch {}
     }
     if (cur?.type === "video") {
       requestAnimationFrame(() => {
         const el = videoRef.current;
         if (!el) return;
+        el.muted = true; // для автоплея на мобильных
         const p = el.play?.();
-        if (p && p.catch) {
-          p.catch(() => {
-            el.muted = true;
-            el.play?.().catch(() => {});
-          });
-        }
+        if (p?.catch) p.catch(() => {});
       });
     }
   }, [lb.i, lb.open, items]);
 
-  // свайп
+  // 6) Свайп
   const swipe = useRef({ x0: 0, x: 0 });
   const SWIPE_THR = 50;
   const onTouchStart = (e) => {
@@ -170,10 +118,7 @@ export default function AuroraVenueMedia({
   };
   const onTouchEnd = () => {
     const dx = swipe.current.x - swipe.current.x0;
-    if (Math.abs(dx) > SWIPE_THR) {
-      if (dx < 0) next();
-      else prev();
-    }
+    if (Math.abs(dx) > SWIPE_THR) (dx < 0 ? next : prev)();
     swipe.current.x0 = 0;
     swipe.current.x = 0;
   };
@@ -185,338 +130,366 @@ export default function AuroraVenueMedia({
   };
 
   return (
-    <section className={s.wrap} aria-busy={!previewReady}>
-      {/* фоновая «аврора» */}
-      <div className={s.aurora} aria-hidden />
-
-      {/* Заголовок / hero-зона */}
-      <div className={s.hero}>
-        <div className={s.titleBlock}>
-          <h1 className={s.title}>{name}</h1>
-
-          <div className={s.metaRow}>
-            {typeof rating === "number" && (
-              <>
-                <Rating value={rating} />
-                <span className={s.rateVal}>
-                  {rating.toFixed ? rating.toFixed(1) : rating}
-                </span>
-              </>
-            )}
-            {typeof reviews === "number" && (
-              <span className={s.muted}>({reviews})</span>
-            )}
-            {categories?.length > 0 && (
-              <span className={s.muted}>{categories.join(" · ")}</span>
-            )}
-            {typeof openNow === "boolean" && (
-              <span className={`${s.badge} ${openNow ? s.open : s.closed}`}>
-                {openNow ? "Проверено" : "Закрыто"}
-              </span>
-            )}
-            {priceLevel && <span className={s.price}>{priceLevel}</span>}
-          </div>
-
-          {description && <p className={s.desc}>{description}</p>}
-
-          {(showShare || showBook) && (
-            <div className={s.ctaRow}>
-              {showShare && (
-                <MyButton size="medium" color="green" onClick={onShare}>
-                  Поделиться
-                </MyButton>
-              )}
-              {showBook && (
-                <MyButton size="medium" color="primary" onClick={onBook}>
-                  Забронировать
-                </MyButton>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Инфо-блоки */}
-      <div className={s.infoGrid}>
-        {hours && <Info icon="clock" label="Часы" value={hours} />}
-
-        {(address || mapLink) && (
-          <Info
-            icon="pin"
-            label="Адрес"
-            value={
-              <div className={s.addrRow}>
-                <span className={s.addrText}>
-                  <span className={s.addrIcon}>📍</span>
-                  {mapLink ? (
-                    <a href={mapLink} target="_blank" rel="noreferrer">
-                      {address || "Открыть карту"}
-                    </a>
-                  ) : (
-                    address || "—"
-                  )}
-                </span>
-              </div>
-            }
-          />
-        )}
-
-        {phone && (
-          <Info
-            icon="phone"
-            label="Телефон"
-            value={<a href={cleanTel(phone)}>{phone}</a>}
-          />
-        )}
-
-        {(socials.instagram ||
-          socials.telegram ||
-          socials.whatsapp ||
-          socials.youtube) && (
-          <Info
-            icon="share"
-            label="Соцсети"
-            value={
-              <div className={s.socials}>
-                {socials.youtube && (
-                  <a
-                    href={socials.youtube}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="YouTube"
-                  >
-                    <SvgSocial name="youtube" />
-                    <span>YouTube</span>
-                  </a>
-                )}
-                {socials.whatsapp && (
-                  <a
-                    href={socials.whatsapp}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="WhatsApp"
-                  >
-                    <SvgSocial name="whatsapp" />
-                    <span>WhatsApp</span>
-                  </a>
-                )}
-                {socials.telegram && (
-                  <a
-                    href={socials.telegram}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="Telegram"
-                  >
-                    <SvgSocial name="telegram" />
-                    <span>Telegram</span>
-                  </a>
-                )}
-                {socials.instagram && (
-                  <a
-                    href={socials.instagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={s.socialBtn}
-                    aria-label="Instagram"
-                  >
-                    <SvgSocial name="instagram" />
-                    <span>Instagram</span>
-                  </a>
-                )}
-              </div>
-            }
-          />
-        )}
-      </div>
-
-      {/* Бенто-коллаж */}
-      <div className={s.bento}>
-        <div className={s.bentoGrid}>
-          {items[0] && (
-            <Tile
-              item={items[0]}
-              className={`${s.bentoItem} ${s.bentoHero}`}
-              onClick={() => open(0)}
-            />
-          )}
-          {items[1] && (
-            <Tile
-              item={items[1]}
-              className={`${s.bentoItem} ${s.bentoA}`}
-              onClick={() => open(1)}
-            />
-          )}
-          {items[2] && (
-            <Tile
-              item={items[2]}
-              className={`${s.bentoItem} ${s.bentoB}`}
-              onClick={() => open(2)}
-            />
-          )}
-          {items[3] && (
-            <Tile
-              item={items[3]}
-              className={`${s.bentoItem} ${s.bentoC}`}
-              onClick={() => open(3)}
-            />
-          )}
-          {items[4] && (
-            <Tile
-              item={items[4]}
-              className={`${s.bentoItem} ${s.bentoD}`}
-              onClick={() => open(4)}
-            />
-          )}
-        </div>
-
-        {/* Мобильная лента */}
-        <div className={s.filmstripWrap}>
-          <div className={s.filmstrip} role="list">
-            {items.slice(0, 12).map((it, i) => (
-              <button
-                key={i}
-                className={s.filmItem}
-                onClick={() => open(i)}
-                role="listitem"
-                aria-label={`Медиа ${i + 1}`}
-              >
-                {it.type === "image" ? (
-                  <img
-                    src={it.src}
-                    alt={it.alt || `Фото ${i + 1}`}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className={s.videoThumb}>
-                    {it.poster ? (
-                      <img src={it.poster} alt="" />
-                    ) : (
-                      <div className={s.noPoster} />
-                    )}
-                    <span className={s.playBadge}>▶</span>
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-          <div className={s.edgeFade} aria-hidden />
-        </div>
-      </div>
-
-      {/* Лайтбокс */}
-      {lb.open && items.length > 0 && (
-        <div className={s.lb} role="dialog" aria-modal="true">
-          <div className={s.lbGlass} onClick={close} />
-          <img style={{ display: "none" }} alt="" />
-          <button
-            className={`${s.nav} ${s.prev}`}
-            onClick={prev}
-            aria-label="Назад"
-          >
-            ‹
-          </button>
-          <button
-            className={`${s.nav} ${s.next}`}
-            onClick={next}
-            aria-label="Вперёд"
-          >
-            ›
-          </button>
-          <button className={s.close} onClick={close} aria-label="Закрыть">
-            ✕
-          </button>
-
-          <div
-            className={s.stage}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            {items[lb.i].type === "image" ? (
-              <img
-                className={s.lbImg}
-                src={items[lb.i].src}
-                alt={items[lb.i].alt || "Фото"}
-              />
-            ) : (
-              <video
-                key={items[lb.i].sources?.[0]?.src || lb.i}
-                className={s.lbVid}
-                ref={videoRef}
-                controls
-                playsInline
-                autoPlay
-                preload="metadata"
-                poster={items[lb.i].poster}
-              >
-                {items[lb.i].sources.map((srcObj, idx) => (
-                  <source
-                    key={idx}
-                    src={srcObj.src}
-                    type={srcObj.type || "video/mp4"}
-                  />
-                ))}
-                Ваш браузер не поддерживает видео.
-              </video>
-            )}
-          </div>
-
-          <div className={s.thumbRow}>
-            {items.map((it, i) => (
-              <button
-                key={i}
-                className={`${s.thumb} ${i === lb.i ? s.active : ""}`}
-                onClick={() => setLb({ open: true, i })}
-                aria-label={`Открыть ${
-                  it.type === "video" ? "видео" : "фото"
-                } ${i + 1}`}
-              >
-                {it.type === "image" ? (
-                  <img src={it.src} alt="" />
-                ) : (
-                  <div className={s.thumbVideo}>
-                    {it.poster ? (
-                      <img src={it.poster} alt="" />
-                    ) : (
-                      <div className={s.noPoster} />
-                    )}
-                    <span className={s.playDot} />
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
+    <>
+      {isBooting && (
+        <div className={s.loaderOverlay} aria-hidden>
+          <div className={s.spinner} />
         </div>
       )}
-    </section>
+
+      <section className={s.wrap}>
+        {/* фон-«аврора» */}
+        <div className={s.aurora} aria-hidden />
+
+        {/* Заголовок / hero-зона */}
+        <div className={s.hero}>
+          <div className={s.titleBlock}>
+            <h1 className={s.title}>{name}</h1>
+
+            <div className={s.metaRow}>
+              {typeof rating === "number" && (
+                <>
+                  <Rating value={rating} />
+                  <span className={s.rateVal}>
+                    {rating.toFixed ? rating.toFixed(1) : rating}
+                  </span>
+                </>
+              )}
+              {typeof reviews === "number" && (
+                <span className={s.muted}>({reviews})</span>
+              )}
+              {categories?.length > 0 && (
+                <span className={s.muted}>{categories.join(" · ")}</span>
+              )}
+              {typeof openNow === "boolean" && (
+                <span className={`${s.badge} ${openNow ? s.open : s.closed}`}>
+                  {openNow ? "Проверено" : "Закрыто"}
+                </span>
+              )}
+              {priceLevel && <span className={s.price}>{priceLevel}</span>}
+            </div>
+
+            {description && <p className={s.desc}>{description}</p>}
+
+            {(showShare || showBook) && (
+              <div className={s.ctaRow}>
+                {showShare && (
+                  <MyButton size="medium" color="green" onClick={onShare}>
+                    Поделиться
+                  </MyButton>
+                )}
+                {showBook && (
+                  <MyButton size="medium" color="primary" onClick={onBook}>
+                    Забронировать
+                  </MyButton>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Инфо-блоки */}
+        <div className={s.infoGrid}>
+          {hours && <Info icon="clock" label="Часы" value={hours} />}
+
+          {(address || mapLink) && (
+            <Info
+              icon="pin"
+              label="Адрес"
+              value={
+                <div className={s.addrRow}>
+                  <span className={s.addrText}>
+                    <span className={s.addrIcon}>📍</span>
+                    {mapLink ? (
+                      <a href={mapLink} target="_blank" rel="noreferrer">
+                        {address || "Открыть карту"}
+                      </a>
+                    ) : (
+                      address || "—"
+                    )}
+                  </span>
+                </div>
+              }
+            />
+          )}
+
+          {phone && (
+            <Info
+              icon="phone"
+              label="Телефон"
+              value={<a href={cleanTel(phone)}>{phone}</a>}
+            />
+          )}
+
+          {(socials.instagram ||
+            socials.telegram ||
+            socials.whatsapp ||
+            socials.youtube) && (
+            <Info
+              icon="share"
+              label="Соцсети"
+              value={
+                <div className={s.socials}>
+                  {socials.youtube && (
+                    <a
+                      href={socials.youtube}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={s.socialBtn}
+                      aria-label="YouTube"
+                    >
+                      <SvgSocial name="youtube" />
+                      <span>YouTube</span>
+                    </a>
+                  )}
+                  {socials.whatsapp && (
+                    <a
+                      href={socials.whatsapp}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={s.socialBtn}
+                      aria-label="WhatsApp"
+                    >
+                      <SvgSocial name="whatsapp" />
+                      <span>WhatsApp</span>
+                    </a>
+                  )}
+                  {socials.telegram && (
+                    <a
+                      href={socials.telegram}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={s.socialBtn}
+                      aria-label="Telegram"
+                    >
+                      <SvgSocial name="telegram" />
+                      <span>Telegram</span>
+                    </a>
+                  )}
+                  {socials.instagram && (
+                    <a
+                      href={socials.instagram}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={s.socialBtn}
+                      aria-label="Instagram"
+                    >
+                      <SvgSocial name="instagram" />
+                      <span>Instagram</span>
+                    </a>
+                  )}
+                </div>
+              }
+            />
+          )}
+        </div>
+
+        {/* Бенто-коллаж */}
+        <div className={s.bento}>
+          <div className={s.bentoGrid}>
+            {items[0] && (
+              <Tile
+                item={items[0]}
+                className={`${s.bentoItem} ${s.bentoHero}`}
+                onClick={() => open(0)}
+              />
+            )}
+            {items[1] && (
+              <Tile
+                item={items[1]}
+                className={`${s.bentoItem} ${s.bentoA}`}
+                onClick={() => open(1)}
+              />
+            )}
+            {items[2] && (
+              <Tile
+                item={items[2]}
+                className={`${s.bentoItem} ${s.bentoB}`}
+                onClick={() => open(2)}
+              />
+            )}
+            {items[3] && (
+              <Tile
+                item={items[3]}
+                className={`${s.bentoItem} ${s.bentoC}`}
+                onClick={() => open(3)}
+              />
+            )}
+            {items[4] && (
+              <Tile
+                item={items[4]}
+                className={`${s.bentoItem} ${s.bentoD}`}
+                onClick={() => open(4)}
+              />
+            )}
+          </div>
+
+          {/* Мобильная лента */}
+          <div className={s.filmstripWrap}>
+            <div className={s.filmstrip} role="list">
+              {items.slice(0, 12).map((it, i) => (
+                <button
+                  key={i}
+                  className={s.filmItem}
+                  onClick={() => open(i)}
+                  role="listitem"
+                  aria-label={`Медиа ${i + 1}`}
+                >
+                  {it.type === "image" ? (
+                    <img
+                      src={it.src}
+                      alt={it.alt || `Фото ${i + 1}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className={s.videoThumb}>
+                      {it.poster ? (
+                        <img src={it.poster} alt="" />
+                      ) : (
+                        <div className={s.noPoster} />
+                      )}
+                      <span className={s.playBadge}>▶</span>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className={s.edgeFade} aria-hidden />
+          </div>
+        </div>
+
+        {/* Лайтбокс */}
+        {lb.open && items.length > 0 && (
+          <div className={s.lb} role="dialog" aria-modal="true">
+            <div className={s.lbGlass} onClick={close} />
+            <img style={{ display: "none" }} alt="" />
+            <button
+              className={`${s.nav} ${s.prev}`}
+              onClick={prev}
+              aria-label="Назад"
+            >
+              ‹
+            </button>
+            <button
+              className={`${s.nav} ${s.next}`}
+              onClick={next}
+              aria-label="Вперёд"
+            >
+              ›
+            </button>
+            <button className={s.close} onClick={close} aria-label="Закрыть">
+              ✕
+            </button>
+
+            <div
+              className={s.stage}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {items[lb.i].type === "image" ? (
+                <img
+                  className={s.lbImg}
+                  src={items[lb.i].src}
+                  alt={items[lb.i].alt || "Фото"}
+                />
+              ) : (
+                <video
+                  key={items[lb.i].sources?.[0]?.src || lb.i}
+                  className={s.lbVid}
+                  ref={videoRef}
+                  controls
+                  playsInline
+                  autoPlay
+                  preload="metadata"
+                  muted
+                  poster={items[lb.i].poster}
+                >
+                  {items[lb.i].sources.map((srcObj, idx) => (
+                    <source
+                      key={idx}
+                      src={srcObj.src}
+                      type={srcObj.type || "video/mp4"}
+                    />
+                  ))}
+                  Ваш браузер не поддерживает видео.
+                </video>
+              )}
+            </div>
+
+            <div className={s.thumbRow}>
+              {items.map((it, i) => (
+                <button
+                  key={i}
+                  className={`${s.thumb} ${i === lb.i ? s.active : ""}`}
+                  onClick={() => setLb({ open: true, i })}
+                  aria-label={`Открыть ${
+                    it.type === "video" ? "видео" : "фото"
+                  } ${i + 1}`}
+                >
+                  {it.type === "image" ? (
+                    <img src={it.src} alt="" />
+                  ) : (
+                    <div className={s.thumbVideo}>
+                      {it.poster ? (
+                        <img src={it.poster} alt="" />
+                      ) : (
+                        <div className={s.noPoster} />
+                      )}
+                      <span className={s.playDot} />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    </>
   );
 }
 
 /* ===== helpers ===== */
 
-export function normalizeMedia(media = []) {
-  return media.filter(Boolean).map((m) => {
-    if (m.type === "video") {
-      const sources =
-        Array.isArray(m.sources) && m.sources.length
-          ? m.sources
-          : m.src
-          ? [{ src: m.src, type: "video/mp4" }]
-          : [];
-      return {
-        type: "video",
-        poster: m.poster || "",
-        alt: m.alt || "",
-        sources,
-      };
-    }
-    return { type: "image", src: m.src, alt: m.alt || "" };
-  });
+/** Аккуратная подчистка URL: фиксим только явные опечатки. */
+function cleanUrl(u = "") {
+  let x = String(u).trim();
+  // исправляем "/https://..." → "https://..."
+  x = x.replace(/^\/+(https?:\/\/)/, "$1");
+  // cloudinary: http → https
+  if (x.startsWith("http://res.cloudinary.com")) {
+    x = x.replace(/^http:\/\//, "https://");
+  }
+  return x;
 }
 
+/** Превращаем все варианты медиа к стабильному виду. */
+export function normalizeMedia(media = []) {
+  return (media || [])
+    .filter(Boolean)
+    .map((m) => {
+      if (m.type === "video") {
+        const poster = m.poster ? cleanUrl(m.poster) : "";
+        const direct = m.src ? cleanUrl(m.src) : "";
+        const sources =
+          Array.isArray(m.sources) && m.sources.length
+            ? m.sources
+                .map((s) => ({
+                  src: cleanUrl(s?.src || ""),
+                  type: s?.type || "video/mp4",
+                }))
+                .filter((s) => !!s.src)
+            : direct
+            ? [{ src: direct, type: "video/mp4" }]
+            : [];
+        return { type: "video", poster, alt: m.alt || "", sources };
+      }
+      return { type: "image", src: cleanUrl(m.src || ""), alt: m.alt || "" };
+    })
+    .filter((x) => (x.type === "image" ? !!x.src : !!x.sources?.[0]?.src));
+}
+
+/** Карточка плитки */
 function Tile({ item, className, onClick }) {
   if (item.type === "image") {
     return (

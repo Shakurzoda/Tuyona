@@ -1,9 +1,13 @@
 import "./CardItem.css";
 import { Link } from "react-router-dom";
+import { buildVenueHref } from "/src/lib/links";
 
 const CardItem = ({item}) => {
+
+  const href = buildVenueHref(item);
+
   return (
-    <Link to={`/${item.type}/${item.id}`}>
+    <Link to={href}>
       <div className="card">
         <div className="card-image">
           <img src={item.img} alt="img" />

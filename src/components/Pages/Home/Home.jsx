@@ -71,7 +71,7 @@ function Home() {
             alt="Счастливая пара — иллюстрация на главной"
             loading="eager"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
           />
         </div>
       </div>
