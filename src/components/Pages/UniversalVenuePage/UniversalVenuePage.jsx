@@ -11,33 +11,64 @@ import { CategoryVariables } from "@/components/Category/CategoryVariables";
 
 /* ---------- helpers ---------- */
 
-// нормализуем type из урла только для решения: грузить ли БД
-function normalizeType(t) {
-  const raw = String(t || "")
+// Приводим тип из урла к типу в БД (множественное/единственное/варианты)
+function mapToDbType(typeFromUrl) {
+  const t = String(typeFromUrl || "")
     .trim()
     .toLowerCase();
-  if (["restaurant", "restaurants", "restorany", "рестораны"].includes(raw))
-    return "restaurant";
-  return raw;
+  const map = {
+    restaurant: "restaurant",
+    restaurants: "restaurant",
+    restorany: "restaurant",
+    рестораны: "restaurant",
+
+    musician: "musician",
+    musicians: "musician",
+
+    car: "car",
+    cars: "car",
+
+    presenter: "presenter",
+    presenters: "presenter",
+
+    photographer: "photographer",
+    photographers: "photographer",
+
+    singer: "singer",
+    singers: "singer",
+
+    beautysalon: "beautySalons",
+    beautysalons: "beautySalons",
+    beauty_salon: "beautySalons",
+  };
+  return map[t] || t; // если совпадает 1:1
 }
 
-// приводим любой формат медиа к формату Aurora
+// Приводим любое медиа к формату Aurora
 function normalizeMedia(media = []) {
-  return (media || []).filter(Boolean).map((m) =>
-    m.type === "video"
-      ? {
-          type: "video",
-          poster: m.poster || "",
-          alt: m.alt || "",
-          sources:
-            Array.isArray(m.sources) && m.sources.length
-              ? m.sources
-              : m.src
-              ? [{ src: m.src, type: "video/mp4" }]
-              : [],
-        }
-      : { type: "image", src: m.src, alt: m.alt || "" }
-  );
+  return (media || []).filter(Boolean).map((m) => {
+    // строка → image
+    if (typeof m === "string") {
+      return { type: "image", src: m, alt: "" };
+    }
+    // объект video c src или sources
+    if (m.type === "video") {
+      const sources =
+        Array.isArray(m.sources) && m.sources.length
+          ? m.sources
+          : m.src
+          ? [{ src: m.src, type: "video/mp4" }]
+          : [];
+      return {
+        type: "video",
+        poster: m.poster || "",
+        alt: m.alt || "",
+        sources,
+      };
+    }
+    // объект image
+    return { type: "image", src: m.src, alt: m.alt || "" };
+  });
 }
 
 // Ищем локальную карточку по id СРЕДИ ВСЕХ направлений
@@ -70,7 +101,8 @@ function findLocalById(idStr) {
 
 export default function UniversalVenuePage() {
   const { type, id } = useParams();
-  const routeType = normalizeType(type);
+
+  const dbType = mapToDbType(type);
   const idStr = String(id);
 
   // 1) сначала пробуем ЛОКАЛЬНУЮ карточку, не завися от type
@@ -79,7 +111,7 @@ export default function UniversalVenuePage() {
     [idStr]
   );
 
-  // 2) состояние для БД-варианта (используем только для restaurant)
+  // 2) состояние для БД-варианта
   const [db, setDb] = useState({
     loading: false,
     error: "",
@@ -92,13 +124,35 @@ export default function UniversalVenuePage() {
     let cancelled = false;
 
     async function loadFromDb() {
-      // БД грузим только если:
-      //  - тип = restaurant
-      //  - локальная карточка НЕ найдена
-      if (routeType !== "restaurant" || localItem) {
+      // если нашли локальную — БД не трогаем
+      if (localItem) {
         setDb({
           loading: false,
           error: "",
+          venue: null,
+          socials: null,
+          media: [],
+        });
+        return;
+      }
+
+      const nId = Number(idStr);
+      if (!Number.isFinite(nId)) {
+        setDb({
+          loading: false,
+          error: "Некорректный идентификатор",
+          venue: null,
+          socials: null,
+          media: [],
+        });
+        return;
+      }
+
+      // если тип из URL непонятен — тоже выходим
+      if (!dbType) {
+        setDb({
+          loading: false,
+          error: "Некорректный тип объявления",
           venue: null,
           socials: null,
           media: [],
@@ -115,20 +169,18 @@ export default function UniversalVenuePage() {
           media: [],
         });
 
-        const nId = Number(idStr);
-        if (!Number.isFinite(nId))
-          throw new Error("Некорректный идентификатор");
-
+        // venues
         const { data: v, error: e1 } = await supabase
           .from("venues")
           .select("*")
           .eq("id", nId)
-          .eq("type", "restaurant")
+          .eq("type", dbType)
           .eq("is_published", true)
           .maybeSingle();
         if (e1) throw e1;
         if (!v) throw new Error("Объявление не найдено");
 
+        // socials
         const { data: s, error: e2 } = await supabase
           .from("venue_socials")
           .select("*")
@@ -136,6 +188,7 @@ export default function UniversalVenuePage() {
           .maybeSingle();
         if (e2) throw e2;
 
+        // media
         const { data: m, error: e3 } = await supabase
           .from("venue_media")
           .select("*")
@@ -167,24 +220,20 @@ export default function UniversalVenuePage() {
     return () => {
       cancelled = true;
     };
-  }, [routeType, idStr, localItem]);
+  }, [dbType, idStr, localItem]);
 
   /* ---------- render: 1) локалка ---------- */
 
   if (localItem) {
     const it = localItem;
 
-    // Собираем медиа из img + imgList
+    // Собираем медиа из img + imgList (поддерживаем строки и объекты видео)
     const list = Array.isArray(it.imgList) ? it.imgList : [];
     const mediaPrepared = [
       it.img
         ? { type: "image", src: it.img, alt: `${it.title} — обложка` }
         : null,
-      ...list.map((src, i) => ({
-        type: "image",
-        src,
-        alt: `${it.title} — фото ${i + 1}`,
-      })),
+      ...list,
     ].filter(Boolean);
 
     const venueProps = {
@@ -223,7 +272,7 @@ export default function UniversalVenuePage() {
     );
   }
 
-  /* ---------- render: 2) БД ресторан ---------- */
+  /* ---------- render: 2) БД ---------- */
 
   if (db.loading) {
     return (
@@ -246,7 +295,7 @@ export default function UniversalVenuePage() {
 
     const auroraVenue = {
       name: v.title || "",
-      categories: ["Рестораны"],
+      categories: [dbType], // можно подставить красивое имя при желании
       priceLevel: v.price_level || "",
       openNow: !!v.open_now,
       hours: v.hours || "",
