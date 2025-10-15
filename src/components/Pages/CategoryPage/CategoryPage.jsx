@@ -8,8 +8,8 @@ import CardItem from "../../CardItem/CardItem";
 
 import { findCategoryBySlug } from "./categoryConfig";
 
-import OverlayLoader from "/src/components/UI/OverlayLoader/OverlayLoader";
-import { useMinDelayLoader } from "/src/components/UI/OverlayLoader/useMinDelayLoader";
+import OverlayLoader from "@/components/UI/OverlayLoader/OverlayLoader";
+import { useMinDelayLoader } from "@/components/UI/OverlayLoader/useMinDelayLoader";
 
 // утилита
 const toSlug = (s = "") =>
