@@ -2,7 +2,7 @@
   --bg: #0c0d11;
   --glass: rgba(255, 255, 255, 0.08);
   --glass-2: rgba(255, 255, 255, 0.06);
-  --text: #f6f7fb;
+  --text: black;
   --muted: #b7bcc8;
   --accent: #6ad0ff;
   --accent-2: #9d7bff;
@@ -12,6 +12,32 @@
   --radius: 16px;
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
+
+
+/* --- простой оверлей-лоадер --- */
+.loaderOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: color-mix(in srgb, #0b1020 45%, transparent);
+    display: grid;
+    place-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 3px solid rgba(255,255,255,.25);
+    border-top-color: #fff;
+    animation: a-spin .8s linear infinite;
+}
+
+@keyframes a-spin {
+    to { transform: rotate(360deg) }
+}
+
 
 
 /* Socials */
@@ -91,7 +117,7 @@
   border-radius: calc(var(--radius) + 4px);
   overflow: hidden;
   background-color: white;
-  box-shadow: var(--shadow);
+/*  box-shadow: var(--shadow);*/
 }
 .hero img {
   position: absolute;
@@ -105,7 +131,10 @@
 .titleBlock {
   position: relative;
   padding: 22px;
-  backdrop-filter: blur(14px);
+/*  backdrop-filter: blur(14px);*/
+    border: 1px solid black;
+    border-radius: var(--radius);
+
 }
 .title {
   margin: 0 0 6px;

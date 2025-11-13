@@ -1,56 +1,67 @@
+// src/admin/AdminLogin.jsx
 import React, { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabaseClient";
 import "./admin.css";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [err, setErr] = useState("");
+    const nav = useNavigate();
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [err, setErr] = useState("");
 
-  const onLogin = async (e) => {
-    e.preventDefault();
-    setErr("");
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: pass,
-    });
-    if (error) setErr(error.message);
-    else window.location.href = "/admin";
-  };
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            setErr("");
 
-  return (
-    <div className="login-wrap">
-      <div className="login-card">
-        <div className="login-title">Вход в админку</div>
-        <form className="login-form" onSubmit={onLogin}>
-          <div>
-            <div className="label">Email</div>
-            <input
-              className="input"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <div className="label">Пароль</div>
-            <input
-              className="input"
-              type="password"
-              placeholder="••••••••"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-            />
-          </div>
-          <button className="btn primary lg" type="submit">
-            Войти
-          </button>
-          {err && <div style={{ color: "var(--danger)" }}>{err}</div>}
-        </form>
-        <div className="login-foot">
-          <span>Нет аккаунта? Создай в Supabase → Users</span>
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password: pass,
+            });
+            if (error) throw error;
+
+            // мягкая клиентская навигация
+            nav("/admin", { replace: true });
+        } catch (e2) {
+            setErr(e2?.message || "Ошибка входа");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="auth-shell">
+            <form className="auth-card" onSubmit={onSubmit}>
+                <h1>Вход</h1>
+                {err && <div className="error mb-8">{err}</div>}
+
+                <label className="label">Email</label>
+                <input
+                    className="input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="username"
+                    required
+                />
+
+                <label className="label mt-8">Пароль</label>
+                <input
+                    className="input"
+                    type="password"
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                />
+
+                <button className="btn primary mt-16" type="submit" disabled={loading}>
+                    {loading ? "Входим…" : "Войти"}
+                </button>
+            </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

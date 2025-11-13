@@ -1,8 +1,15 @@
-import { Navigate, useParams } from "react-router-dom";
+// src/components/Routing/LegacyToAurora.jsx
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
+export default function LegacyToAurora({ mapType = "restaurant" }) {
+    const nav = useNavigate();
+    const { id } = useParams();
 
-export default function LegacyToAurora({ mapType }) {
-  const { id } = useParams();
-  const type = mapType.toLowerCase();
-  return <Navigate to={`/aurora/${type}/${id}`} replace />;
+    useEffect(() => {
+        if (!id) return;
+        nav(`/aurora/${mapType}/${id}`, { replace: true });
+    }, [id, mapType, nav]);
+
+    return null;
 }
