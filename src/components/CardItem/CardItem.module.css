@@ -1,0 +1,99 @@
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+
+/* Картинка фиксированного соотношения — карточки ровные */
+.cover {
+    display: block;
+    aspect-ratio: 16 / 11;     /* только размер, цвета не трогаем */
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+}
+.cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.ph {
+    width: 100%;
+    height: 100%;
+    background: #f2f4f8;
+}
+
+.body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.title {
+    text-decoration: none;
+    font-weight: 700;
+    color: #28468c;            /* оставляем твой стиль заголовка */
+}
+
+/* Описание — фиксированная «высота» под ~6 строк (красиво и ровно) */
+.desc {
+    color: #334;
+    line-height: 1.5;
+    min-height: calc(1.5em * 6);
+    overflow: hidden;
+}
+
+.linkAll {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    /* чтобы текст и кнопки в карточке продолжали быть видимыми,
+       но клики уходили в ссылку — не задаём background */
+}
+
+/* ---- Многострочное обрезание ---- */
+.title,
+.desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Заголовок: максимум 1–2 строки */
+.title {
+    -webkit-line-clamp: 2;         /* десктоп/планшет — до 2 строк */
+    line-height: 1.3;
+}
+
+@media (max-width: 480px) {
+    .title {
+        -webkit-line-clamp: 1;       /* на мобильном — в 1 строку */
+    }
+}
+
+/* Описание: аккуратное сокращение с троеточием */
+.desc {
+    -webkit-line-clamp: 7;         /* десктоп — до 7 строк */
+    line-height: 1.45;
+}
+
+/* планшет */
+@media (max-width: 1024px) {
+    .desc {
+        -webkit-line-clamp: 6;
+    }
+}
+
+/* мобильные — короче и плотнее */
+@media (max-width: 640px) {
+    .desc {
+        -webkit-line-clamp: 4;       /* показываем до 4 строк */
+    }
+}
+

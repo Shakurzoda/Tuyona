@@ -1,64 +1,48 @@
 // src/lib/mediaUrl.js
-const URL_OK_PREFIX = /^(https?:\/\/|data:|blob:)/i;
+
+const HTTP_PREFIX = /^http:\/\//i;
+const DATA_PREFIX = /^data:/i;
+const VALID_SCHEME = /^(https?:)?\/\//i;
 
 /**
- * Возвращает валидный URL (https/data/blob) или null.
- * Дополнительно правит Cloudinary c http -> https (фикс mixed content).
+ * Делает ссылку безопасной для прод-окружения:
+ * - пустые строки -> ''
+ * - http:// -> https:// (кроме localhost/127.0.0.1)
+ * - тримим пробелы
  */
-export function sanitizeMediaUrl(u) {
-    const s = String(u || "").trim();
-    if (!s) return null;
-    if (!URL_OK_PREFIX.test(s)) return null;
+export function sanitizeMediaUrl(input) {
+    if (!input && input !== 0) return "";
+    let s = String(input).trim();
+    if (!s) return "";
 
-    // Cloudinary иногда приходит по http — принудительно делаем https
-    if (s.startsWith("http://res.cloudinary.com")) {
-        return s.replace("http://", "https://");
+    // data: URI оставляем
+    if (DATA_PREFIX.test(s)) return s;
+
+    // относительный/без схемы урл — оставляем
+    if (!VALID_SCHEME.test(s)) return s;
+
+    // http -> https (кроме localhost)
+    if (HTTP_PREFIX.test(s)) {
+        try {
+            const u = new URL(s);
+            const host = (u.hostname || "").toLowerCase();
+            if (host !== "localhost" && host !== "127.0.0.1") {
+                u.protocol = "https:";
+                return u.toString();
+            }
+            return s;
+        } catch {
+            return s.replace(HTTP_PREFIX, "https://");
+        }
     }
     return s;
 }
 
-/**
- * Нормализует произвольный список медиа к формату Aurora:
- *  - строки -> image
- *  - видео с src -> sources[ {src,type} ]
- *  - выбрасывает элементы без валидных ссылок
- */
-export function sanitizeAuroraMedia(media = []) {
-    const out = [];
-    for (const m of media || []) {
-        if (!m) continue;
-
-        // Строка -> картинка
-        if (typeof m === "string") {
-            const src = sanitizeMediaUrl(m);
-            if (src) out.push({ type: "image", src });
-            continue;
-        }
-
-        // Картинка
-        if (m.type === "image") {
-            const src = sanitizeMediaUrl(m.src);
-            if (src) out.push({ type: "image", src, alt: m.alt || "" });
-            continue;
-        }
-
-        // Видео
-        if (m.type === "video") {
-            const poster = sanitizeMediaUrl(m.poster || "") || undefined;
-            let sources = Array.isArray(m.sources) ? m.sources : (m.src ? [{ src: m.src }] : []);
-            sources = (sources || [])
-                .map((s) => ({ src: sanitizeMediaUrl(s?.src), type: s?.type || "video/mp4" }))
-                .filter((s) => !!s.src);
-
-            if (sources.length) {
-                out.push({ type: "video", poster, sources, alt: m.alt || "" });
-            }
-            continue;
-        }
-
-        // Fallback: пробуем как картинку
-        const src = sanitizeMediaUrl(m.src);
-        if (src) out.push({ type: "image", src, alt: m.alt || "" });
-    }
-    return out;
+/** простая проверка, что урл можно отрендерить */
+export function isProbablyRenderableUrl(s) {
+    if (!s) return false;
+    const v = String(s).trim();
+    if (!v) return false;
+    if (v === "#" || v === "about:blank") return false;
+    return true;
 }
