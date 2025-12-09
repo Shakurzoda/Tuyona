@@ -270,3 +270,41 @@ body{
     border-color: color-mix(in oklab, var(--brand) 30%, #fff);
 }
 
+/* ====== Venue edit layout: form + preview on the right ====== */
+
+.edit-shell {
+  width: 1150px;          /* как и admin-shell */
+  margin: 32px auto 80px;
+  padding: 0 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* левая панель (форма) — занимает всё оставшееся место */
+.edit-shell > .panel:first-child {
+  flex: 1 1 0;
+}
+
+/* правая панель с предпросмотром */
+.preview-card {
+  flex: 0 0 380px;            /* фиксированная комфортная ширина */
+  max-width: 420px;
+}
+
+/* опционально: чуть меньше паддинги внутри предпросмотра */
+.preview-card .panel-body {
+  padding: 8px 10px 12px;
+}
+
+/* адаптив: на мобиле снова одна колонка, предпросмотр снизу */
+@media (max-width: 900px) {
+  .edit-shell {
+    flex-direction: column;
+  }
+
+  .preview-card {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+}

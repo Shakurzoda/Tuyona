@@ -57,7 +57,7 @@ function Home() {
 
           <div className={styles.home__content__text__btn}>
             <MyButton color="green" size="medium" href="/category">
-              Все категории
+              Категории
             </MyButton>
             <MyButton color="white" size="medium" href="#about">
               О нас

@@ -16,20 +16,20 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/bmebtozzxocgfy3v2iji.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/olypa4ivuot27hq9buj7.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/rxtwy7imercfmzbp8elf.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
     ],
     type: "restaurant",
@@ -58,14 +58,14 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/pq4vknjxhqxlt2hyifzm.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
       {
         type: "video",
         src: "https://ik.imagekit.io/tuyona/Restaurants/%D0%AF%D0%BA%D0%BA%D0%B0%D1%81%D0%B0%D1%80%D0%BE%D0%B9%20/_dushanbe%20_badahshon%20_%D1%82%D1%83%D0%B9%20_tajikistan%20_tajikistan%20_kulob%20_tuy%20_kulob%20_weddingday%20_wedding%20_hisor.mp4?updatedAt=1755421329108",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
     ],
     type: "restaurant",
@@ -92,20 +92,20 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/evgki69g3wx3t0l9ricw.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/cyzxgunsctnoaajnmdlg.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/kr6dkiyaevyofamka7p6.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
     ],
     type: "restaurant",
@@ -133,14 +133,14 @@ export const RESTAURANTS = [
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/yjk4yzz0azs6bgolixp2.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
       {
         type: "video",
         src: "http://res.cloudinary.com/dmx65cbhh/video/upload/f_mp4,vc_h264/iuzzowv4f1a30s5oftgy.mp4",
-        poster:
-          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007",
+/*         poster:
+          "https://ik.imagekit.io/tuyona/defoult_poster.webp?updatedAt=1758329734007", */
       },
     ],
     type: "restaurant",
@@ -205,22 +205,22 @@ export const DECORATION = [
       {
         type: "video",
         src: " https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/test1.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQM4_hBVydem0exwJ-j1t5g6E5KSQX-Xfiv8cnW5-m7JP6TZ75QvzMgBj0Joz_P6RKt5D0LeT7fdkb9ZGVngvr24Fg3PAdZHil_fSzY.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/test3.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/test4.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "decoration",
@@ -266,22 +266,22 @@ export const PHOTOGRAPHERS = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQNvfHwpp5hk8HIHXPo2G9hRVMPq7Y3XxoC2WNDxJxgv15__bcPHHESB99SgMCyHEMxTvKOicOgjBVZdNyMIIWm9zqj8pn6YmeBvltg.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQNnfU1b42cq4cAmlyoww5a5-zg-wNK-hRTJ7P8cOs98ws2yya2WEqG8AqdRbwAmdnGHIz2D71bgARih5-V6WGMFDvbf4fasDfyk118.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQNM5Oh5b424SW5eGoyvIUNCVZWe7mG7Hc26uF2FgbZcrq0fXgNHA4-fUkf3BFKQNJOpxVaOU8YjZ0hV5zpVqh79AKBRPKdJLlGkNRw.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQNLVTLw57rhPN2xAyryMoecj6Gdp0SQrJA2RaVZ0TfNdhe_Q-SdYy8tvJJxM4GnWSPmWpEXD6sD0x07nQSJd0d8zt1mAcD1GsPBz30.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "photographers",
@@ -306,22 +306,22 @@ export const PHOTOGRAPHERS = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/123.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQMIzS-jEjCMkzhcp4_lB6tgkVRW_qnNIYrXC8YxAzJGEei-5EN-8QSR22IXvJzjMDnEQikt3bcQhu8w-uReZ483bazi0bo5S2t7HSI.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQOQRqV2bylWKau4cHYyKgE2AP4n9mN9bokCgd-t2hOKPemZLEmKxst-Qv7vjgZXj8dC-1LgU1Ko-DTDf9oKzdhdY-nH5IuwcNHnUiM.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQN9u81vyh0yGiaUnDX8d7-pIF0DBebsLQKX_wB9oYR4kCgcR-7dJfGWCrvFpisDTgNAo3ZOTIe2WhoHiPoHorImOFGaVqw7c6sHePE.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "photographers",
@@ -346,22 +346,22 @@ export const PHOTOGRAPHERS = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/123.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQMIzS-jEjCMkzhcp4_lB6tgkVRW_qnNIYrXC8YxAzJGEei-5EN-8QSR22IXvJzjMDnEQikt3bcQhu8w-uReZ483bazi0bo5S2t7HSI.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQOQRqV2bylWKau4cHYyKgE2AP4n9mN9bokCgd-t2hOKPemZLEmKxst-Qv7vjgZXj8dC-1LgU1Ko-DTDf9oKzdhdY-nH5IuwcNHnUiM.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQN9u81vyh0yGiaUnDX8d7-pIF0DBebsLQKX_wB9oYR4kCgcR-7dJfGWCrvFpisDTgNAo3ZOTIe2WhoHiPoHorImOFGaVqw7c6sHePE.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "photographers",
@@ -387,22 +387,22 @@ export const PHOTOGRAPHERS = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQOavaTeIoxaizWInkhirm-VbK_LZiofFpr5AlmTJx33ZHfYhqxwFedVrgqokydPCRQCK0_uh4u-0BiaehYEF2ejzC4vfE0CsYL0Kes.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQODpuIZgRyus_-Jx8IVnEtkN_LLSvfWNWKuM7uYkQ_OTxh9289ss5sM7CxlcYjqP3lEW6F5Ge0mIYJOSVJXKlos1_nPKuqg2PwS1qE.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQOmx7XPI9pxzSLTlCDzxmn78p0FofRvBXuFkcxrz3XEgkZ38DMQsldwKA5C4vebwjMCV2Bba-SrD6u1T_VN0i1LOFotW6SWJjai8sU.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/SaveClip.App_AQON-QJX98vkVOhneJAyc8WaYUTfNk6QMz_TiELT2pp-C8VfUbQarsfVC8LINZaFsxrWK2GevmLGKKTXP20gW9kGPDz_iVU90Uaud7M.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "photographers",
@@ -449,22 +449,22 @@ export const BEAUTY_SALON = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQMwBqN0RImD_Za0ej8VkvfA8Isubsn2GQ0HX8fDS_EYDQmIXrjGOrAUsKBDbgqXha2m-pUHKUhAzAhVpFjs3BaYvGGZ8J64.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQPcrU70uLUxwM9O9Bz4neQGPpg1kksgjX_OhSy5HxoAo8G75QkRUXOERZD8yv0HxzedyEbsv9DEzzNe-ePy-Kj1hX5YUwO_.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNoJJ6KRxahSAXMjQHNd21y4AerMVYaQm7hadoic9-lBRxpXNuHyHcNXwMmLCRofe7xQacKfvbCSXeP2vqN8XThy51rPccz.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNFIfBulw0Ne4_zqiv4WUsOyeJduvWALn0yq3AJs077oxMM1N3mRums1_2o2Yfs1oBsRpldHeBya9uiVYe4vxGL4Kp8ukwQ.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "beautySalons",
@@ -491,22 +491,22 @@ export const BEAUTY_SALON = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQMUIINIlwk4hAWB6aokx-M5wjPXjESs4fWEiKUx_pvoutG2aj0peCFh5ymWaJdgx21H4MyyFttZX097ej6a2CiyOIO6jPu-.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQPk9Zf5GlpcXTXfwIOBJX7avxqWITA6udeMFQJMtg2uNiQk3MvjtkV2K2KgINz91PHxlrg4VopFHkuVJLR4amno3Ro_uarm.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNwEH7YTkKu-w3Abjmx1l70r-Xm-9rioosJfs-GTNwQWKC_tBXVYNlAIlFUcQmeFwQ3YIfIK-a-1VqVQ5XL7NIt5q-dj6Oq.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQOoXSK0TnXb_dWV4DhJa6JC2Jl6ebGrIkG0kRFX4mTH9mG9EJbKA__cQwDHliFcZ0QyDTZOlbP_4E20b3cqpJ-HYZZAZZDD.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "beautySalons",
@@ -532,22 +532,22 @@ export const BEAUTY_SALON = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQObQf2d3wpdnc1iZoTYQ932TUl1WClIUfBFuIJa8kH16ItzJ9jGdsuMfdfupiHM8GVWh2T1i8XYs0nmauOs0lNbVsp9XWEI.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/get.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+ /*        poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/12345678.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNymR0qEFbPi8V03OaF5un3rkTnnaGxOkIQi0mk7AUScdNwaHu2VkoSNylGSTIiB0nJVRdwZya7l_E-A4GMUNeGRo7yMcWZ.mp4",
-        poster: "/src/assets/defoult_poster.webp",
+/*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
     type: "beautySalons",
