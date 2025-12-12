@@ -1,3 +1,4 @@
+// src/components/Pages/CategoryPage/CategoryPage.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import styles from "./CategoryPage.module.css";
@@ -17,6 +18,10 @@ const toSlug = (s = "") =>
 
 const DEFAULT_SLUG = toSlug(CategoryVariables[0].directionName);
 
+// ===== КЭШ ДЛЯ РЕЗУЛЬТАТОВ ИЗ БД =====
+const dbCache = new Map(); // key: slug / cacheKey → { items, error, ts }
+const CACHE_TTL = 60_000; // 60 секунд считаем актуальными
+
 export default function CategoryPage() {
   const { category: categoryParam } = useParams();
 
@@ -27,6 +32,9 @@ export default function CategoryPage() {
 
   // конфиг категории
   const cat = useMemo(() => findCategoryBySlug(slug), [slug]);
+
+  // ключ кэша (если нужно, можно задать в конфиге свой)
+  const cacheKey = useMemo(() => cat.db?.cacheKey || slug, [cat, slug]);
 
   // активное «направление» для UI
   const direction = useMemo(() => {
@@ -64,6 +72,16 @@ export default function CategoryPage() {
         return;
       }
 
+      // 1) пробуем взять из кэша
+      const cached = dbCache.get(cacheKey);
+      const now = Date.now();
+      if (cached && now - cached.ts < CACHE_TTL) {
+        setDbItems(cached.items || []);
+        setErrorDb(cached.error || "");
+        stopLoading();
+        return;
+      }
+
       try {
         startLoading();
 
@@ -73,9 +91,33 @@ export default function CategoryPage() {
         );
 
         const itemsFromDb = await Promise.race([cat.db.loader(), timeout]);
-        if (!cancelled) setDbItems(itemsFromDb || []);
+
+        if (cancelled) return;
+
+        const safeItems = itemsFromDb || [];
+
+        setDbItems(safeItems);
+        setErrorDb("");
+
+        // сохраняем в кэш
+        dbCache.set(cacheKey, {
+          items: safeItems,
+          error: "",
+          ts: Date.now(),
+        });
       } catch (err) {
-        if (!cancelled) setErrorDb(err?.message || "Ошибка загрузки");
+        if (cancelled) return;
+
+        const msg = err?.message || "Ошибка загрузки";
+        setErrorDb(msg);
+        setDbItems([]);
+
+        // тоже кладём в кэш, чтобы не дёргать БД бесконечно
+        dbCache.set(cacheKey, {
+          items: [],
+          error: msg,
+          ts: Date.now(),
+        });
       } finally {
         if (!cancelled) stopLoading();
       }
@@ -84,7 +126,7 @@ export default function CategoryPage() {
     return () => {
       cancelled = true;
     };
-  }, [cat, startLoading, stopLoading]);
+  }, [cat, cacheKey, startLoading, stopLoading]);
 
   // объединяем local + db (без дублей по ключу из конфига)
   const items = useMemo(() => {

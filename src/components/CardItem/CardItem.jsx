@@ -1,3 +1,4 @@
+// src/components/CardItem/CardItem.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import s from "./CardItem.module.css";
@@ -50,7 +51,7 @@ export default function CardItem({ item }) {
 
       <div className={s.cover}>
         {img ? (
-          <img src={img} alt={title || "img"} loading="lazy" />
+          <img src={img} alt={title || "img"} loading="lazy" decoding="async" />
         ) : (
           <div className={s.ph} />
         )}

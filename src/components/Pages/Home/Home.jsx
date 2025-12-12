@@ -1,4 +1,4 @@
-// Home.jsx
+// src/components/Pages/Home/Home.jsx
 import { memo, useMemo } from "react";
 import image from "/src/assets/24122343_bwink_ppl_11_single_08.webp";
 import styles from "./Home.module.css";
@@ -33,7 +33,7 @@ const CATEGORY_CARDS = [
 ];
 
 function Home() {
-  // на случай будущих вычислений — мемоизируем список карточек
+  // На будущее: если список будет формироваться динамически, useMemo пригодится
   const cards = useMemo(() => CATEGORY_CARDS, []);
 
   return (
@@ -41,13 +41,18 @@ function Home() {
       <div className={styles.home__content}>
         <div className={styles.home__content__text}>
           <div className={styles.home__content__text__title}>
-            {" "}
-            <p className={styles.txtPink}>Свадьба Вашей Мечты Ждет Вас</p>{" "}
+            <p className={styles.txtPink}>Свадьба Вашей Мечты Ждет Вас</p>
           </div>
+
           <div className={styles.home__content__text__desc}>
-            <h2 className={styles.home__content__text__desc__title}>
+            {/* Главный заголовок страницы (SEO + aria-labelledby) */}
+            <h1
+              id="home-title"
+              className={styles.home__content__text__desc__title}
+            >
               Добро пожаловать в Туйона
-            </h2>
+            </h1>
+
             <p className={styles.home__content__text__desc__desc}>
               Tuyuona — ваша онлайн-площадка для свадебных услуг. Здесь вы
               найдёте всё необходимое для организации свадьбы: от
@@ -69,7 +74,7 @@ function Home() {
           <img
             src={image}
             alt="Счастливая пара — иллюстрация на главной"
-            loading="eager"
+            loading="eager" // LCP-элемент — загружаем сразу
             decoding="async"
             fetchPriority="high"
           />

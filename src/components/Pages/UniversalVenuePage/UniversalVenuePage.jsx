@@ -87,6 +87,7 @@ function findLocalById(idStr) {
     const found = items.find((x) => {
       const localStr = String(x?.id);
       if (localStr === idStr) return true;
+
       const localNum = Number(x?.id);
       const urlNum = Number(idStr);
       return (
@@ -129,58 +130,71 @@ export default function UniversalVenuePage() {
     let cancelled = false;
 
     async function loadFromDb() {
+      // если есть локальная карточка — ничего из БД не грузим
       if (localItem) {
-        setDb({
-          loading: false,
-          error: "",
-          venue: null,
-          socials: null,
-          media: [],
-        });
+        if (!cancelled) {
+          setDb({
+            loading: false,
+            error: "",
+            venue: null,
+            socials: null,
+            media: [],
+          });
+        }
         return;
       }
 
-      const t = routeType;
       try {
-        setDb({
-          loading: true,
-          error: "",
-          venue: null,
-          socials: null,
-          media: [],
-        });
-
         const nId = Number(idStr);
-        if (!Number.isFinite(nId))
+        if (!Number.isFinite(nId)) {
           throw new Error("Некорректный идентификатор");
+        }
 
+        // показываем загрузку
+        if (!cancelled) {
+          setDb({
+            loading: true,
+            error: "",
+            venue: null,
+            socials: null,
+            media: [],
+          });
+        }
+
+        // 1) сначала получаем саму площадку
         const { data: v, error: e1 } = await supabase
           .from("venues")
           .select("*")
           .eq("id", nId)
           .maybeSingle();
+
         if (e1) throw e1;
         if (!v) throw new Error("Объявление не найдено");
 
-        if (t && normalizeType(v.type) !== t) {
+        // проверяем type, если он есть в урле
+        if (routeType && normalizeType(v.type) !== routeType) {
           throw new Error("Объявление не найдено");
         }
 
-        const { data: s, error: e2 } = await supabase
-          .from("venue_socials")
-          .select("*")
-          .eq("venue_id", v.id)
-          .maybeSingle();
-        if (e2) throw e2;
+        // 2) соцсети и медиа грузим ПАРАЛЛЕЛЬНО
+        const [{ data: s, error: e2 }, { data: m, error: e3 }] =
+          await Promise.all([
+            supabase
+              .from("venue_socials")
+              .select("*")
+              .eq("venue_id", v.id)
+              .maybeSingle(),
+            supabase
+              .from("venue_media")
+              .select("*")
+              .eq("venue_id", v.id)
+              .order("sort_order", { ascending: true }),
+          ]);
 
-        const { data: m, error: e3 } = await supabase
-          .from("venue_media")
-          .select("*")
-          .eq("venue_id", v.id)
-          .order("sort_order", { ascending: true });
+        if (e2) throw e2;
         if (e3) throw e3;
 
-        if (!cancelled)
+        if (!cancelled) {
           setDb({
             loading: false,
             error: "",
@@ -188,8 +202,9 @@ export default function UniversalVenuePage() {
             socials: s || {},
             media: m || [],
           });
+        }
       } catch (err) {
-        if (!cancelled)
+        if (!cancelled) {
           setDb({
             loading: false,
             error: err?.message || "Ошибка загрузки",
@@ -197,10 +212,12 @@ export default function UniversalVenuePage() {
             socials: null,
             media: [],
           });
+        }
       }
     }
 
     loadFromDb();
+
     return () => {
       cancelled = true;
     };
@@ -260,6 +277,7 @@ export default function UniversalVenuePage() {
       </section>
     );
   }
+
   if (db.error) {
     return (
       <section style={{ padding: 24 }}>
@@ -268,6 +286,7 @@ export default function UniversalVenuePage() {
       </section>
     );
   }
+
   if (db.venue) {
     const v = db.venue;
     const m = db.media || [];
