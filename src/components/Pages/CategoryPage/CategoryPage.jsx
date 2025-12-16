@@ -11,16 +11,34 @@ import { findCategoryBySlug } from "./categoryConfig";
 
 import OverlayLoader from "./OverlayLoader";
 import { useMinDelayLoader } from "./useMinDelayLoader";
+import { supabase } from "@/lib/supabaseClient";
 
-// утилита
+// утилита slug
 const toSlug = (s = "") =>
   s.toString().trim().toLowerCase().replace(/\s+/g, "-").replace(/-{2,}/g, "-");
 
-const DEFAULT_SLUG = toSlug(CategoryVariables[0].directionName);
+// МАП: русское directionName -> slug в БД (category_visibility.slug)
+const SLUG_MAP = {
+  "Все категории": "all",
+  Рестораны: "restaurants",
+  Музыканты: "musicians",
+  Машины: "cars",
+  Оформление: "decoration",
+  Ведущие: "presenters",
+  Фотографы: "photographers",
+  Певцы: "singers",
+  "Свадебные салоны": "beauty_salon",
+};
 
-// ===== КЭШ ДЛЯ РЕЗУЛЬТАТОВ ИЗ БД =====
-const dbCache = new Map(); // key: slug / cacheKey → { items, error, ts }
-const CACHE_TTL = 60_000; // 60 секунд считаем актуальными
+const getDbSlugByDirection = (d) => {
+  // если когда-то добавишь d.slug в CategoryVariables — это тоже будет работать
+  if (d?.slug) return toSlug(d.slug);
+  return SLUG_MAP[d?.directionName] || toSlug(d?.directionName || "");
+};
+
+// дефолтная категория (если в URL нет /:category)
+// важно: дефолт должен быть slug-ом, который понимает categoryConfig/findCategoryBySlug
+const DEFAULT_SLUG = getDbSlugByDirection(CategoryVariables[0]);
 
 export default function CategoryPage() {
   const { category: categoryParam } = useParams();
@@ -30,16 +48,68 @@ export default function CategoryPage() {
   const raw = needsRedirect ? DEFAULT_SLUG : decodeURIComponent(categoryParam);
   const slug = toSlug(raw);
 
-  // конфиг категории
+  // ====== видимость категорий из БД ======
+  // visibleSet хранит ТОЛЬКО видимые slug-и (restaurants, cars...)
+  const [visibleSet, setVisibleSet] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!supabase) {
+      // если Supabase не сконфигурирован — показываем всё
+      setVisibleSet(null);
+      return;
+    }
+
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("category_visibility")
+          .select("slug,is_visible");
+
+        if (error) throw error;
+
+        const set = new Set(
+          (data || [])
+            .filter((row) => row.is_visible !== false) // true или null => видим
+            .map((row) => toSlug(row.slug))
+        );
+
+        if (!cancelled) setVisibleSet(set);
+      } catch (e) {
+        console.error("Ошибка загрузки category_visibility:", e);
+        // при ошибке не ломаем сайт — покажем всё
+        if (!cancelled) setVisibleSet(null);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // список категорий, которые показываем в навигации
+  const visibleDirections = useMemo(() => {
+    if (!visibleSet) return CategoryVariables; // если не загрузилось/ошибка — показываем все
+    return CategoryVariables.filter((d) =>
+      visibleSet.has(getDbSlugByDirection(d))
+    );
+  }, [visibleSet]);
+
+  // если текущий slug выключен в админке — можно (по желанию) редиректить на дефолт
+  const isCurrentHidden = useMemo(() => {
+    if (!visibleSet) return false; // пока нет данных — не трогаем
+    return !visibleSet.has(slug);
+  }, [visibleSet, slug]);
+
+  // конфиг категории (для загрузки локальных/БД-данных)
   const cat = useMemo(() => findCategoryBySlug(slug), [slug]);
 
-  // ключ кэша (если нужно, можно задать в конфиге свой)
-  const cacheKey = useMemo(() => cat.db?.cacheKey || slug, [cat, slug]);
-
   // активное «направление» для UI
+  // ищем по dbSlug (а не по русскому названию), иначе не совпадёт
   const direction = useMemo(() => {
     return (
-      CategoryVariables.find((d) => toSlug(d.directionName) === slug) ||
+      CategoryVariables.find((d) => getDbSlugByDirection(d) === slug) ||
       CategoryVariables[0]
     );
   }, [slug]);
@@ -65,19 +135,8 @@ export default function CategoryPage() {
 
     (async () => {
       if (!cat.db?.enabled) {
-        // категория без БД — лоадер точно прячем
         setDbItems([]);
         setErrorDb("");
-        stopLoading();
-        return;
-      }
-
-      // 1) пробуем взять из кэша
-      const cached = dbCache.get(cacheKey);
-      const now = Date.now();
-      if (cached && now - cached.ts < CACHE_TTL) {
-        setDbItems(cached.items || []);
-        setErrorDb(cached.error || "");
         stopLoading();
         return;
       }
@@ -85,39 +144,14 @@ export default function CategoryPage() {
       try {
         startLoading();
 
-        // таймаут-предохранитель на случай зависших запросов
         const timeout = new Promise((_, rej) =>
           setTimeout(() => rej(new Error("Превышено время ожидания")), 12000)
         );
 
         const itemsFromDb = await Promise.race([cat.db.loader(), timeout]);
-
-        if (cancelled) return;
-
-        const safeItems = itemsFromDb || [];
-
-        setDbItems(safeItems);
-        setErrorDb("");
-
-        // сохраняем в кэш
-        dbCache.set(cacheKey, {
-          items: safeItems,
-          error: "",
-          ts: Date.now(),
-        });
+        if (!cancelled) setDbItems(itemsFromDb || []);
       } catch (err) {
-        if (cancelled) return;
-
-        const msg = err?.message || "Ошибка загрузки";
-        setErrorDb(msg);
-        setDbItems([]);
-
-        // тоже кладём в кэш, чтобы не дёргать БД бесконечно
-        dbCache.set(cacheKey, {
-          items: [],
-          error: msg,
-          ts: Date.now(),
-        });
+        if (!cancelled) setErrorDb(err?.message || "Ошибка загрузки");
       } finally {
         if (!cancelled) stopLoading();
       }
@@ -126,7 +160,7 @@ export default function CategoryPage() {
     return () => {
       cancelled = true;
     };
-  }, [cat, cacheKey, startLoading, stopLoading]);
+  }, [cat, startLoading, stopLoading]);
 
   // объединяем local + db (без дублей по ключу из конфига)
   const items = useMemo(() => {
@@ -152,10 +186,16 @@ export default function CategoryPage() {
       {/* Канонический редирект, не ломая порядок хуков */}
       {needsRedirect && <Navigate to={`/category/${DEFAULT_SLUG}`} replace />}
 
+      {/* Если категория скрыта — редиректим на дефолт (чтобы не открывали скрытое по прямой ссылке) */}
+      {!needsRedirect && isCurrentHidden && (
+        <Navigate to={`/category/${DEFAULT_SLUG}`} replace />
+      )}
+
       {/* Оверлей-лоадер */}
       <OverlayLoader show={loadingOverlay} label="Обновляем список…" />
 
-      <Category currentDirection={direction} />
+      {/* Навигация по категориям — уже с учётом видимости */}
+      <Category currentDirection={direction} categories={visibleDirections} />
 
       <div className={styles.category__content}>
         {cat.db?.enabled && errorDb && (

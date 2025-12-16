@@ -56,7 +56,7 @@ const Header = () => {
     { name: "Главная", to: "/" },
     { name: "Категории", to: "/category" },
 /*     { name: "О нас", to: "/about" }, */
-    { name: "Стать партнером", to: "/partnerships" },
+/*     { name: "Стать партнером", to: "/partnerships" }, */
   ];
 
   return (

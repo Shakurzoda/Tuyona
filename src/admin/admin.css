@@ -270,6 +270,20 @@ body{
     border-color: color-mix(in oklab, var(--brand) 30%, #fff);
 }
 
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid #eee;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+
 /* ====== Venue edit layout: form + preview on the right ====== */
 
 .edit-shell {

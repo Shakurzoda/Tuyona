@@ -31,6 +31,8 @@ const AdminLogin = lazy(() => import("./admin/AdminLogin"));
 const AdminLayout = lazy(() => import("./admin/AdminLayout"));
 const AdminVenues = lazy(() => import("./admin/AdminVenues"));
 const AdminVenueEdit = lazy(() => import("./admin/AdminVenueEdit"));
+const AdminCategories = lazy(() => import("./admin/AdminCategories"));
+
 
 // 404
 const NotFound = lazy(() => import("./components/Pages/NotFound/NotFound"));
@@ -117,6 +119,7 @@ function App() {
               <Route index element={<AdminVenues />} />
               <Route path="venues/new" element={<AdminVenueEdit />} />
               <Route path="venues/:id" element={<AdminVenueEdit />} />
+              <Route path="categories" element={<AdminCategories />} />
             </Route>
 
             {/* 404 */}
