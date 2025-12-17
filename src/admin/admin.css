@@ -322,3 +322,178 @@ body{
     max-width: 100%;
   }
 }
+
+
+/* ===== Admin topbar ===== */
+.admin-shell {
+  min-height: 100vh;
+  background: #fff;
+}
+
+.admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.admin-topbar__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-brand {
+  display: grid;
+  gap: 2px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-brand__title {
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1.1;
+  color: #111;
+}
+
+.admin-brand__subtitle {
+  font-size: 12px;
+  color: rgba(0,0,0,0.55);
+}
+
+.admin-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: 10px;
+}
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: rgba(0,0,0,0.72);
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  transition: transform .05s ease, background .2s ease, border-color .2s ease;
+  font-size: 13px;
+}
+
+.admin-link:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.admin-link.is-active {
+  color: #0b57d0;
+  border-color: rgba(11,87,208,0.35);
+  background: rgba(11,87,208,0.08);
+}
+
+.admin-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-btn {
+  border: 1px solid rgba(0,0,0,0.1);
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: rgba(0,0,0,0.8);
+  text-decoration: none;
+}
+
+.admin-btn--ghost:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.admin-btn--danger {
+  border-color: rgba(220, 53, 69, 0.25);
+  color: #b42318;
+  background: rgba(220, 53, 69, 0.06);
+}
+
+.admin-btn--danger:hover {
+  background: rgba(220, 53, 69, 0.10);
+}
+
+.admin-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 22px 18px 48px;
+}
+
+/* Мобилка: навигация переносится, кнопки остаются */
+@media (max-width: 720px) {
+  .admin-topbar__inner {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .admin-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* ===== Toggle for categories ===== */
+.admin-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  color: rgba(0,0,0,0.75);
+  user-select: none;
+}
+
+.admin-toggle__knob {
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  position: relative;
+  background: rgba(0,0,0,0.12);
+  transition: background .2s ease;
+}
+
+.admin-toggle__knob::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.10);
+  transition: transform .2s ease;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.admin-toggle.is-on .admin-toggle__knob {
+  background: rgba(11,87,208,0.55);
+}
+
+.admin-toggle.is-on .admin-toggle__knob::after {
+  transform: translateX(14px);
+}
+
+.admin-toggle__text {
+  min-width: 34px;
+  text-align: left;
+}
