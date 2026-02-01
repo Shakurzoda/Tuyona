@@ -17,15 +17,15 @@ const Footer = () => {
     {
       title: "Контакты",
       links: [
-        { name: "info@tuyona.com", path: "mailto:info@tuyona.com" },
-/*         { name: "+7 (123) 456-78-90", path: "tel:+71234567890" },
+        { name: "info@tuyona.tj", path: "mailto:info@tuyona.tj" },
+        /*         { name: "+7 (123) 456-78-90", path: "tel:+71234567890" },
         { name: "Москва, ул. Примерная, 123", path: "#" }, */
       ],
     },
     {
       title: "Соцсети",
       links: [
-/*         { name: "Instagram", path: "https://instagram.com" },
+        /*         { name: "Instagram", path: "https://instagram.com" },
         { name: "Facebook", path: "https://facebook.com" },
         { name: "Telegram", path: "https://t.me" },
         { name: "WhatsApp", path: "https://wa.me" }, */

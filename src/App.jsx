@@ -25,6 +25,7 @@ const UniversalVenuePage = lazy(() =>
 const LegacyToAurora = lazy(() =>
   import("./components/Routing/LegacyToAurora")
 );
+const AboutPage = lazy(() => import("./components/Pages/AboutPage/AboutPage"));
 
 // Админка
 const AdminLogin = lazy(() => import("./admin/AdminLogin"));
@@ -112,6 +113,7 @@ function App() {
             <Route path="/category/:category" element={<CategoryPage />} />
             <Route path="/userAdDetails" element={<UserAdDetails />} />
             <Route path="/partnerships" element={<PartnershipsPage />} />
+            <Route path="/about" element={<AboutPage />} />
 
             {/* Админка */}
             <Route path="/admin/login" element={<AdminLogin />} />

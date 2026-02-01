@@ -153,39 +153,11 @@ export const RESTAURANTS = [
 ];
 
 export const MUSICIANS = [
-  {
-    id: 2001,
-    img: "https://img.freepik.com/free-photo/beautiful-brunette-woman-singing-microphone-isolated-gray-wall_231208-12884.jpg?semt=ais_hybrid&w=740",
-    title: "Группа Парем",
-    description:
-      "Восточная группа Парем предлагает живую музыку для свадебных мероприятий. Профессиональные музыканты создадут атмосферу праздника и веселья.",
-    price: "Договорная цена",
-    imgList: [
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-    ],
-    type: "musicians",
-  },
+
 ];
 
 export const CARS = [
-  {
-    id: 3001,
-    img: "https://www.myviplimo.de/wp-content/uploads/2019/05/Limousinenservice31.jpg",
-    title: "Моши Люкс",
-    description:
-      "Прокат автомобилей Моши Люкс предлагает широкий выбор автомобилей для свадебных мероприятий. Профессиональные водители и комфортные автомобили сделают ваш день особенным.",
-    price: "Договор",
-    imgList: [
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-    ],
-    type: "cars",
-  },
+
 ];
 
 export const DECORATION = [
@@ -232,21 +204,7 @@ export const DECORATION = [
 ];
 
 export const PRESENTERS = [
-  {
-    id: 5001,
-    img: "https://lh3.googleusercontent.com/pHbu0l1XY_RTyHvH-ZAkScnBKie4HzJXZYYRBOFkmu3Sl3fbVLX3Yar5tyfQcKF-xsnKwdlw7H51Gw3_haNTrgU-Kt_QPe_fIyZS-Q=w961-h641-l80-e31",
-    title: "Игорь крутой",
-    description:
-      "Игорь Крутой - профессиональный ведущий свадебных мероприятий. С его харизмой и опытом ваш свадебный день станет незабываемым.",
-    price: "5000",
-    imgList: [
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-    ],
-    type: "presenters",
-  },
+
 ];
 
 export const PHOTOGRAPHERS = [
@@ -415,21 +373,7 @@ export const PHOTOGRAPHERS = [
 ];
 
 export const SINGERS = [
-  {
-    id: 7001,
-    img: "https://mp3.tj/img/artist/b/8/4/623.jpg",
-    title: "Чонибек Муродов",
-    description:
-      "Чонибек Муродов - популярный певец, который украсит ваш свадебный день своими песнями. Его голос и харизма создадут атмосферу праздника и радости.",
-    price: "Договор",
-    imgList: [
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-      "https://img.freepik.com/free-photo/beautiful-brun",
-    ],
-    type: "singers",
-  },
+
 ];
 
 export const BEAUTY_SALON = [
