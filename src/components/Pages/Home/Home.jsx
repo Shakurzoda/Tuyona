@@ -64,7 +64,7 @@ function Home() {
             <MyButton color="green" size="medium" href="/category">
               Категории
             </MyButton>
-            <MyButton color="white" size="medium" href="#about">
+            <MyButton color="white" size="medium" href="/about">
               О нас
             </MyButton>
           </div>

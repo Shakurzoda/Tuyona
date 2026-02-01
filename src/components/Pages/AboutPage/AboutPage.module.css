@@ -1,18 +1,20 @@
 .aboutPage {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   color: #333;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 /* Общие стили */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding-left: clamp(16px, 4vw, 20px);
+  padding-right: clamp(16px, 4vw, 20px);
 }
 
 .sectionTitle {
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 4.5vw, 2.5rem);
   font-weight: 800;
   color: #1a1a1a;
   text-align: center;
@@ -21,20 +23,20 @@
 }
 
 .sectionSubtitle {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 2.8vw, 1.125rem);
   color: #666;
   text-align: center;
   max-width: 600px;
-  margin: 0 auto 3rem;
+  margin: 0 auto clamp(1.75rem, 5vw, 3rem);
 }
 
 /* Hero секция */
 .hero {
   display: flex;
   flex-direction: column;
-  min-height: 90vh;
+  min-height: auto;
   background: #bbf1db;
-  padding: 60px 20px;
+  padding: clamp(28px, 6vw, 60px) clamp(16px, 4vw, 20px);
   position: relative;
   overflow: hidden;
   border-radius: 20px;
@@ -45,6 +47,7 @@
     flex-direction: row;
     align-items: center;
     padding: 80px 40px;
+    min-height: 90vh;
   }
 }
 
@@ -55,17 +58,11 @@
 }
 
 .heroTitle {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 6vw, 3.5rem);
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.15;
   color: #1a1a1a;
-  margin-bottom: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .heroTitle {
-    font-size: 3.5rem;
-  }
+  margin-bottom: 1.25rem;
 }
 
 .highlight {
@@ -74,35 +71,34 @@
   display: inline-block;
 }
 
-/* .highlight::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background-color: rgba(219, 39, 119, 0.2);
-  z-index: -1;
-} */
-
 .heroSubtitle {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 3vw, 1.125rem);
   color: #555;
   line-height: 1.7;
-  margin-bottom: 2.5rem;
-  max-width: 500px;
+  margin-bottom: 2rem;
+  max-width: 520px;
 }
 
+/* Статистика — если массив пустой, блок просто не занимает места */
 .heroStats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  margin-top: 3rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 480px) {
+  .heroStats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
 }
 
 @media (min-width: 768px) {
   .heroStats {
     grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 2.5rem;
   }
 }
 
@@ -112,7 +108,7 @@
 }
 
 .statNumber {
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 6vw, 2.5rem);
   font-weight: 800;
   color: #00af66;
   line-height: 1;
@@ -128,7 +124,7 @@
 .heroImage {
   flex: 1;
   position: relative;
-  margin-top: 3rem;
+  margin-top: 2rem;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
@@ -138,36 +134,28 @@
   .heroImage {
     margin-top: 0;
     margin-left: 4rem;
-    max-width: 500px;
+    max-width: 520px;
   }
 }
 
 .heroImg {
   width: 100%;
-  height: 400px;
+  height: clamp(240px, 55vw, 520px);
   object-fit: cover;
   border-radius: 20px;
-}
-
-@media (min-width: 768px) {
-  .heroImg {
-    height: 500px;
-  }
+  display: block;
 }
 
 .imageOverlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.12), transparent);
   border-radius: 20px;
 }
 
 /* Миссия */
 .mission {
-  padding: 80px 20px;
+  padding: clamp(48px, 8vw, 80px) 0;
   background: white;
 }
 
@@ -180,11 +168,17 @@
   border: 1px solid #e2e8f0;
 }
 
+@media (max-width: 640px) {
+  .missionCard {
+    padding: 1.5rem;
+  }
+}
+
 .missionHeader {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .missionIcon {
@@ -192,17 +186,17 @@
 }
 
 .missionTitle {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
 }
 
 .missionText {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 3vw, 1.125rem);
   color: #555;
   line-height: 1.7;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .values {
@@ -213,7 +207,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .valuesGrid {
@@ -245,22 +239,29 @@
 
 /* Как это работает */
 .works {
-  padding: 80px 20px;
+  padding: clamp(48px, 8vw, 80px) 0;
   background: #f8fafc;
 }
 
+/* ВАЖНО: тут grid (у тебя JSX рендерит 3 карточки — идеально для 1/2/3 колонок) */
 .steps {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   max-width: 1000px;
   margin: 0 auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .steps {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
 }
@@ -276,6 +277,12 @@
   border: 1px solid #e2e8f0;
 }
 
+@media (max-width: 640px) {
+  .stepCard {
+    padding: 1.5rem;
+  }
+}
+
 .stepCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -286,7 +293,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .stepNumber {
@@ -306,7 +313,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .stepDescription {
@@ -315,17 +322,20 @@
   line-height: 1.5;
 }
 
+/* Стрелка в JSX уже условная (index < length - 1).
+   Мы дополнительно прячем её на мобилке/планшете, показываем только на десктопе. */
 .stepArrow {
   display: none;
   position: absolute;
-  right: -25px;
+  right: -24px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.5rem;
   color: #cbd5e1;
+  pointer-events: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .stepArrow {
     display: block;
   }
@@ -333,27 +343,30 @@
 
 /* Преимущества */
 .features {
-  padding: 80px 20px;
+  padding: clamp(48px, 8vw, 80px) 0;
   background: white;
 }
 
+/* ВАЖНО: grid. У тебя 3 карточки — на десктопе красиво 3 в ряд */
 .featuresGrid {
-  display: flex;
+  display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1rem;
   max-width: 1000px;
   margin: 0 auto;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .featuresGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 }
 
 @media (min-width: 1024px) {
   .featuresGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
   }
 }
 
@@ -366,6 +379,12 @@
   border: 1px solid transparent;
 }
 
+@media (max-width: 640px) {
+  .featureCard {
+    padding: 1.5rem;
+  }
+}
+
 .featureCard:hover {
   background: white;
   border-color: #fbcfe8;
@@ -374,14 +393,14 @@
 
 .featureIcon {
   font-size: 2.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .featureTitle {
   font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .featureText {
@@ -390,99 +409,9 @@
   line-height: 1.5;
 }
 
-/* Команда */
-.team {
-  padding: 80px 20px;
-  background: #f8fafc;
-}
-
-.teamHeader {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.teamIcon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.teamSubtitle {
-  color: #666;
-  max-width: 600px;
-  margin: 0 auto;
-  font-size: 1.125rem;
-}
-
-.teamGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-@media (min-width: 768px) {
-  .teamGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.memberCard {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
-}
-
-.memberCard:hover {
-  transform: translateY(-5px);
-}
-
-.memberImage {
-  width: 100%;
-  height: 250px;
-  overflow: hidden;
-}
-
-.memberImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.memberCard:hover .memberImage img {
-  transform: scale(1.05);
-}
-
-.memberInfo {
-  padding: 1.5rem;
-}
-
-.memberName {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-}
-
-.memberRole {
-  color: #00af66;
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-}
-
-.memberBio {
-  color: #666;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
 /* CTA секция */
 .cta {
-  padding: 80px 20px;
+  padding: clamp(48px, 8vw, 80px) 0;
   background: #3fc98f;
   border-radius: 20px;
 }
@@ -497,15 +426,21 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
+@media (max-width: 640px) {
+  .ctaCard {
+    padding: 2rem 1.25rem;
+  }
+}
+
 .ctaTitle {
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 4.5vw, 2rem);
   font-weight: 800;
   color: #1a1a1a;
   margin-bottom: 1rem;
 }
 
 .ctaText {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 3vw, 1.125rem);
   color: #666;
   margin-bottom: 2rem;
   max-width: 500px;
@@ -574,7 +509,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -586,7 +521,24 @@
 .missionCard,
 .stepCard,
 .featureCard,
-.memberCard,
 .ctaCard {
   animation: fadeIn 0.8s ease-out;
+}
+
+/* Уважение к reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .heroContent,
+  .missionCard,
+  .stepCard,
+  .featureCard,
+  .ctaCard {
+    animation: none;
+  }
+
+  .stepCard,
+  .featureCard,
+  .ctaButtonPrimary,
+  .ctaButtonSecondary {
+    transition: none;
+  }
 }
