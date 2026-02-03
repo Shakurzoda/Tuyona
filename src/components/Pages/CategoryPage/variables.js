@@ -376,7 +376,7 @@ export const SINGERS = [
 
 ];
 
-export const BEAUTY_SALON = [
+export const BEAUTYSALONS = [
   {
     id: 8001,
     img: "https://ik.imagekit.io/tuyona/WeddingSalon/447925236_429132973371469_5464215235295057490_n..jpg?updatedAt=1756584419071",
@@ -393,25 +393,25 @@ export const BEAUTY_SALON = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQMwBqN0RImD_Za0ej8VkvfA8Isubsn2GQ0HX8fDS_EYDQmIXrjGOrAUsKBDbgqXha2m-pUHKUhAzAhVpFjs3BaYvGGZ8J64.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQPcrU70uLUxwM9O9Bz4neQGPpg1kksgjX_OhSy5HxoAo8G75QkRUXOERZD8yv0HxzedyEbsv9DEzzNe-ePy-Kj1hX5YUwO_.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNoJJ6KRxahSAXMjQHNd21y4AerMVYaQm7hadoic9-lBRxpXNuHyHcNXwMmLCRofe7xQacKfvbCSXeP2vqN8XThy51rPccz.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNFIfBulw0Ne4_zqiv4WUsOyeJduvWALn0yq3AJs077oxMM1N3mRums1_2o2Yfs1oBsRpldHeBya9uiVYe4vxGL4Kp8ukwQ.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
-    type: "beautySalons",
+    type: "beautysalons",
     instagram:
       "https://www.instagram.com/sitorai.durahshon/?igsh=Ym1vYXB4Mmw3aW95",
     youtube: "",
@@ -435,25 +435,25 @@ export const BEAUTY_SALON = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQMUIINIlwk4hAWB6aokx-M5wjPXjESs4fWEiKUx_pvoutG2aj0peCFh5ymWaJdgx21H4MyyFttZX097ej6a2CiyOIO6jPu-.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQPk9Zf5GlpcXTXfwIOBJX7avxqWITA6udeMFQJMtg2uNiQk3MvjtkV2K2KgINz91PHxlrg4VopFHkuVJLR4amno3Ro_uarm.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNwEH7YTkKu-w3Abjmx1l70r-Xm-9rioosJfs-GTNwQWKC_tBXVYNlAIlFUcQmeFwQ3YIfIK-a-1VqVQ5XL7NIt5q-dj6Oq.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQOoXSK0TnXb_dWV4DhJa6JC2Jl6ebGrIkG0kRFX4mTH9mG9EJbKA__cQwDHliFcZ0QyDTZOlbP_4E20b3cqpJ-HYZZAZZDD.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
-    type: "beautySalons",
+    type: "beautysalons",
     instagram:
       "https://www.instagram.com/reel/DNVZBGcICXM/?igsh=MXFjeGJzZDI5d3J5Mg==",
     youtube: "",
@@ -476,25 +476,25 @@ export const BEAUTY_SALON = [
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQObQf2d3wpdnc1iZoTYQ932TUl1WClIUfBFuIJa8kH16ItzJ9jGdsuMfdfupiHM8GVWh2T1i8XYs0nmauOs0lNbVsp9XWEI.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/get.mp4",
- /*        poster: "/src/assets/defoult_poster.webp", */
+        /*        poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/12345678.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
       {
         type: "video",
         src: "https://othyoqxuztrptqkzlxif.supabase.co/storage/v1/object/public/media/AQNymR0qEFbPi8V03OaF5un3rkTnnaGxOkIQi0mk7AUScdNwaHu2VkoSNylGSTIiB0nJVRdwZya7l_E-A4GMUNeGRo7yMcWZ.mp4",
-/*         poster: "/src/assets/defoult_poster.webp", */
+        /*         poster: "/src/assets/defoult_poster.webp", */
       },
     ],
-    type: "beautySalons",
+    type: "beautysalons",
     instagram:
       "https://www.instagram.com/svadebniy__salon_mavzun?igsh=YzljemY1bmRxczQ5",
     youtube: "",

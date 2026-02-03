@@ -6,7 +6,7 @@ import {
   PRESENTERS,
   PHOTOGRAPHERS,
   SINGERS,
-  BEAUTY_SALON
+  BEAUTYSALONS,
 } from "./variables";
 
 export const getCategoryItems = (category) => {
@@ -20,7 +20,7 @@ export const getCategoryItems = (category) => {
         ...PRESENTERS,
         ...PHOTOGRAPHERS,
         ...SINGERS,
-        ...BEAUTY_SALON,
+        ...BEAUTYSALONS,
       ];
     case "Рестораны":
       return RESTAURANTS;
@@ -37,6 +37,6 @@ export const getCategoryItems = (category) => {
     case "Певцы":
       return SINGERS;
     case "Свадебные салоны":
-      return BEAUTY_SALON;
+      return BEAUTYSALONS;
   }
 };

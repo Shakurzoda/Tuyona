@@ -12,9 +12,9 @@ const TYPE_ALIASES = {
   presenters: ["presenters", "presenter", "ведущие", "ведущий"],
   photographers: ["photographers", "photographer", "фотографы"],
   singers: ["singers", "singer", "певцы", "певец"],
-  beautySalons: [
+  beautysalons: [
     "beautySalons",
-    "beauty-salons",
+    "beautysalons",
     "beauty",
     "salon",
     "салоны",
@@ -67,7 +67,7 @@ async function loadFromDBByType(slugForHref) {
   const { data: venues, error: e1 } = await supabase
     .from("venues")
     .select(
-      "id, title, description, address, map_link, phone, hours, created_at, type, is_published"
+      "id, title, description, address, map_link, phone, hours, created_at, type, is_published",
     )
     .in("type", aliases)
     .eq("is_published", true)
@@ -88,7 +88,7 @@ async function loadFromDBByType(slugForHref) {
 
   const covers = buildCoversMap(media || []);
   return venues.map((v) =>
-    mapVenueToCardItem(v, covers.get(v.id), slugForHref)
+    mapVenueToCardItem(v, covers.get(v.id), slugForHref),
   );
 }
 
@@ -230,20 +230,20 @@ export const CATEGORY_CONFIG = [
   },
 
   {
-    key: "beautySalons",
-    slugs: ["beautySalons", "свадебные салоны", "салоны"],
+    key: "beautysalons",
+    slugs: ["beautysalons", "свадебные салоны", "салоны"],
     title: "Свадебные салоны",
     getLocalItems: (directionName, slug) => {
       const res = getCategoryItems(directionName);
       return (Array.isArray(res) ? res : []).map((it) => ({
         ...it,
         _source: "local",
-        _key: `${slug}-local-${it.type || "beautySalons"}-${it.id}`,
+        _key: `${slug}-local-${it.type || "beautysalons"}-${it.id}`,
       }));
     },
     db: {
       enabled: true,
-      loader: () => loadFromDBByType("beautySalons"),
+      loader: () => loadFromDBByType("beautysalons"),
       dedupeBy: "title",
     },
   },
@@ -256,7 +256,7 @@ export function findCategoryBySlug(slug) {
     .toLowerCase();
   return (
     CATEGORY_CONFIG.find((c) =>
-      c.slugs.some((x) => String(x).toLowerCase() === s)
+      c.slugs.some((x) => String(x).toLowerCase() === s),
     ) || CATEGORY_CONFIG[0]
   );
 }

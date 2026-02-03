@@ -5,15 +5,15 @@ import "./admin.css";
 
 /* ===== типы площадок (единые ключи) ===== */
 const VENUE_TYPES = [
-    { value: "all", label: "Все типы" },
-    { value: "restaurant", label: "Рестораны" },
-    { value: "musician", label: "Музыканты" },
-    { value: "car", label: "Авто" },
-    { value: "decoration", label: "Оформление" },
-    { value: "presenter", label: "Ведущие" },
-    { value: "photographer", label: "Фотографы" },
-    { value: "singer", label: "Певцы" },
-    { value: "beauty_salon", label: "Свадебные салоны" },
+  { value: "all", label: "Все типы" },
+  { value: "restaurant", label: "Рестораны" },
+  { value: "musician", label: "Музыканты" },
+  { value: "car", label: "Авто" },
+  { value: "decoration", label: "Оформление" },
+  { value: "presenter", label: "Ведущие" },
+  { value: "photographer", label: "Фотографы" },
+  { value: "singer", label: "Певцы" },
+  { value: "beautysalon", label: "Свадебные салоны" },
 ];
 
 function formatType(v) {

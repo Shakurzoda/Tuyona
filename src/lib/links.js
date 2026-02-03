@@ -16,10 +16,7 @@ export function normalizeType(t = "") {
     photographer: "photographer",
     singers: "singer",
     singer: "singer",
-    beautysalons: "beauty_salon",
-    "beauty-salon": "beauty_salon",
-    beauty_salon: "beauty_salon",
-    beautysalon: "beauty_salon",
+    beautysalons: "beautysalons",
   };
   return map[r] || "restaurant";
 }

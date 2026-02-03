@@ -27,7 +27,7 @@ const SLUG_MAP = {
   Ведущие: "presenters",
   Фотографы: "photographers",
   Певцы: "singers",
-  "Свадебные салоны": "beauty_salon",
+  "Свадебные салоны": "beautysalons",
 };
 
 const getDbSlugByDirection = (d) => {

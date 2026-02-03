@@ -13,7 +13,6 @@ const CATEGORY_LABELS = {
   photographers: "Фотографы",
   singers: "Певцы",
   beautysalons: "Свадебные салоны",
-  beautySalons: "Свадебные салоны", // на всякий случай
 };
 
 const normalizeSlug = (s = "") => s.toString().trim().toLowerCase();

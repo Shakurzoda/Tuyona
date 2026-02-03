@@ -25,7 +25,7 @@ const VENUE_TYPES = [
   { value: "presenter", label: "Ведущий" },
   { value: "photographer", label: "Фотограф" },
   { value: "singer", label: "Певец" },
-  { value: "beauty_salon", label: "Салон красоты" },
+  { value: "beautysalons", label: "Свадебные салоны" },
 ];
 
 function normalizeType(raw = "") {
@@ -52,10 +52,8 @@ function normalizeType(raw = "") {
     singers: "singer",
     singer: "singer",
 
-    beautysalons: "beauty_salon",
-    beauty_salon: "beauty_salon",
-    beautysalon: "beauty_salon",
-    "beauty-salon": "beauty_salon",
+    beautysalon: "beautysalons",
+    beautysalons: "beautysalons",
   };
   return map[r] || "restaurant";
 }
@@ -133,7 +131,7 @@ export default function AdminVenueEdit() {
           poster: x.poster || "",
           path: x.path || "",
           posterPath: x.poster_path || "",
-        }))
+        })),
       );
     })();
   }, [isNew, vid]);
@@ -178,7 +176,7 @@ export default function AdminVenueEdit() {
         if (m.path && uid && m.path.startsWith(`drafts/${uid}/`)) {
           const toPath = m.path.replace(
             `drafts/${uid}/`,
-            `venues/${targetId}/`
+            `venues/${targetId}/`,
           );
           const { path, url } = await moveInMedia(m.path, toPath);
           res.path = path;
@@ -187,14 +185,14 @@ export default function AdminVenueEdit() {
         if (m.posterPath && m.posterPath.startsWith(`drafts/${uid}/`)) {
           const toPoster = m.posterPath.replace(
             `drafts/${uid}/`,
-            `venues/${targetId}/`
+            `venues/${targetId}/`,
           );
           const { path, url } = await moveInMedia(m.posterPath, toPoster);
           res.posterPath = path;
           res.poster = url;
         }
         return res;
-      })
+      }),
     );
     setMedia(moved);
     return moved;
@@ -263,7 +261,7 @@ export default function AdminVenueEdit() {
           sort_order: i,
           path: m.path || null,
           poster_path: m.posterPath || null,
-        }))
+        })),
       );
     }
 
@@ -310,21 +308,21 @@ export default function AdminVenueEdit() {
       description: venue.description || "",
       socials: { ...socials },
     }),
-    [venue, socials]
+    [venue, socials],
   );
 
   const auroraMedia = useMemo(() => {
     const prepared = media.map((m) =>
       m.kind === "video"
         ? { type: "video", src: m.src, poster: m.poster || "" }
-        : { type: "image", src: m.src }
+        : { type: "image", src: m.src },
     );
     return normalizeMedia(prepared);
   }, [media]);
 
   const hero = useMemo(
     () => auroraMedia.find((x) => x.type === "image")?.src || "",
-    [auroraMedia]
+    [auroraMedia],
   );
 
   return (
@@ -615,7 +613,7 @@ export default function AdminVenueEdit() {
                     ...it,
                     key: (it.sources?.[0]?.src || "") + Math.random(),
                   }
-                : it
+                : it,
             )}
             venue={auroraVenue}
             onShare={() => {}}

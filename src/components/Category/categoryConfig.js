@@ -14,7 +14,7 @@ const TYPE_DEFS = [
     { key: "presenter",  slugs: ["presenter", "presenters", "ведущие", "ведущий"] },
     { key: "photographer", slugs: ["photographer", "photographers", "фотографы", "фото", "видео"] },
     { key: "singer",     slugs: ["singer", "singers", "певцы", "певец"] },
-    { key: "beauty_salon", slugs: ["beauty_salon", "beautysalon", "beauty-salon", "beautySalons", "салоны", "свадебные салоны"] },
+    { key: "beautysalons", slugs: ["beauty_salon", "beautysalons", "beauty-salon", "beautySalons", "салоны", "свадебные салоны"] },
 ];
 
 const ALIAS_TO_KEY = new Map();
@@ -112,7 +112,7 @@ export const CATEGORY_CONFIG = TYPE_DEFS.map((def) => ({
             case "presenter": return "Ведущие";
             case "photographer": return "Фотографы";
             case "singer": return "Певцы";
-            case "beauty_salon": return "Свадебные салоны";
+            case "beautysalons": return "Свадебные салоны";
             default: return def.key;
         }
     })(),

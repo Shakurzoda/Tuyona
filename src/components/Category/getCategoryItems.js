@@ -6,7 +6,7 @@ import {
   PRESENTERS,
   PHOTOGRAPHERS,
   SINGERS,
-  BEAUTY_SALON,
+  BEAUTYSALONS,
 } from "../Pages/CategoryPage/variables";
 
 export const getCategoryItems = (categoryName) => {
@@ -20,7 +20,7 @@ export const getCategoryItems = (categoryName) => {
         ...PRESENTERS,
         ...PHOTOGRAPHERS,
         ...SINGERS,
-        ...BEAUTY_SALON,
+        ...BEAUTYSALONS,
       ];
     case "restaurants":
       return RESTAURANTS;
@@ -36,8 +36,8 @@ export const getCategoryItems = (categoryName) => {
       return PHOTOGRAPHERS;
     case "singers":
       return SINGERS;
-    case "beautySalons":
-      return BEAUTY_SALON;
+    case "beautysalons":
+      return BEAUTYSALONS;
     default:
       return []; // 🔑 никогда не undefined
   }

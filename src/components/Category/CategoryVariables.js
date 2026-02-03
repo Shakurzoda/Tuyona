@@ -33,6 +33,6 @@ export const CategoryVariables = [
   },
   {
     title: "Свадебные салоны",
-    directionName: "beautySalons",
+    directionName: "beautysalons",
   },
 ];
